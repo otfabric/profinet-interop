@@ -92,7 +92,9 @@ blink (Signal) and reset against go-profinet's DCP responder.
 
 Every capture of the tests is decoded by both. They are independent of
 each other and of go-profinet, and both have PROFINET dissectors for DCP,
-RT, alarms and the PNIO RPC blocks.
+RT, alarms and the PNIO RPC blocks. tshark runs its heuristic dissectors
+before the port-based ones, so that RPC on an ephemeral port that another
+protocol registered (UDP 37008, TZSP) is still decoded as DCE/RPC.
 
 ## Evaluated and not used
 
