@@ -33,6 +33,11 @@ records, process and diagnosis alarms (its button 2), Release.
 
 - Builds only from the last complete public GPLv3 tree, older than the
   v1.0.2 security fixes; its Connect needs the veth speed check removed.
+- Plugs any module the controller expects (logs it as "unknown") instead
+  of reporting it in a ModuleDiffBlock: a wrong configuration cannot be
+  detected against p-net (tested as such).
+- Sends its WriteMultiple answer with the IODWriteResHeader of the
+  WriteMultiple first (go-profinet's device now does the same).
 - Answers an unknown record index with `DE 80 A0 00` (application read
   error) rather than `B0` (invalid index).
 - Does not answer DCP Get with the AllSelector; go-profinet asks for the
