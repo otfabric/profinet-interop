@@ -1,4 +1,6 @@
 #!/bin/sh
+# $opts below is split into its words on purpose.
+# shellcheck disable=SC2086
 # profinet-interop adapter for tshark.
 #
 #   profinet-interop check FILE.pcap   JSON: frames per protocol, malformed
@@ -9,6 +11,7 @@ set -eu
 case "${1:-}" in
 version) tshark --version | head -1 ;;
 check)
+	[ $# -eq 2 ] || { echo "usage: profinet-interop check FILE.pcap" >&2; exit 2; }
 	f=$2
 	# UDP 34964 is DCE/RPC; WireGuard's heuristic would take some packets.
 	opts="--disable-protocol wg -o dcerpc.desegment_dcerpc:TRUE"
@@ -20,5 +23,9 @@ check)
 	printf '{"schemaVersion":"1.0","adapter":"tshark","version":"%s","frames":%s,"byProtocol":%s,"malformed":%s,"expert":%s}\n' \
 		"$(tshark --version 2>/dev/null | head -1 | awk '{print $3}')" "$total" "$protos" "$malformed" "$expert"
 	;;
-*) printf '{"schemaVersion":"1.0","adapter":"tshark","implementation":"Wireshark tshark","license":"GPL-2.0-or-later","roles":["decoder"]}\n' ;;
+print-capabilities) printf '{"schemaVersion":"1.0","adapter":"tshark","implementation":"Wireshark tshark","license":"GPL-2.0-or-later","roles":["decoder"]}\n' ;;
+*)
+	echo "unknown command ${1:-}: profinet-interop check FILE.pcap | print-capabilities | version" >&2
+	exit 2
+	;;
 esac

@@ -37,9 +37,14 @@ profinet-interop controller [flags]           # IO-Controller roles: one scenari
 profinet-interop dcp <operation> [flags]      # DCP tool roles: one operation, one report
 profinet-interop decode FILE.pcap             # decoder roles (scapy)
 profinet-interop check FILE.pcap              # decoder roles (tshark)
+profinet-interop button2                      # pnet: press the sample application's button 2
+profinet-interop print-gsdml                  # pnio-rs: the device's GSDML
 ```
 
-An unknown command or flag exits with status 2.
+An unknown command or flag exits with status 2. `make contract` checks every
+image against this: `version` prints one line, `print-capabilities` a
+capability document of schema version 1.0 with the adapter's name and roles,
+and an unknown command exits 2.
 
 ### `device`
 

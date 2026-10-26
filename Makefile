@@ -4,7 +4,7 @@
 
 .DEFAULT_GOAL := help
 
-.PHONY: help images image-% capabilities check-versions matrix smoke clean
+.PHONY: help images image-% capabilities check-versions lint contract matrix smoke clean
 
 ADAPTERS := pnet pnio-rs profinet-py pnio-dcp scapy tshark
 TAG ?= dev
@@ -22,6 +22,13 @@ capabilities: ## Print the capability document of every image
 
 check-versions: ## Fail when versions.yaml disagrees with the Dockerfiles
 	@scripts/check-versions.sh
+
+lint: ## Shellcheck the entrypoints and scripts; compile the Python adapters
+	@shellcheck adapters/*/entrypoint.sh adapters/tshark/check.sh adapters/pnet/set_network_parameters adapters/pnet/set_profinet_leds scripts/*.sh
+	@python3 -m py_compile adapters/*/*.py scripts/*.py
+
+contract: ## Check every image against the command-line contract (docs/CONTAINER_CONTRACT.md)
+	@scripts/check-contract.sh $(TAG)
 
 matrix: ## Regenerate docs/MATRIX.md and matrix/results.json from RESULTS=dir (go-profinet's interop results)
 	@python3 scripts/matrix.py "$(RESULTS)" matrix/results.json docs/MATRIX.md

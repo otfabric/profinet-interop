@@ -57,11 +57,14 @@ def main():
     if len(sys.argv) > 1 and sys.argv[1] == "version":
         print("scapy", scapy.VERSION)
         return 0
-    if len(sys.argv) < 3 or sys.argv[1] != "decode":
+    if len(sys.argv) == 2 and sys.argv[1] == "print-capabilities":
         json.dump({"schemaVersion": "1.0", "adapter": "scapy", "implementation": "scapy", "version": scapy.VERSION,
                    "license": "GPL-2.0-only", "roles": ["decoder"]}, sys.stdout)
         print()
         return 0
+    if len(sys.argv) != 3 or sys.argv[1] != "decode":
+        print("usage: profinet-interop decode FILE.pcap | print-capabilities | version", file=sys.stderr)
+        return 2
     pkts = rdpcap(sys.argv[2])
     stats = Counter()
     undecoded = []
