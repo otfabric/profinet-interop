@@ -1,0 +1,95 @@
+# Machine-readable version manifest of profinet-interop. Every upstream is
+# pinned; nothing floats. The Dockerfiles are the source of truth for a
+# build; scripts/check-versions.sh fails when this file disagrees with them.
+
+interop_version: "0.1.0"
+contract_version: "1.0"        # docs/CONTAINER_CONTRACT.md
+
+protocol:
+  name: "PROFINET IO (IEC 61158 / IEC 61784, CPF 3)"
+  rpc_port: 34964
+  ethertypes: ["0x8892", "0x88CC"]
+
+implementations:
+  pnet:
+    status: implemented
+    upstream: "rt-labs p-net"
+    repository: "https://github.com/rtlabs-com/p-net"
+    revision: "ea5e5540b2be55c4dfadffda39b948632c104daa"   # 2023-11-10, last complete GPLv3 tree
+    submodules:
+      cmake-tools: "5f104ff (pinned by the p-net tree)"
+      osal: "e960068 (fetched by cmake-tools at build time, BSD-3-Clause)"
+    license: "GPL-3.0-only (or commercial)"
+    language: "C"
+    roles: [device]
+    patches:
+      - "Connect skips the Ethernet speed check (veth reports 10 Gbit/s, which p-net cannot map to a MAU type)"
+      - "-Werror removed (newer GCC)"
+      - "optional build arg ACCEPT_IOSAR=1: accept ARType 0x0006 (image variant, not the default)"
+    published: false
+    note: >-
+      Built locally (make image-pnet) from source fetched by commit; the
+      image is not published. The tree predates the v1.0.2 fixes of
+      CVE-2025-32396..32405: a lab oracle only.
+
+  pnio-rs:
+    status: implemented
+    upstream: "pnio-rs"
+    repository: "https://github.com/core-engineering/pnio-rs"
+    version: "v0.1.0"
+    revision: "798500c1bf3726a1bf015c43f39c6ae2a2d55b28"
+    license: "MIT OR Apache-2.0"
+    language: "Rust"
+    roles: [device]
+    published: true
+
+  profinet-py:
+    status: implemented
+    upstream: "profinet-py"
+    repository: "https://github.com/f0rw4rd/profinet-py"
+    package: "profinet-py"
+    version: "0.6.6"
+    revision: "ef09fb7788cfd86c2e6ee1b9bcf5165f5aac03c4"
+    license: "GPL-3.0-only (or commercial)"
+    language: "Python"
+    roles: [controller, dcp-tool]
+    published: false
+    note: "Installed from PyPI into a locally built image; not redistributed."
+
+  pnio-dcp:
+    status: implemented
+    upstream: "pnio-dcp (Codewerk GmbH)"
+    repository: "https://gitlab.com/pyshacks/pnio_dcp"
+    package: "pnio-dcp"
+    version: "1.2.0"
+    sha256: "8d7d63077838c416b3dc6e58ec3790ef422e13d8bdb38be59a2da8713e3e061a"
+    license: "MIT"
+    language: "Python"
+    roles: [dcp-tool]
+    published: true
+
+  scapy:
+    status: implemented
+    upstream: "scapy (contrib pnio, pnio_dcp, pnio_rpc)"
+    package: "scapy"
+    version: "2.6.1"
+    license: "GPL-2.0-only"
+    roles: [decoder]
+    published: false
+
+  tshark:
+    status: implemented
+    upstream: "Wireshark tshark (Debian bookworm package)"
+    version: "4.0.17"
+    license: "GPL-2.0-or-later"
+    roles: [decoder]
+    published: false
+
+  profinet-python:
+    status: rejected
+    repository: "https://github.com/M256-Automation/profinet-python"
+    reason: "no licence (all rights reserved); its Connect sends only an ARBlockReq and fails against compliant devices; unmaintained since 2021"
+
+  pi-community-stack:
+    status: blocked
+    reason: "PI members only, under a signed agreement that forbids combining it with copyleft code; not usable in public CI"
