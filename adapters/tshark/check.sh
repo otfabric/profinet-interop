@@ -13,8 +13,14 @@ version) tshark --version | head -1 ;;
 check)
 	[ $# -eq 2 ] || { echo "usage: profinet-interop check FILE.pcap" >&2; exit 2; }
 	f=$2
-	# UDP 34964 is DCE/RPC; WireGuard's heuristic would take some packets.
-	opts="--disable-protocol wg -o dcerpc.desegment_dcerpc:TRUE"
+	# PNIO RPC is connectionless DCE/RPC on UDP 34964, but its responses,
+	# and the device's own requests to the controller, use ephemeral ports.
+	# tshark picks a dissector by port first, so an ephemeral port that
+	# belongs to another protocol (37008, TZSP, for one) turned valid RPC
+	# into "malformed" frames. The DCE/RPC heuristic recognises RPC on any
+	# port when heuristics go first. WireGuard's heuristic would take some
+	# packets, so it stays off.
+	opts="--disable-protocol wg -o udp.try_heuristic_first:TRUE -o dcerpc.desegment_dcerpc:TRUE"
 	exec 2>/dev/null
 	total=$(tshark -n $opts -r "$f" -T fields -e frame.number | wc -l)
 	protos=$(tshark -n $opts -r "$f" -T fields -e _ws.col.Protocol | sort | uniq -c | awk 'BEGIN{printf "{"} {if (NR>1) printf ","; printf "\"%s\":%d", $2, $1} END{printf "}"}')
