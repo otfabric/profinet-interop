@@ -1,0 +1,3 @@
+#!/bin/sh
+# Called by pn_dev on DCP Signal and LED changes: record it as an event.
+printf '%s %s\n' "$(date +%s.%N)" "$*" >>/run/profinet-interop/leds.log
