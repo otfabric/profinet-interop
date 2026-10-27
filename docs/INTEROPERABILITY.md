@@ -22,6 +22,13 @@ LLDP needs the bridge to forward 01:80:C2:00:00:0E: the harness sets bit
 host's network namespace, and reports LLDP as not applicable where it
 cannot.
 
+MRP rings are cabled differently: three containers without a Docker
+network (go-profinet's `otfnode mrp` and two nodes of umrp or mrp), each
+cable a veth pair whose ends a privileged helper (host PID and network
+namespaces) moves into two nodes. Taking one end down breaks the cable: both
+ends lose their link, as a pulled cable does. tcpdump captures the MRP
+frames (EtherType 0x88E3) on one of go-profinet's ring ports.
+
 ## The peers
 
 ### p-net (IO-Device)
@@ -88,11 +95,48 @@ and a cyclic IOCAR configured from the GSDML go-profinet generates.
 Identify all, Get name and IP, Set name and IP (temporary and permanent),
 blink (Signal) and reset against go-profinet's DCP responder.
 
+### umrp (MRP ring node)
+
+giometti/umrp runs the MRP state machine (IEC 62439-2 as its author read
+it) in user space: it sends MRP_Test, TopologyChange and LinkChange frames,
+receives and forwards MRP frames on raw sockets, and drives the ring port
+states through an `ifdriver`. Upstream's drivers need the kernel's bridge
+MRP support (netlink) or a vendor switch tool; this adapter adds
+`ifdriver_bridge.c`, which puts a blocked port into an nftables set whose
+rules drop every frame the Linux bridge would receive from or send to it,
+and flushes the bridge's FDB with iproute2. (The bridge's own port states
+cannot be used: without STP the kernel makes every port forwarding again,
+and user-space STP is not available in a network namespace.) So umrp runs
+on any kernel, Docker Desktop's included; the state machine, the frames and
+the forwarding decisions are umrp's, the port blocking is the adapter's.
+
+What it tests in go-profinet: the manager against two umrp clients (ring
+closed with the secondary port blocked, test frames through foreign
+clients, ring open on a break between them, the clients' FDB flush on
+go-profinet's TopologyChange) and a client next to a umrp manager (link
+change frames, TopologyChange received), each with probe frames counted
+at every umrp node for loops and holes, a measured outage and seeded cable
+faults.
+
+### mrp (MRP ring node on the kernel)
+
+microchip-ung/mrp, Microchip's daemon for the Linux bridge's MRP support
+(`CONFIG_BRIDGE_MRP`, Linux 5.8 and later), built unmodified: the kernel
+sends the test frames, forwards MRP frames and sets the port states, the
+daemon runs the state machine. It needs a host kernel with bridge MRP: the
+Ubuntu kernels of the GitHub-hosted runners have it; Docker Desktop's
+linuxkit kernel has not, so there the tests are not applicable (the node
+prints `unsupported` and exits 3). The same tests as with umrp run against
+it, except the FDB flush count, which the kernel does unobservably.
+
 ### scapy and tshark (decoders)
 
 Every capture of the tests is decoded by both. They are independent of
 each other and of go-profinet, and both have PROFINET dissectors for DCP,
-RT, alarms and the PNIO RPC blocks. tshark runs its heuristic dissectors
+RT, alarms and the PNIO RPC blocks. scapy has none for MRP and PTCP: it
+reads those frames without decoding them, and since contract 1.1 reports
+them as `notDissected` (go-profinet records a decoder limit, not a pass);
+tshark decodes MRP (PN-MRP) and PTCP. tshark runs its heuristic dissectors
 before the port-based ones, so that RPC on an ephemeral port that another
 protocol registered (UDP 37008, TZSP) is still decoded as DCE/RPC.
 
@@ -103,6 +147,7 @@ protocol registered (UDP 37008, TZSP) is still decoded as DCE/RPC.
 | profinet-python (M256-Automation) | no licence; its Connect sends only an ARBlockReq as IOSAR and fails against compliant devices; unmaintained since 2021 |
 | PI Community Stack | PROFIBUS & PROFINET International members only, under an agreement that forbids combining it with copyleft code: not usable in public CI |
 | Commercial stacks and PLCs | not available here; the hardware qualification tier of go-profinet's test strategy |
+| Linux kernel MRP with iproute2 alone | iproute2 has no `bridge mrp` command (the netlink API exists, its iproute2 patch was never merged); microchip-ung/mrp is the user-space side of it |
 
 Of the four implementations the brief named, three are usable (p-net,
 profinet-py, pnio-rs); profinet-python is not. pnio-dcp is the fourth

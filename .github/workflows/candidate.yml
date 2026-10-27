@@ -36,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        adapter: [pnet, pnio-rs, profinet-py, pnio-dcp, scapy, tshark]
+        adapter: [pnet, pnio-rs, profinet-py, pnio-dcp, scapy, tshark, umrp, mrp]
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -149,8 +149,8 @@ jobs:
             echo "### Pin locations"
             echo
             echo "Every adapter pins its upstream in \`adapters/<name>/Dockerfile\` as \`ARG UPSTREAM_VERSION\`"
-            echo "(a release: pnio-rs, profinet-py, pnio-dcp, scapy) and/or \`ARG UPSTREAM_SHA\` (a commit: pnet,"
-            echo "pnio-rs), with \`ARG UPSTREAM_SHA256\` for the pnio-dcp wheel, mirrored in \`versions.yaml\`;"
+            echo "(a release: pnio-rs, profinet-py, pnio-dcp, scapy, umrp) and/or \`ARG UPSTREAM_SHA\` (a commit: pnet,"
+            echo "pnio-rs, umrp, mrp), with \`ARG UPSTREAM_SHA256\` for the pnio-dcp wheel, mirrored in \`versions.yaml\`;"
             echo "\`scripts/check-versions.sh\` checks that they agree. tshark is the Debian bookworm package"
             echo "(\`versions.yaml\` records its version)."
             echo

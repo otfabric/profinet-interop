@@ -34,6 +34,11 @@ How each upstream is looked up:
   tag) of core-engineering/pnio-rs; the head of main is reported.
 - profinet-py, pnio-dcp, scapy (pinned by version): the newest stable,
   non-yanked PyPI release; for pnio-dcp also the sha256 of its wheel.
+- umrp (pinned by tag and commit): the newest tag of giometti/umrp; the
+  head of its default branch is reported.
+- mrp (pinned by commit, past its last tag v1.2): the head of the default
+  branch of microchip-ung/mrp; update = the head moved past the pin. The
+  newest tag is reported.
 - tshark: the Debian bookworm package (Debian's madison service); the
   image installs whatever bookworm ships when it is built, so it is pinned
   by Debian: reported, never a candidate build.
@@ -57,7 +62,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 AGENT = "profinet-interop latest-upstream (https://github.com/otfabric/profinet-interop)"
-ADAPTERS = ["pnet", "pnio-rs", "profinet-py", "pnio-dcp", "scapy", "tshark"]
+ADAPTERS = ["pnet", "pnio-rs", "profinet-py", "pnio-dcp", "scapy", "tshark", "umrp", "mrp"]
 
 
 def fetch(url):
@@ -162,7 +167,32 @@ def pnet(pin):
     return result(pin["pin"], pin["pin_sha"], f"GPL release tags of {slug}", "; ".join(notes), update=False, flag=flag)
 
 
+def mrp(pin):
+    slug = "microchip-ung/mrp"
+    tags, head, branch = git_refs(f"https://github.com/{slug}.git")
+    if not head:
+        raise LookupError(f"no head of {slug}")
+    tag = newest(tags)
+    notes = [f"newest tag {tag} ({tags[tag][:7]})"] if tag else []
+    if head == pin["pin_sha"]:
+        notes.append("the pin is the head")
+        return result(pin["pin"], head, f"head of {branch or 'the default branch'} of {slug}", "; ".join(notes), update=False)
+    notes.append(f"head {head[:7]} ({commit_date(slug, head)}) is past the pin")
+    return result(head[:7], head, f"head of {branch or 'the default branch'} of {slug}", "; ".join(notes), update=True)
+
+
 # ── Pinned by release ─────────────────────────────────────────────────────────
+
+def umrp(pin):
+    slug = "giometti/umrp"
+    tags, head, branch = git_refs(f"https://github.com/{slug}.git")
+    latest = newest(tags)
+    notes = []
+    if head and head != tags.get(latest):
+        notes.append(f"head {head[:7]} of {branch or 'the default branch'} is past {latest}")
+    return result(latest, tags.get(latest, ""), f"git tags of {slug}", "; ".join(notes),
+                  update=tags.get(latest, "") != pin["pin_sha"])
+
 
 def pnio_rs(pin):
     slug = "core-engineering/pnio-rs"
@@ -244,6 +274,8 @@ LOOKUPS = {
     "pnio-dcp": pnio_dcp,
     "scapy": scapy,
     "tshark": tshark,
+    "umrp": umrp,
+    "mrp": mrp,
 }
 
 

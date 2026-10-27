@@ -6,7 +6,7 @@
 
 .PHONY: help images image-% capabilities check-versions lint contract matrix smoke versions release-notes latest-upstream clean FORCE
 
-ADAPTERS := pnet pnio-rs profinet-py pnio-dcp scapy tshark
+ADAPTERS := pnet pnio-rs profinet-py pnio-dcp scapy tshark umrp mrp
 TAG ?= dev
 
 help: ## This help
@@ -56,7 +56,7 @@ versions: ## Print the version of every built image
 CANDIDATE_VERSION ?=
 CANDIDATE_SHA     ?=
 CANDIDATE_SHA256  ?=
-COMMIT_PINNED     := pnet pnio-rs
+COMMIT_PINNED     := pnet pnio-rs umrp mrp
 
 latest-upstream: ## Compare every pin with the latest upstream (decision table; JSON=file writes JSON too)
 	@scripts/latest-upstream.py $(if $(JSON),--json $(JSON))

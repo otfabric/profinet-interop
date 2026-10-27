@@ -1,6 +1,6 @@
 # Container contract
 
-Version: **1.0** (`contract_version` in [versions.yaml](../versions.yaml))
+Version: **1.1** (`contract_version` in [versions.yaml](../versions.yaml))
 
 Every adapter image runs one reference implementation of PROFINET IO and
 exposes it through the same entrypoint, `profinet-interop`, with the commands
@@ -39,6 +39,9 @@ profinet-interop decode FILE.pcap             # decoder roles (scapy)
 profinet-interop check FILE.pcap              # decoder roles (tshark)
 profinet-interop button2                      # pnet: press the sample application's button 2
 profinet-interop print-gsdml                  # pnio-rs: the device's GSDML
+profinet-interop node --role mrm|mrc [flags]  # MRP ring node roles (umrp, mrp): run until SIGTERM
+profinet-interop status                       # MRP ring node roles: the node's state (JSON)
+profinet-interop kernel-mrp                   # mrp: exit 0 when the kernel has bridge MRP support
 ```
 
 An unknown command or flag exits with status 2. `make contract` checks every
@@ -106,11 +109,45 @@ always written and the exit status is 0 unless the command line is wrong.
 Each prints one JSON document with `ok` (or the steps of profinet-py), the
 value read and, for a Set, the DCP block error `code` and its `message`.
 
+### `node` and `status` (MRP ring nodes: umrp, mrp)
+
+A ring node is a container started without a Docker network: the
+consumer creates a veth pair for each cable of the ring and moves its ends
+into the nodes' network namespaces (it needs a privileged container in
+the host's PID and network namespaces). `node` waits for both ring ports,
+bridges them (`br0`), starts the MRP daemon and runs until SIGTERM.
+
+| Flag | Default | Meaning |
+|------|---------|---------|
+| `--role mrm\|mrc` | (required) | ring role: manager or client |
+| `--pport IF`, `--sport IF` | `ringA`, `ringB` | primary and secondary ring port |
+| `--recv 200\|500` | `200` | recovery profile (ms) |
+| `--ring-nr N` | `1` | ring instance |
+
+Events: `start`, `ready`, `ring` (`state`: the daemon's MRM or MRC state,
+`CHK_RC` ring closed, `CHK_RO` ring open, `PT_IDLE`, `DE_IDLE`, …), `exit`;
+the mrp adapter prints `unsupported` and exits 3 when the kernel has no
+bridge MRP support. `status` prints
+
+```json
+{"ring":"CHK_RC","flushes":3,"probes":100,
+ "ports":[{"name":"ringA","state":"forwarding","oper":"up","rxPackets":…,"txPackets":…,"rxDropped":…},…]}
+```
+
+`flushes` counts the FDB flushes of the MRP daemon (-1 where the kernel
+does them and they cannot be observed), `probes` the probe frames
+(EtherType 0x88B5, broadcast) the node's bridge delivered to the node: a
+consumer sends a known number around the ring to find a loop (a probe
+counted twice) or a hole (not counted).
+
 ### `decode` and `check`
 
-`decode` (scapy) reports the frames per kind (`dcp`, `rt`, `alarm`, `udp`,
-…), the DCE/RPC packets per type and operation, and the frames of a PROFINET
-kind that scapy could not decode into a structured layer (`undecoded`).
+`decode` (scapy) reports the frames per kind (`dcp`, `rt`, `alarm`, `mrp`,
+`ptcp`, `udp`, …), the DCE/RPC packets per type and operation, the frames
+of a PROFINET kind that scapy could not decode into a structured layer
+(`undecoded`), and (since 1.1) the frames of a kind scapy has no dissector
+for, MRP and PTCP, read but not decoded (`notDissected`,
+`notDissectedCount`): those are a limit of the decoder, not evidence.
 `check` (tshark) reports the frames per protocol, the malformed frames and
 the expert infos of severity warning or error.
 
@@ -132,3 +169,4 @@ names follow the tables of [MATRIX.md](MATRIX.md).
 | 0 | the command ran; failures of steps are in the report |
 | 1 | the implementation failed to start |
 | 2 | usage error: unknown command, flag or operation |
+| 3 | the host does not support the implementation (mrp: no bridge MRP in the kernel) |

@@ -6,8 +6,9 @@ Independent PROFINET IO implementations packaged as containers behind one
 command-line contract, so that a PROFINET implementation under test can be
 run against them on a real Layer 2 network: the IO-Device of rt-labs
 **p-net** and of **pnio-rs**, the IO-Controller and DCP tool of
-**profinet-py**, the DCP tool **pnio-dcp**, and two independent decoders,
-**scapy** and **tshark**, that check every capture.
+**profinet-py**, the DCP tool **pnio-dcp**, two MRP ring nodes, **umrp**
+and Microchip's **mrp**, and two independent decoders, **scapy** and
+**tshark**, that check every capture.
 
 It serves [otfabric/go-profinet](https://github.com/otfabric/go-profinet),
 whose interop tests (`make interop`) drive these images and write the
@@ -25,6 +26,8 @@ results the [interoperability matrix](docs/MATRIX.md) is generated from.
 | `pnio-dcp` | [pnio-dcp](https://gitlab.com/pyshacks/pnio_dcp) | 1.2.0 | MIT | DCP tool (Python) | DCP responder |
 | `scapy` | [scapy](https://scapy.net) contrib pnio | 2.6.1 | GPL-2.0-only | decoder | every capture |
 | `tshark` | Wireshark tshark | 4.0.17 (Debian) | GPL-2.0-or-later | decoder | every capture |
+| `umrp` | [umrp](https://github.com/giometti/umrp) with this repository's bridge ifdriver | v4.0 | GPL-2.0 | MRP ring node, MRM or MRC (C, user space); any Linux kernel | MRP manager and client in a ring |
+| `mrp` | [microchip-ung/mrp](https://github.com/microchip-ung/mrp), unmodified | `177717e` (after v1.2) | GPL-2.0 | MRP ring node, MRM or MRC (C, on the kernel's bridge MRP); needs a host kernel with `CONFIG_BRIDGE_MRP` (GitHub-hosted runners: yes; Docker Desktop: no) | MRP manager and client in a ring |
 
 Evaluated and not used: **profinet-python** (M256-Automation; no licence, a
 Connect that compliant devices reject, unmaintained) and the **PI
@@ -45,7 +48,8 @@ interop tests use these names by default.
 docker run --rm profinet-interop-pnet:dev print-capabilities
 ```
 
-Each container needs `--cap-add NET_RAW --cap-add NET_ADMIN` and a Docker
+Each container needs `--cap-add NET_RAW --cap-add NET_ADMIN` and, except
+the MRP ring nodes (cabled with veth pairs, see the contract), a Docker
 bridge network:
 
 ```bash

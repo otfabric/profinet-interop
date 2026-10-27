@@ -31,7 +31,7 @@ jobs:
       - name: Shellcheck and Python
         run: make lint
       - name: No image is published
-        # p-net and profinet-py are GPL: their images are built by each
+        # p-net, profinet-py, umrp and mrp are GPL: their images are built by each
         # user from upstream, never pushed by this repository.
         run: |
           if grep -rnE 'docker (push|buildx .*--push)' Makefile scripts; then
