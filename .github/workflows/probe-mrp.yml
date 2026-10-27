@@ -13,9 +13,12 @@ jobs:
             set -x
             mrp_server -m -l 7 > /tmp/s.log 2>&1 &
             sleep 1
-            ip link add br0 type bridge; ip link add a type veth peer name b; ip link add c type veth peer name d
-            ip link set a master br0; ip link set c master br0; ip link set br0 up; ip link set a up; ip link set c up
-            mrp addmrp bridge br0 ring_nr 1 pport a sport c ring_role mrc; echo "addmrp=$?"
+            ls /proc/$!/ >/dev/null && echo server-running || echo server-dead
+            ip link add brx type bridge; ip link add px1 type veth peer name py1; ip link add px2 type veth peer name py2
+            ip link set px1 master brx; ip link set px2 master brx; ip link set brx up; ip link set px1 up; ip link set px2 up
+            mrp addmrp bridge brx ring_nr 1 pport px1 sport px2 ring_role mrc; echo "addmrp=$?"
             mrp getmrp; echo "getmrp=$?"
-            sleep 1; cat /tmp/s.log | tail -40
+            sleep 1; tail -40 /tmp/s.log
+            ip -d link show px1 | head -5
           ' || true
+          docker run --rm --cap-add NET_ADMIN --cap-add NET_RAW profinet-interop-mrp:dev kernel-mrp; echo "kernel-mrp exit $?"
