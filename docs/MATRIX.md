@@ -2,7 +2,7 @@
 
 # Interoperability matrix
 
-Generated 2026-10-27T07:45:58+00:00 from 16 test runs. Outcomes: **pass**, **fail**, **n/a** (the peer does not implement the feature; the detail says why), **peer-deviation** (the peer deviates from the standard; the detail says how). Reproduce with `make interop` in go-profinet (see [INTEROPERABILITY.md](INTEROPERABILITY.md)).
+Generated 2026-10-27T15:20:08+00:00 from 19 test runs. Outcomes: **pass**, **fail**, **n/a** (the peer does not implement the feature; the detail says why), **peer-deviation** (the peer deviates from the standard; the detail says how). Reproduce with `make interop` in go-profinet (see [INTEROPERABILITY.md](INTEROPERABILITY.md)).
 
 | Peer | go-profinet role | pass | fail | n/a | peer-deviation |
 |------|------------------|------|------|-----|----------------|
@@ -10,9 +10,9 @@ Generated 2026-10-27T07:45:58+00:00 from 16 test runs. Outcomes: **pass**, **fai
 | pnio-dcp | DCP responder | 8 | 0 | 0 | 0 |
 | pnio-rs | IO-Controller | 12 | 0 | 2 | 0 |
 | profinet-py | IO-Device | 22 | 0 | 0 | 2 |
-| scapy | - | 7 | 0 | 0 | 0 |
-| tshark | - | 7 | 0 | 0 | 0 |
-| tshark/scapy | - | 2 | 0 | 0 | 0 |
+| scapy | - | 11 | 0 | 0 | 0 |
+| tshark | - | 10 | 0 | 0 | 0 |
+| tshark/scapy | - | 8 | 0 | 0 | 2 |
 
 ## p-net
 
@@ -38,7 +38,7 @@ Generated 2026-10-27T07:45:58+00:00 from 16 test runs. Outcomes: **pass**, **fai
 | Write I&M1 in the AR, read it back | IO-Controller | pass | map[index:45041 op:write slot:0 subslot:1] map[data:0021003801006f74662066756e6374696f6e20202020202020202020202020202020202020206f7466206c6f636174696f6e20202... | `TestPnetController` |
 | Read diagnosis (0xF80C) | IO-Controller | pass | <nil> | `TestPnetController` |
 | Cyclic input data (consumer) | IO-Controller | pass | map[Expired:0 LastCounter:62976 Malformed:0 Received:501 Stale:0 WrongSource:0] | `TestPnetController` |
-| Cyclic output data (provider) | IO-Controller | pass | map[SendErrors:0 Sent:502] | `TestPnetController` |
+| Cyclic output data (provider) | IO-Controller | pass | map[SendErrors:0 Sent:501] | `TestPnetController` |
 | Echo module returns our outputs | IO-Controller | pass | map[data:11a23344aaccef10 iops:128] | `TestPnetController` |
 | p-net reports connect | IO-Controller | pass | events 23 | `TestPnetController` |
 | p-net reports prmend | IO-Controller | pass | events 23 | `TestPnetController` |
@@ -46,22 +46,22 @@ Generated 2026-10-27T07:45:58+00:00 from 16 test runs. Outcomes: **pass**, **fai
 | p-net reports write | IO-Controller | pass | events 23 | `TestPnetController` |
 | p-net reports read | IO-Controller | pass | events 23 | `TestPnetController` |
 | Release ends the AR at p-net | IO-Controller | pass |  | `TestPnetController` |
-| DCP Identify all | IO-Controller | pass | [map[deviceId:2 ip:map[Addr:10.102.14.10 Gateway:10.102.14.1 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:66:0e:0a nameOfStation:pnet-dut options:[258 257 513 5... | `TestPnetDCP` |
-| DCP Get (all blocks) | IO-Controller | pass | map[event:dcp identity:map[deviceId:2 ip:map[Addr:10.102.14.10 Gateway:10.102.14.1 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:66:0e:0a nameOfStation:pnet-dut ... | `TestPnetDCP` |
+| DCP Identify all | IO-Controller | pass | [map[deviceId:2 ip:map[Addr:10.102.16.10 Gateway:10.102.16.1 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:66:10:0a nameOfStation:pnet-dut options:[258 257 513 5... | `TestPnetDCP` |
+| DCP Get (all blocks) | IO-Controller | pass | map[event:dcp identity:map[deviceId:2 ip:map[Addr:10.102.16.10 Gateway:10.102.16.1 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:66:10:0a nameOfStation:pnet-dut ... | `TestPnetDCP` |
 | DCP Set NameOfStation (temporary) | IO-Controller | pass | map[event:dcp op:set-name] | `TestPnetDCP` |
-| DCP Identify by the new name | IO-Controller | pass | [map[deviceId:2 ip:map[Addr:10.102.14.10 Gateway:10.102.14.1 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:66:0e:0a nameOfStation:pnet-renamed options:[258 257 5... | `TestPnetDCP` |
+| DCP Identify by the new name | IO-Controller | pass | [map[deviceId:2 ip:map[Addr:10.102.16.10 Gateway:10.102.16.1 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:66:10:0a nameOfStation:pnet-renamed options:[258 257 5... | `TestPnetDCP` |
 | DCP Set NameOfStation back | IO-Controller | pass | map[event:dcp op:set-name] | `TestPnetDCP` |
 | DCP Signal | IO-Controller | pass | map[event:dcp op:signal] | `TestPnetDCP` |
 | p-net flashes its LED on Signal | IO-Controller | pass |  | `TestPnetDCP` |
 | DCP Set IP (temporary) | IO-Controller | pass | map[event:dcp op:set-ip] | `TestPnetDCP` |
-| DCP Get reflects the new IP | IO-Controller | pass | map[Addr:10.102.14.11 Gateway:0.0.0.0 Mask:255.255.255.0] | `TestPnetDCP` |
+| DCP Get reflects the new IP | IO-Controller | pass | map[Addr:10.102.16.11 Gateway:0.0.0.0 Mask:255.255.255.0] | `TestPnetDCP` |
 | DCP ResetToFactory (communication) | IO-Controller | pass | map[event:dcp op:reset] | `TestPnetDCP` |
-| Reset clears the station name | IO-Controller | pass | [map[deviceId:2 ip:map[Addr:0.0.0.0 Gateway:0.0.0.0 Mask:0.0.0.0] ipInfo:0 mac:02:42:0a:66:0e:0a nameOfStation: options:[258 257 513 514 515 516 517 518 1281... | `TestPnetDCP` |
+| Reset clears the station name | IO-Controller | pass | [map[deviceId:2 ip:map[Addr:0.0.0.0 Gateway:0.0.0.0 Mask:0.0.0.0] ipInfo:0 mac:02:42:0a:66:10:0a nameOfStation: options:[258 257 513 514 515 516 517 518 1281... | `TestPnetDCP` |
 | DCP Hello sent by p-net | IO-Controller | pass | 1 Hellos | `TestPnetHello` |
 | Controller connects through the device's Hello, without waiting for its retry | IO-Controller | pass | running true, stats map[Aborts:0 Alarms:0 Connects:1 Consumer:map[Expired:0 LastCounter:64256 Malformed:0 Received:250 Stale:0 WrongSource:0] Cycle:map[Cycle... | `TestPnetHello` |
-| LLDP PNIO PortStatus TLV | IO-Controller | pass | map[alias:port-001.pnet-dut chassis:P-Net Sample Application  12345 Abcdefghijk    007                  3 V  0  2  0 chassisMac:02:42:0a:61:0f:0a mac:02:42:0... | `TestPnetLLDP` |
-| LLDP PNIO ChassisMAC TLV | IO-Controller | pass | map[alias:port-001.pnet-dut chassis:P-Net Sample Application  12345 Abcdefghijk    007                  3 V  0  2  0 chassisMac:02:42:0a:61:0f:0a mac:02:42:0... | `TestPnetLLDP` |
-| LLDP neighbor (p-net) | IO-Controller | pass | [map[alias:port-001.pnet-dut chassis:P-Net Sample Application  12345 Abcdefghijk    007                  3 V  0  2  0 chassisMac:02:42:0a:61:0f:0a mac:02:42:... | `TestPnetLLDP` |
+| LLDP PNIO PortStatus TLV | IO-Controller | pass | map[alias:port-001.pnet-dut chassis:P-Net Sample Application  12345 Abcdefghijk    007                  3 V  0  2  0 chassisMac:02:42:0a:7b:11:0a mac:02:42:0... | `TestPnetLLDP` |
+| LLDP PNIO ChassisMAC TLV | IO-Controller | pass | map[alias:port-001.pnet-dut chassis:P-Net Sample Application  12345 Abcdefghijk    007                  3 V  0  2  0 chassisMac:02:42:0a:7b:11:0a mac:02:42:0... | `TestPnetLLDP` |
+| LLDP neighbor (p-net) | IO-Controller | pass | [map[alias:port-001.pnet-dut chassis:P-Net Sample Application  12345 Abcdefghijk    007                  3 V  0  2  0 chassisMac:02:42:0a:7b:11:0a mac:02:42:... | `TestPnetLLDP` |
 | PDPortDataCheck accepted by p-net (written before PrmEnd) | IO-Controller | pass | running true error <nil> | `TestPnetPortCheck` |
 | CheckPeers, the right neighbor: no remote mismatch (p-net) | IO-Controller | pass | [] | `TestPnetPortCheck` |
 | CheckPeers, another name of station: remote mismatch 0x8000 (p-net) | IO-Controller | pass | [map[API:0 ChannelNumber:32768 ChannelProperties:2048 Data:<nil> Items:[map[ChannelNumber:32768 ChannelProperties:2048 ErrorType:32769 ExtAddValue:0 ExtError... | `TestPnetPortCheck` |
@@ -72,18 +72,18 @@ Generated 2026-10-27T07:45:58+00:00 from 16 test runs. Outcomes: **pass**, **fai
 | Slot 1 taken over (PrmEnd and ApplicationReady for the plugged submodule): its input valid at the second controller (p-net) | IO-Controller | pass | map[1:1:map[data:4e iops:128] 2:1:map[data:0000000000000000 iops:128]] | `TestPnetSharedDevice` |
 | Startup legacy (RTClass 1) | IO-Controller | pass | <nil> | `TestPnetStartupModes` |
 | Startup advanced (RTClass 2) | IO-Controller | pass | <nil> | `TestPnetStartupModes` |
-| 1 ms cycle | IO-Controller | pass | true Running map[Aborts:0 Alarms:0 Connects:1 Consumer:map[Expired:0 LastCounter:30496 Malformed:0 Received:3000 Stale:0 WrongSource:0] Cycle:map[Cycles:2988... | `TestPnetStartupModes` |
+| 1 ms cycle | IO-Controller | pass | true Running map[Aborts:0 Alarms:0 Connects:1 Consumer:map[Expired:0 LastCounter:30528 Malformed:0 Received:3001 Stale:0 WrongSource:0] Cycle:map[Cycles:3001... | `TestPnetStartupModes` |
 
 ## pnio-dcp
 
 | Feature | go-profinet role | Outcome | Detail | Test |
 |---------|------------------|---------|--------|------|
-| DCP Identify all | DCP responder | pass | map[adapter:pnio-dcp devices:[map[family:go-profinet interop device gateway:0.0.0.0 ip:10.108.10.20 mac:02:42:0a:6c:0a:14 mask:255.255.255.0 name:otf-dut]] o... | `TestPnioDCP` |
+| DCP Identify all | DCP responder | pass | map[adapter:pnio-dcp devices:[map[family:go-profinet interop device gateway:0.0.0.0 ip:10.126.12.20 mac:02:42:0a:7e:0c:14 mask:255.255.255.0 name:otf-dut]] o... | `TestPnioDCP` |
 | DCP Get NameOfStation | DCP responder | pass | map[adapter:pnio-dcp ok:true op:get-name schemaVersion:1.0 value:otf-dut version:1.2.0] | `TestPnioDCP` |
 | DCP Set NameOfStation (temporary) | DCP responder | pass | map[adapter:pnio-dcp code:0 message:Code 00: Set successful ok:true op:set-name schemaVersion:1.0 version:1.2.0] | `TestPnioDCP` |
 | DCP Get reflects the new name | DCP responder | pass | map[adapter:pnio-dcp ok:true op:get-name schemaVersion:1.0 value:dcp-renamed version:1.2.0] | `TestPnioDCP` |
 | DCP Set IP (temporary) | DCP responder | pass | map[adapter:pnio-dcp code:0 message:Code 00: Set successful ok:true op:set-ip schemaVersion:1.0 version:1.2.0] | `TestPnioDCP` |
-| DCP Get IP | DCP responder | pass | map[adapter:pnio-dcp ok:true op:get-ip schemaVersion:1.0 value:10.108.10.22 version:1.2.0] | `TestPnioDCP` |
+| DCP Get IP | DCP responder | pass | map[adapter:pnio-dcp ok:true op:get-ip schemaVersion:1.0 value:10.126.12.22 version:1.2.0] | `TestPnioDCP` |
 | DCP Signal (blink) | DCP responder | pass | map[adapter:pnio-dcp code:0 message:Code 00: Set successful ok:true op:blink schemaVersion:1.0 version:1.2.0] | `TestPnioDCP` |
 | DCP ResetToFactory | DCP responder | pass | map[adapter:pnio-dcp code:0 message:Code 00: Set successful ok:true op:reset schemaVersion:1.0 version:1.2.0] | `TestPnioDCP` |
 
@@ -92,25 +92,25 @@ Generated 2026-10-27T07:45:58+00:00 from 16 test runs. Outcomes: **pass**, **fai
 | Feature | go-profinet role | Outcome | Detail | Test |
 |---------|------------------|---------|--------|------|
 | GSDML-derived expected configuration; Connect, PrmEnd, ApplicationReady (advanced, RTClass 2) | IO-Controller | pass | <nil> | `TestPnioRsController` |
-| Read I&M0 | IO-Controller | pass | map[HardwareRevision:1 OrderID:PNIO-SAMPLE ProfileID:0 ProfileType:0 RevisionCounter:0 SerialNumber:PNIO-7A061E SoftwareRevision:map[BugFix:1 FunctionalEnhan... | `TestPnioRsController` |
+| Read I&M0 | IO-Controller | pass | map[HardwareRevision:1 OrderID:PNIO-SAMPLE ProfileID:0 ProfileType:0 RevisionCounter:0 SerialNumber:PNIO-5F081E SoftwareRevision:map[BugFix:1 FunctionalEnhan... | `TestPnioRsController` |
 | Write and read back I&M1 | IO-Controller | pass | map[data:002100380100616161616161616161616161616161616161616161616161616161616161616162626262626262626262626262626262626262626262 index:45041 op:read slot:0 ... | `TestPnioRsController` |
 | Diagnosis records (0x800C) | IO-Controller | n/a | pnio-rs answers every diagnosis index with invalid index (documented limitation) | `TestPnioRsController` |
 | Diagnosis record answers invalid index as pnio-rs documents | IO-Controller | pass | map[error:pnio: read 0/1/0x0001 index 0x800C: DE 80 B0 00 (read: access: invalid index) index:32780 op:read slot:1 status:DE 80 B0 00 (read: access: invalid ... | `TestPnioRsController` |
 | I&M4 answers invalid index as pnio-rs documents | IO-Controller | pass | map[error:pnio: read 0/0/0x0001 index 0xAFF4: DE 80 B0 00 (read: access: invalid index) index:45044 op:read slot:0 status:DE 80 B0 00 (read: access: invalid ... | `TestPnioRsController` |
 | Cyclic echo of 16 REAL outputs | IO-Controller | pass | map[data:3f8000003f8000003f8000003f8000003f8000003f8000003f8000003f8000003f8000003f8000003f8000003f8000003f8000003f8000003f8000003f800000 iops:128] | `TestPnioRsController` |
 | Cyclic echo of 32 BOOL outputs | IO-Controller | pass | map[data:a5a5a5a5 iops:128] | `TestPnioRsController` |
-| pnio-rs reaches Data | IO-Controller | pass | [map[adapter:pnio-rs event:start iface:eth0 ip:10.122.6.30 mac:02:42:0a:7a:06:1e station:pnio-dut] map[event:ar-state state:Idle] map[event:rt-stats] map[eve... | `TestPnioRsController` |
+| pnio-rs reaches Data | IO-Controller | pass | [map[adapter:pnio-rs event:start iface:eth0 ip:10.95.8.30 mac:02:42:0a:5f:08:1e station:pnio-dut] map[event:ar-state state:Idle] map[event:rt-stats] map[even... | `TestPnioRsController` |
 | Release ends the AR at pnio-rs | IO-Controller | pass |  | `TestPnioRsController` |
 | pnio-rs rejects RT_CLASS_1 FrameIDs (0xC000..) with a Connect error, which the controller reports | IO-Controller | pass | controller: connect pnio-dut: pnio: connect: DB 81 02 06 (connect: faulty IOCRBlockReq, code 6) | `TestPnioRsController` |
-| DCP Identify by name | IO-Controller | pass | [map[deviceId:1 instance:1 ip:map[Addr:10.100.7.30 Gateway:10.100.7.30 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:64:07:1e nameOfStation:pnio-dut options:[258... | `TestPnioRsDCP` |
-| DCP Identify all | IO-Controller | pass | [map[deviceId:1 instance:1 ip:map[Addr:10.100.7.30 Gateway:10.100.7.30 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:64:07:1e nameOfStation:pnio-dut options:[258... | `TestPnioRsDCP` |
+| DCP Identify by name | IO-Controller | pass | [map[deviceId:1 instance:1 ip:map[Addr:10.96.9.30 Gateway:10.96.9.30 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:60:09:1e nameOfStation:pnio-dut options:[258 5... | `TestPnioRsDCP` |
+| DCP Identify all | IO-Controller | pass | [map[deviceId:1 instance:1 ip:map[Addr:10.96.9.30 Gateway:10.96.9.30 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:60:09:1e nameOfStation:pnio-dut options:[258 5... | `TestPnioRsDCP` |
 | DCP Get/Set NameOfStation/Signal/Reset (pnio-rs) | IO-Controller | n/a | pnio-rs v0.1.0 does not implement them | `TestPnioRsDCP` |
 
 ## profinet-py
 
 | Feature | go-profinet role | Outcome | Detail | Test |
 |---------|------------------|---------|--------|------|
-| DCP discovery by profinet-py | IO-Device | pass | [{discover true map[ip:10.103.8.20 mac:02:42:0a:67:08:14 name:otf-dut] } {read-im0 true map[hardwareRevision:1 orderId:b'OTF-INTEROP-1' serial:b'0001' vendor... | `TestProfinetPyController` |
+| DCP discovery by profinet-py | IO-Device | pass | [{discover true map[ip:10.123.10.20 mac:02:42:0a:7b:0a:14 name:otf-dut] } {read-im0 true map[hardwareRevision:1 orderId:b'OTF-INTEROP-1' serial:b'0001' vendo... | `TestProfinetPyController` |
 | Read I&M0 (IOSAR device access) | IO-Device | pass | map[hardwareRevision:1 orderId:b'OTF-INTEROP-1' serial:b'0001' vendorId:61440] | `TestProfinetPyController` |
 | Read I&M2..I&M4 | IO-Device | pass |  | `TestProfinetPyController` |
 | Write and read a user record | IO-Device | pass | 0005 | `TestProfinetPyController` |
@@ -119,14 +119,14 @@ Generated 2026-10-27T07:45:58+00:00 from 16 test runs. Outcomes: **pass**, **fai
 | ModuleDiff read | IO-Device | pass | ModuleDiffBlock(modules=[]) | `TestProfinetPyController` |
 | Slot discovery (RealIdentificationData) | IO-Device | pass | [SlotInfo(api=0, slot=0, subslot=0x0001) SlotInfo(api=0, slot=0, subslot=0x8000) SlotInfo(api=0, slot=0, subslot=0x8001) SlotInfo(api=0, slot=1, subslot=0x00... | `TestProfinetPyController` |
 | I&M1 write by profinet-py | IO-Device | peer-deviation | profinet-py writes BlockLength 58 with 2 padding octets; p-net, pnio-rs and go-profinet use 56; go-profinet answers DF 80 B8 00 | `TestProfinetPyController` |
-| GSDML generated by go-profinet parsed by profinet-py; cyclic AR (IOCARSingle) established | IO-Device | pass | [{discover true map[ip:10.103.8.20 mac:02:42:0a:67:08:14 name:otf-dut] } {read-im0 true map[hardwareRevision:1 orderId:b'OTF-INTEROP-1' serial:b'0001' vendor... | `TestProfinetPyController` |
-| Cyclic inputs at profinet-py | IO-Device | pass | 2b2c2d2e2f303132 | `TestProfinetPyController` |
-| Cyclic statistics without missed frames | IO-Device | pass | map[_cycle_count:93 _cycle_time_sum_us:2.975945e+06 consecutive_timeouts:0 frames_duplicate:0 frames_invalid:0 frames_missed:0 frames_out_of_order:0 frames_r... | `TestProfinetPyController` |
+| GSDML generated by go-profinet parsed by profinet-py; cyclic AR (IOCARSingle) established | IO-Device | pass | [{discover true map[ip:10.123.10.20 mac:02:42:0a:7b:0a:14 name:otf-dut] } {read-im0 true map[hardwareRevision:1 orderId:b'OTF-INTEROP-1' serial:b'0001' vendo... | `TestProfinetPyController` |
+| Cyclic inputs at profinet-py | IO-Device | pass | 2d2e2f3031323334 | `TestProfinetPyController` |
+| Cyclic statistics without missed frames | IO-Device | pass | map[_cycle_count:93 _cycle_time_sum_us:2.975937e+06 consecutive_timeouts:0 frames_duplicate:0 frames_invalid:0 frames_missed:0 frames_out_of_order:0 frames_r... | `TestProfinetPyController` |
 | Cyclic outputs from profinet-py at the device | IO-Device | pass | map[2:1=a1b2c3d4:true 3:1=beef:true] | `TestProfinetPyController` |
 | IOSAR and IOCARSingle ARs from profinet-py | IO-Device | pass | [IOSAR IOCARSingle] | `TestProfinetPyController` |
 | Diagnosis alarm sent to profinet-py and acknowledged | IO-Device | pass | map[event:diagnosis-sent] | `TestProfinetPyController` |
 | tshark: PNIO-CM "Trailing stray characters" | IO-Device | peer-deviation | profinet-py writes I&M1 with BlockLength 58 and two padding octets; the standard block is 56 octets (tshark flags the extra octets of its Write request) | `TestProfinetPyController` |
-| DCP Identify all | DCP responder | pass | [map[deviceId:257 ip:10.95.9.20 mac:02:42:0a:5f:09:14 name:otf-dut vendorId:61440]] | `TestProfinetPyDCP` |
+| DCP Identify all | DCP responder | pass | [map[deviceId:257 ip:10.122.11.20 mac:02:42:0a:7a:0b:14 name:otf-dut vendorId:61440]] | `TestProfinetPyDCP` |
 | DCP Get name | DCP responder | pass | 6f74662d647574 | `TestProfinetPyDCP` |
 | DCP Set NameOfStation | DCP responder | pass | true | `TestProfinetPyDCP` |
 | Device applies the name | DCP responder | pass |  | `TestProfinetPyDCP` |
@@ -139,29 +139,44 @@ Generated 2026-10-27T07:45:58+00:00 from 16 test runs. Outcomes: **pass**, **fai
 
 | Feature | go-profinet role | Outcome | Detail | Test |
 |---------|------------------|---------|--------|------|
-| scapy decode codecs.pcap | - | pass | 7 frames map[Raw:4 other:2 udp:1], 0 undecoded | `TestCodecDecoders` |
-| scapy decode otf-hello.pcap | - | pass | 14 frames map[ARP:3 IP:1 IPv6:7 dcp:3], 0 undecoded | `TestOtfHelloDecoders` |
-| scapy decode pnet-controller.pcap | - | pass | 1063 frames map[ARP:7 IPv6:8 Raw:1 alarm:1 dcp:3 rt:1003 udp:40], 0 undecoded | `TestPnetController` |
-| scapy decode pnet-hello.pcap | - | pass | 19 frames map[ARP:8 IP:1 IPv6:8 dcp:2], 0 undecoded | `TestPnetHello` |
-| scapy decode pnio-dcp.pcap | - | pass | 35 frames map[ARP:11 IPv6:10 Raw:2 dcp:12], 0 undecoded | `TestPnioDCP` |
-| scapy decode pniors-controller.pcap | - | pass | 1068 frames map[ARP:14 IP:1 IPv6:9 dcp:14 rt:1000 udp:30], 0 undecoded | `TestPnioRsController` |
-| scapy decode profinet-py-controller.pcap | - | pass | 248 frames map[ARP:7 IP:2 IPv6:9 alarm:4 dcp:2 rt:178 udp:46], 0 undecoded | `TestProfinetPyController` |
+| scapy decode codecs.pcap | - | pass | 12 frames map[Raw:4 other:2 udp:6], 0 undecoded | `TestCodecDecoders` |
+| scapy decode dcp-dhcp.pcap | - | pass | 7 frames map[dcp:7], 0 undecoded | `TestDCPDHCPDecoders` |
+| scapy decode otf-hello.pcap | - | pass | 15 frames map[ARP:3 IPv6:9 dcp:3], 0 undecoded | `TestOtfHelloDecoders` |
+| scapy decode pnet-controller.pcap | - | pass | 1046 frames map[ARP:7 IP:1 IPv6:8 Raw:1 dcp:3 rt:988 udp:38], 0 undecoded | `TestPnetController` |
+| scapy decode pnet-hello.pcap | - | pass | 20 frames map[ARP:8 IP:1 IPv6:9 dcp:2], 0 undecoded | `TestPnetHello` |
+| scapy decode pnio-dcp.pcap | - | pass | 38 frames map[ARP:12 IP:1 IPv6:9 Raw:2 dcp:14], 0 undecoded | `TestPnioDCP` |
+| scapy decode pniors-controller.pcap | - | pass | 1070 frames map[ARP:14 IP:1 IPv6:10 dcp:14 rt:1001 udp:30], 0 undecoded | `TestPnioRsController` |
+| scapy decode profinet-py-controller.pcap | - | pass | 242 frames map[ARP:7 IP:2 IPv6:9 alarm:4 dcp:2 rt:172 udp:46], 0 undecoded | `TestProfinetPyController` |
+| scapy decode snmp.pcap | - | pass | 180 frames map[ARP:2 udp:178], 0 undecoded | `TestSNMPDecoders` |
+| scapy decodes every SNMP datagram (PDU and variable bindings) | - | pass | 178 of 178 datagrams, PDUs map[SNMPbulk:5 SNMPget:2 SNMPnext:80 SNMPresponse:89 SNMPset:2], undecoded [] | `TestSNMPDecoders` |
+| scapy decode udp-rt.pcap | - | pass | 2 frames map[udp:2], 0 undecoded | `TestUDPRTDecoders` |
 
 ## tshark
 
 | Feature | go-profinet role | Outcome | Detail | Test |
 |---------|------------------|---------|--------|------|
-| tshark check codecs.pcap | - | pass | 7 frames map[PN-MRP:4 PN-PTCP:2 PNIO-CM:1], 0 malformed, 0 warnings | `TestCodecDecoders` |
-| tshark check otf-hello.pcap | - | pass | 14 frames map[ARP:3 ICMPv6:7 IGMPv3:1 PN-DCP:3], 0 malformed, 0 warnings | `TestOtfHelloDecoders` |
-| tshark check pnet-controller.pcap | - | pass | 1063 frames map[ARP:7 ICMPv6:8 LLDP:1 PN-DCP:3 PNIO-AL:1 PNIO-CM:40 PNIO_PS:1003], 0 malformed, 0 warnings | `TestPnetController` |
-| tshark check pnet-hello.pcap | - | pass | 19 frames map[ARP:8 ICMPv6:8 IGMPv3:1 PN-DCP:2], 0 malformed, 0 warnings | `TestPnetHello` |
-| tshark check pnio-dcp.pcap | - | pass | 35 frames map[ARP:11 ICMPv6:10 LLDP:2 PN-DCP:12], 0 malformed, 0 warnings | `TestPnioDCP` |
-| tshark check pniors-controller.pcap | - | pass | 1068 frames map[ARP:14 ICMPv6:9 IGMPv3:1 PN-DCP:14 PNIO-CM:30 PNIO_PS:1000], 0 malformed, 0 warnings | `TestPnioRsController` |
-| tshark check profinet-py-controller.pcap | - | pass | 248 frames map[ARP:7 ICMP:1 ICMPv6:9 IGMPv3:1 PN-DCP:2 PNIO-AL:4 PNIO-CM:46 PNIO_PS:178], 0 malformed, 0 warnings | `TestProfinetPyController` |
+| tshark check codecs.pcap | - | pass | 12 frames map[PN-MRP:4 PN-PTCP:2 PNIO-CM:6], 0 malformed, 0 warnings | `TestCodecDecoders` |
+| tshark check dcp-dhcp.pcap | - | pass | 7 frames map[PN-DCP:7], 0 malformed, 0 warnings | `TestDCPDHCPDecoders` |
+| tshark check otf-hello.pcap | - | pass | 15 frames map[ARP:3 ICMPv6:9 PN-DCP:3], 0 malformed, 0 warnings | `TestOtfHelloDecoders` |
+| tshark check pnet-controller.pcap | - | pass | 1046 frames map[ARP:7 ICMPv6:8 IGMPv3:1 LLDP:1 PN-DCP:3 PNIO-CM:38 PNIO_PS:988], 0 malformed, 0 warnings | `TestPnetController` |
+| tshark check pnet-hello.pcap | - | pass | 20 frames map[ARP:8 ICMPv6:9 IGMPv3:1 PN-DCP:2], 0 malformed, 0 warnings | `TestPnetHello` |
+| tshark check pnio-dcp.pcap | - | pass | 38 frames map[ARP:12 ICMPv6:9 IGMPv3:1 LLDP:2 PN-DCP:14], 0 malformed, 0 warnings | `TestPnioDCP` |
+| tshark check pniors-controller.pcap | - | pass | 1070 frames map[ARP:14 ICMPv6:10 IGMPv3:1 PN-DCP:14 PNIO-CM:30 PNIO_PS:1001], 0 malformed, 0 warnings | `TestPnioRsController` |
+| tshark check profinet-py-controller.pcap | - | pass | 242 frames map[ARP:7 ICMP:1 ICMPv6:9 IGMPv3:1 PN-DCP:2 PNIO-AL:4 PNIO-CM:46 PNIO_PS:172], 0 malformed, 0 warnings | `TestProfinetPyController` |
+| tshark check snmp.pcap | - | pass | 180 frames map[ARP:2 SNMP:178], 0 malformed, 0 warnings | `TestSNMPDecoders` |
+| tshark check udp-rt.pcap | - | pass | 2 frames map[PNIO:1 PNIO-CM:1], 0 malformed, 0 warnings | `TestUDPRTDecoders` |
 
 ## tshark/scapy
 
 | Feature | go-profinet role | Outcome | Detail | Test |
 |---------|------------------|---------|--------|------|
-| MRP Test, TopologyChange, LinkDown, LinkUp; PTCP DelayReq, DelayRes; IOCARSR Connect with SRInfoBlock and MCRBlockReq encoded (go-profinet) | - | pass |  | `TestCodecDecoders` |
+| MRP Test, TopologyChange, LinkDown, LinkUp; PTCP DelayReq, DelayRes; IOCARSR Connect with SRInfoBlock and MCRBlockReq; MRP records (PDInterfaceMrpDataAdjust/Check/Real, PDPortMrpDataAdjust) encoded (go-profinet) | - | pass |  | `TestCodecDecoders` |
+| DCP DHCP blocks (client ID from MAC, arbitrary client ID, control) and IP set by DHCP in Identify/Get responses, Get and Set requests encoded (go-profinet) | - | pass |  | `TestDCPDHCPDecoders` |
+| DHCP options and IP BlockInfo parsed back (go-profinet) | - | pass | {MAC:02:00:00:00:00:20 NameOfStation:dut TypeOfStation:go-profinet VendorID:61440 DeviceID:1 Role:1 Instance:0 HasInstance:false OEMVendorID:0 OEMDeviceID:0 ... | `TestDCPDHCPDecoders` |
+| scapy: DCP option 3 (DHCP) blocks | - | peer-deviation | scapy has no DCP DHCP block class: in 4 of 7 frames the first DHCP block and the blocks after it are left Raw | `TestDCPDHCPDecoders` |
+| tshark: PN-DCP "Undecoded Data, 5 bytes" | - | peer-deviation | Wireshark decodes the data of DHCP options 61 and 255 only; option 12 (host name), which go-profinet encodes as code, length and data like the others, is sho... | `TestDCPDHCPDecoders` |
 | DCP Hello sent by the device (go-profinet) | - | pass | 3 Hellos (3 expected) | `TestOtfHelloDecoders` |
+| SNMP walk of the device's agent captured (go-profinet) | - | pass | 178 SNMP datagrams | `TestSNMPDecoders` |
+| tshark dissects every SNMP datagram as SNMP | - | pass | 178 of 178 datagrams | `TestSNMPDecoders` |
+| RT_CLASS_UDP frame on UDP port 34962 and RT_CLASS_UDP Connect (RTClass 4, LT 0x0800, RTA_CLASS_UDP) encoded (go-profinet) | - | pass |  | `TestUDPRTDecoders` |
+| scapy dissects the UDP payload of port 34962 as PROFINET RT (scapy) | - | pass | Ether/IP/UDP/ProfinetIO/PNIORealTimeCyclicPDU | `TestUDPRTDecoders` |

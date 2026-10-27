@@ -2,7 +2,7 @@
 # pinned; nothing floats. The Dockerfiles are the source of truth for a
 # build; scripts/check-versions.sh fails when this file disagrees with them.
 
-interop_version: "0.2.0"
+interop_version: "0.2.1"
 contract_version: "1.0"        # docs/CONTAINER_CONTRACT.md
 
 protocol:
