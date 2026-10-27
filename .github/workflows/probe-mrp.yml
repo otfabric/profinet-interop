@@ -6,16 +6,4 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - run: docker build -q -t profinet-interop-mrp:dev adapters/mrp
-      - run: |
-          sudo modprobe bridge; lsmod | grep -E "bridge|stp" || true
-          docker run --rm --privileged --entrypoint sh profinet-interop-mrp:dev -c '
-            apt-get update -qq >/dev/null && apt-get install -y -qq strace >/dev/null 2>&1
-            strace -f -e trace=sendmsg,sendto,recvmsg -e signal=none -s 300 -o /tmp/st mrp_server -m -l 7 > /tmp/s.log 2>&1 &
-            sleep 2
-            ip link add brx type bridge; ip link add px1 type veth peer name py1; ip link add px2 type veth peer name py2
-            ip link set px1 master brx; ip link set px2 master brx; ip link set brx up; ip link set px1 up; ip link set px2 up
-            mrp addmrp bridge brx ring_nr 1 pport px1 sport px2 ring_role mrc; echo "addmrp=$?"
-            sleep 1; echo ---log; cat /tmp/s.log; echo ---strace; grep -E "error|EOPNOTSUPP|-95|NLMSG_ERROR" /tmp/st | head -20; grep -c . /tmp/st
-          ' || true
+      - run: grep -E "SWITCHDEV|BRIDGE_MRP|BRIDGE_CFM|NET_DSA=" /boot/config-$(uname -r); uname -r
