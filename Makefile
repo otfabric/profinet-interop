@@ -4,7 +4,7 @@
 
 .DEFAULT_GOAL := help
 
-.PHONY: help images image-% capabilities check-versions lint contract matrix smoke clean
+.PHONY: help images image-% capabilities check-versions lint contract matrix smoke versions release-notes clean
 
 ADAPTERS := pnet pnio-rs profinet-py pnio-dcp scapy tshark
 TAG ?= dev
@@ -35,6 +35,12 @@ matrix: ## Regenerate docs/MATRIX.md and matrix/results.json from RESULTS=dir (g
 
 smoke: images ## Build the images and print their versions
 	@for a in $(ADAPTERS); do docker run --rm profinet-interop-$$a:$(TAG) version; done
+
+versions: ## Print the version of every built image
+	@for a in $(ADAPTERS); do docker run --rm profinet-interop-$$a:$(TAG) version; done
+
+release-notes: ## Print the notes of VERSION=vX.Y.Z (default: the version versions.yaml names) from RELEASE.md
+	@scripts/release-notes.sh $(VERSION)
 
 clean: ## Remove the local images
 	-docker rmi $(addsuffix :$(TAG),$(addprefix profinet-interop-,$(ADAPTERS)))

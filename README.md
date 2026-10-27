@@ -65,12 +65,22 @@ obtains the implementation from its source under its licence. The p-net
 tree used is the last complete public GPLv3 snapshot, older than the
 v1.0.2 security fixes: run it only on isolated test networks.
 
+## Releases
+
+Tags `vX.Y.Z` are released by `.github/workflows/release.yml` from the
+notes in [RELEASE.md](RELEASE.md): it checks that the tag, `versions.yaml`
+and the notes agree, builds and contract-checks every image on amd64 and
+arm64, and publishes the notes with `versions.yaml` and the matrix results.
+No image is published (see Licences). go-profinet pins a release
+(`INTEROP_REF`).
+
 ## Project structure
 
 ```text
 adapters/<name>/      Dockerfile and the adapter script of each implementation
 docs/                 container contract, interoperability notes, matrix
 matrix/results.json   the machine-readable matrix
-scripts/              version check, matrix generation
-versions.yaml         every pin
+scripts/              version check, matrix generation, release notes
+versions.yaml         every pin, and the version of this repository
+RELEASE.md            how a release is made; the notes of every version
 ```

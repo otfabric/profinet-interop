@@ -1,0 +1,97 @@
+name: Release
+run-name: "Release ${{ github.ref_name }}"
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write   # create the GitHub release
+
+env:
+  VERSION: ${{ github.ref_name }}
+
+jobs:
+  validate:
+    name: Versions, notes
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - name: Tag, versions.yaml and RELEASE.md agree
+        run: |
+          scripts/check-versions.sh
+          want="interop_version: \"${VERSION#v}\""
+          grep -qF "$want" versions.yaml || { echo "::error::versions.yaml does not say $want"; exit 1; }
+          # The notes of this version become the body of the GitHub release.
+          scripts/release-notes.sh "${VERSION}" > /dev/null || { echo "::error::RELEASE.md has no notes for ${VERSION}"; exit 1; }
+      - name: Shellcheck and Python
+        run: make lint
+      - name: No image is published
+        # p-net and profinet-py are GPL: their images are built by each
+        # user from upstream, never pushed by this repository.
+        run: |
+          if grep -rnE 'docker (push|buildx .*--push)' Makefile scripts; then
+            echo "::error::a target pushes an image"; exit 1
+          fi
+
+  # Every image is built natively and checked against the contract before
+  # the release exists. Nothing is pushed.
+  images:
+    name: Build and contract (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    needs: validate
+    timeout-minutes: 60
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build every adapter image
+        run: make -j3 --output-sync=target images
+      - name: Contract
+        run: make contract | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Versions
+        run: make -s versions | tee -a "$GITHUB_STEP_SUMMARY"
+
+  release:
+    name: GitHub release
+    runs-on: ubuntu-latest
+    needs: images
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      # The body is the section of this version in RELEASE.md (up to its
+      # "---", as in every otfabric repository).
+      - name: Write the release body
+        run: |
+          {
+            scripts/release-notes.sh "${VERSION}"
+            echo
+            echo "## Images"
+            echo
+            echo "No image is published: p-net, profinet-py, Scapy and tshark are GPL. Build them from upstream with \`make images\` at this tag; every upstream and base image is pinned in \`versions.yaml\` (attached), and the release workflow built and contract-checked them on linux/amd64 and linux/arm64. See \`THIRD_PARTY_NOTICES.md\`."
+          } > "${RUNNER_TEMP}/release-body.md"
+          cat "${RUNNER_TEMP}/release-body.md"
+
+      - name: Assets
+        run: |
+          sha256sum versions.yaml matrix/results.json > checksums.txt
+          cat checksums.txt
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v3
+        with:
+          name: profinet-interop ${{ github.ref_name }}
+          body_path: ${{ runner.temp }}/release-body.md
+          files: |
+            versions.yaml
+            matrix/results.json
+            checksums.txt
