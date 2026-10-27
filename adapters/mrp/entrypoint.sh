@@ -42,8 +42,13 @@ kernel_mrp() {
 	ok=1
 	if ip link add mrpk1 type veth peer name mrpk2 2>/dev/null; then
 		ip link set mrpk1 master mrpk0 && ip link set mrpk2 master mrpk0 &&
-			mrp addmrp bridge mrpk0 ring_nr 99 pport mrpk1 sport mrpk2 ring_role mrc >/dev/null 2>&1 &&
+			ip link set mrpk0 up && ip link set mrpk1 up && ip link set mrpk2 up &&
+			mrp addmrp bridge mrpk0 ring_nr 99 pport mrpk1 sport mrpk2 ring_role mrc >"$RUN/kernel-mrp.out" 2>&1 &&
 			mrp getmrp 2>/dev/null | grep -q "ring_nr: 99" && ok=0
+		if [ $ok -ne 0 ]; then
+			# Why, for the caller's log.
+			{ echo "kernel $(uname -r): mrp addmrp:"; cat "$RUN/kernel-mrp.out"; mrp getmrp; tail -n 20 "$RUN/mrp.log"; } >&2 2>/dev/null || true
+		fi
 		mrp delmrp bridge mrpk0 ring_nr 99 >/dev/null 2>&1 || true
 		ip link del mrpk1 2>/dev/null || true
 	fi
