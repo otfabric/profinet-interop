@@ -83,13 +83,17 @@ Adapter-specific commands of the device role:
 ```text
 profinet-interop controller --station NAME [--iface eth0] [--gsdml FILE]
         [--rr N] [--duration S] [--output SLOT:SUBSLOT:HEX]... [--read-input SLOT:SUBSLOT]...
+        [--reparam SLOT:SUBSLOT:INDEX:HEX]...
 ```
 
 Runs the scenario: DCP discovery, I&M0 to I&M4, an I&M1 write, a user record
 write and read (slot 2, subslot 1, index 0x0010), ReadImplicit of I&M0, a
 read of an unknown index, the ModuleDiffBlock, diagnosis, slot discovery and,
 with `--gsdml`, a cyclic AR built from the GSDML file, setting the outputs
-and reading the inputs. It prints one report:
+and reading the inputs; with `--reparam` (since 1.1), a re-parameterization
+of that AR after `--duration`: steps `prm-begin`, `reparam-write …`,
+`prm-end` and `reparam-application-ready` (the device's ApplicationReady,
+answered). It prints one report:
 
 ```json
 {"schemaVersion":"1.0","adapter":"profinet-py","version":"0.6.6","station":"…",

@@ -5,7 +5,7 @@ docs/CONTAINER_CONTRACT.md); each step of a scenario reports ok, the value
 it read and the error it met, so that the harness can tell a failing step
 from one the implementation does not support.
 
-  profinet-interop controller --station NAME [--iface eth0] [--gsdml FILE]
+  profinet-interop controller --station NAME [--iface eth0] [--gsdml FILE] [--reparam S:SS:IDX:HEX]...
                   [--duration S] [--output SLOT:SUBSLOT:HEX]...
   profinet-interop dcp identify|get|set-name|set-ip|signal|reset
                   [--iface eth0] [--mac MAC] [--station NAME] [VALUE...]
@@ -105,6 +105,19 @@ def controller(args):
                 slot, sub, data = o.split(":")
                 step(report, f"set-output {slot}:{sub}", lambda s=int(slot), u=int(sub), d=bytes.fromhex(data): c.set_output_data(s, u, d))
             time.sleep(args.duration)
+            if args.reparam:
+                # Re-parameterization of the running AR with profinet-py's
+                # own control calls: PrmBegin, the writes, PrmEnd, then
+                # the device's ApplicationReady, answered.
+                rpc = dev._rpc
+                step(report, "prm-begin", lambda: hexb(rpc.prm_begin()))
+                for w in args.reparam:
+                    slot, sub, idx, data = w.split(":")
+                    step(report, f"reparam-write {slot}:{sub}:{idx}",
+                         lambda s=int(slot), u=int(sub), i=int(idx, 0), d=bytes.fromhex(data): rpc.write(api=0, slot=s, subslot=u, idx=i, data=d))
+                step(report, "prm-end", lambda: hexb(rpc.prm_end()))
+                step(report, "reparam-application-ready", lambda: hexb(rpc.application_ready(timeout=10)))
+                time.sleep(1)
             inputs = {}
             for s in c._input_iocr.slots if hasattr(c, "_input_iocr") else []:
                 pass
@@ -178,6 +191,7 @@ def main():
     c.add_argument("--timeout", type=float, default=10.0)
     c.add_argument("--output", action="append", default=[])
     c.add_argument("--read-input", action="append", default=[])
+    c.add_argument("--reparam", action="append", default=[], help="SLOT:SUBSLOT:INDEX:HEX written between PrmBegin and PrmEnd once cyclic IO runs")
     d = sub.add_parser("dcp")
     d.add_argument("op")
     d.add_argument("value", nargs="*")
