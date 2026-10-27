@@ -26,6 +26,8 @@ jobs:
       - uses: actions/checkout@v7
       - name: versions.yaml matches the Dockerfiles
         run: scripts/check-versions.sh
+      - name: RELEASE.md has the notes of the version versions.yaml names
+        run: scripts/release-notes.sh > /dev/null
       - name: Shellcheck and Python
         run: make lint
       - name: No image is published
