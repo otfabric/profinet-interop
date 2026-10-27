@@ -85,6 +85,20 @@ implementations:
     roles: [decoder]
     published: false
 
+  netsnmp:
+    status: implemented
+    upstream: "Net-SNMP command-line manager (Debian bookworm package snmp)"
+    repository: "https://github.com/net-snmp/net-snmp"
+    version: "5.9.3+dfsg-2+deb12u1"
+    license: "Net-SNMP (BSD-style licences, see /licenses/net-snmp/copyright)"
+    language: "C"
+    roles: [snmp-manager]
+    published: false
+    note: >-
+      Pinned by Debian, like tshark: the image installs the bookworm package
+      current when it is built. Debian's package has no IETF MIB files, so
+      every OID is numeric.
+
   umrp:
     status: implemented
     upstream: "umrp (Rodolfo Giometti), a fork of microchip-ung/mrp"

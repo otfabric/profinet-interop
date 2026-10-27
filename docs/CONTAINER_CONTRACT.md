@@ -42,6 +42,7 @@ profinet-interop print-gsdml                  # pnio-rs: the device's GSDML
 profinet-interop node --role mrm|mrc [flags]  # MRP ring node roles (umrp, mrp): run until SIGTERM
 profinet-interop status                       # MRP ring node roles: the node's state (JSON)
 profinet-interop kernel-mrp                   # mrp: exit 0 when the kernel has bridge MRP support
+profinet-interop snmp OP --host IP [flags] OID... # SNMP manager roles (netsnmp): one operation, one report
 ```
 
 An unknown command or flag exits with status 2. `make contract` checks every
@@ -139,6 +140,31 @@ does them and they cannot be observed), `probes` the probe frames
 (EtherType 0x88B5, broadcast) the node's bridge delivered to the node: a
 consumer sends a known number around the ring to find a loop (a probe
 counted twice) or a hole (not counted).
+
+### `snmp` (Net-SNMP)
+
+```text
+profinet-interop snmp get|getnext|bulkget|walk|bulkwalk --host IP [--port 161] [--community public]
+        [--version 1|2c] [--timeout S] [--retries N] [--max-rep N] [--non-rep N] OID...
+profinet-interop snmp set --host IP [flags] --set OID TYPE VALUE
+```
+
+Runs one Net-SNMP tool (snmpget, snmpgetnext, snmpbulkget, snmpwalk,
+snmpbulkwalk, snmpset) with numeric OIDs and no MIB files, and prints
+
+```json
+{"schemaVersion":"1.0","adapter":"netsnmp","op":"get","exit":0,"ok":true,
+ "varbinds":[{"oid":"1.3.6.1.2.1.1.5.0","type":"Hex-STRING","value":"64 75 74","hex":"647574"},…],
+ "errorStatus":"noSuchName","failedObject":"…","timeout":true}
+```
+
+`type` is Net-SNMP's name of the type it decoded (`INTEGER`, `Hex-STRING`,
+`OID`, `Timeticks` with `value` the hundredths, `Counter32`, `Counter64`,
+`Gauge32`, `IpAddress`, …) or the exception it reported (`noSuchObject`,
+`noSuchInstance`, `endOfMibView`); octet strings carry `hex`.
+`errorStatus` and `failedObject` are those of an error response
+(`noSuchName`, `notWritable`, `tooBig`, …), `timeout` that no answer came;
+`ok` is true when the tool succeeded without either.
 
 ### `decode` and `check`
 

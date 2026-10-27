@@ -46,7 +46,8 @@ Two independent MRP implementations as ring nodes, so that go-profinet's
 MRP manager and client are tested against software that is not
 go-profinet: **umrp** (giometti/umrp, user space, runs on any Linux
 kernel) and **mrp** (microchip-ung/mrp, unmodified, on the kernel's
-bridge MRP support where the host kernel has it). Contract 1.1.
+bridge MRP support where the host kernel has it); and **Net-SNMP**'s
+manager for go-profinet's SNMP agent. Contract 1.1.
 
 ## Changes
 
@@ -59,7 +60,10 @@ bridge MRP support where the host kernel has it). Contract 1.1.
   unmodified; needs a host kernel with `CONFIG_BRIDGE_MRP` (GitHub-hosted
   runners: yes; Docker Desktop: no). `kernel-mrp` tells; `node` prints
   `unsupported` and exits 3 without it.
-- Contract 1.1 (additions only): the MRP ring node role (`node`, `status`,
+- New adapter `netsnmp`: Net-SNMP's command-line manager (Debian bookworm
+  package `snmp` 5.9.3), command `snmp get|getnext|bulkget|walk|bulkwalk|set`
+  with a JSON report of what Net-SNMP decoded. Pinned by Debian like tshark.
+- Contract 1.1 (additions only): the SNMP manager role (`snmp`), the MRP ring node role (`node`, `status`,
   `kernel-mrp`, exit code 3), and scapy's `decode` reports the frames it
   has no dissector for (MRP, PTCP) as `notDissected`: they were counted as
   decoded before, which overstated scapy's evidence for MRP.

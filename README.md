@@ -7,8 +7,8 @@ command-line contract, so that a PROFINET implementation under test can be
 run against them on a real Layer 2 network: the IO-Device of rt-labs
 **p-net** and of **pnio-rs**, the IO-Controller and DCP tool of
 **profinet-py**, the DCP tool **pnio-dcp**, two MRP ring nodes, **umrp**
-and Microchip's **mrp**, and two independent decoders, **scapy** and
-**tshark**, that check every capture.
+and Microchip's **mrp**, the SNMP manager of **Net-SNMP**, and two
+independent decoders, **scapy** and **tshark**, that check every capture.
 
 It serves [otfabric/go-profinet](https://github.com/otfabric/go-profinet),
 whose interop tests (`make interop`) drive these images and write the
@@ -26,6 +26,7 @@ results the [interoperability matrix](docs/MATRIX.md) is generated from.
 | `pnio-dcp` | [pnio-dcp](https://gitlab.com/pyshacks/pnio_dcp) | 1.2.0 | MIT | DCP tool (Python) | DCP responder |
 | `scapy` | [scapy](https://scapy.net) contrib pnio | 2.6.1 | GPL-2.0-only | decoder | every capture |
 | `tshark` | Wireshark tshark | 4.0.17 (Debian) | GPL-2.0-or-later | decoder | every capture |
+| `netsnmp` | [Net-SNMP](https://www.net-snmp.org) command-line manager | 5.9.3 (Debian) | BSD-style | SNMP manager (C) | SNMP agent of the IO-Device |
 | `umrp` | [umrp](https://github.com/giometti/umrp) with this repository's bridge ifdriver | v4.0 | GPL-2.0 | MRP ring node, MRM or MRC (C, user space); any Linux kernel | MRP manager and client in a ring |
 | `mrp` | [microchip-ung/mrp](https://github.com/microchip-ung/mrp), unmodified | `177717e` (after v1.2) | GPL-2.0 | MRP ring node, MRM or MRC (C, on the kernel's bridge MRP); needs a host kernel with `CONFIG_BRIDGE_MRP` (GitHub-hosted runners: yes; Docker Desktop: no) | MRP manager and client in a ring |
 
@@ -64,7 +65,7 @@ A weekly workflow (`.github/workflows/candidate.yml`, also on demand)
 compares every pin with the latest upstream: p-net with its newest GPL
 release tag (later p-net trees are evaluation snapshots without ports:
 reported and flagged), pnio-rs with its newest GitHub release, profinet-py,
-pnio-dcp and scapy with PyPI, tshark with the Debian bookworm package. Where
+pnio-dcp and scapy with PyPI, tshark and netsnmp with the Debian bookworm package. Where
 a pin is behind, it builds the adapter on the latest upstream and checks it
 with the smoke test, its capability document and the contract against the
 other adapters at their pins (there is no cross-stack self-test here;

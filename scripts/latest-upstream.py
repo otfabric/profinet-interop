@@ -39,9 +39,10 @@ How each upstream is looked up:
 - mrp (pinned by commit, past its last tag v1.2): the head of the default
   branch of microchip-ung/mrp; update = the head moved past the pin. The
   newest tag is reported.
-- tshark: the Debian bookworm package (Debian's madison service); the
-  image installs whatever bookworm ships when it is built, so it is pinned
-  by Debian: reported, never a candidate build.
+- tshark, netsnmp: the Debian bookworm packages wireshark and net-snmp
+  (Debian's madison service); the image installs whatever bookworm ships
+  when it is built, so they are pinned by Debian: reported, never a
+  candidate build.
 
 Pre-releases are never "latest". GITHUB_TOKEN, when set, authenticates
 GitHub API calls. A failed lookup makes that adapter "unknown" without
@@ -62,7 +63,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 AGENT = "profinet-interop latest-upstream (https://github.com/otfabric/profinet-interop)"
-ADAPTERS = ["pnet", "pnio-rs", "profinet-py", "pnio-dcp", "scapy", "tshark", "umrp", "mrp"]
+ADAPTERS = ["pnet", "pnio-rs", "profinet-py", "pnio-dcp", "scapy", "tshark", "umrp", "mrp", "netsnmp"]
 
 
 def fetch(url):
@@ -250,21 +251,31 @@ def debian_key(version):
     return (key(upstream) or (), version)
 
 
-def tshark(pin):
+def debian(source, pin, full=False):
+    """The bookworm version of a Debian source package: its upstream
+    version, or (full) the whole Debian version."""
     note = "pinned by Debian: the image installs the bookworm package current at build time, so a rebuild picks it up"
     try:
-        data = fetch_json("https://api.ftp-master.debian.org/madison?package=wireshark"
+        data = fetch_json(f"https://api.ftp-master.debian.org/madison?package={source}"
                           "&s=bookworm,bookworm-security,bookworm-updates&f=json")
-        versions = [v for entry in data for suites in entry.get("wireshark", {}).values() for v in suites]
+        versions = [v for entry in data for suites in entry.get(source, {}).values() for v in suites]
         package = max(versions, key=debian_key)
     except (OSError, ValueError, KeyError) as error:
         return result("unknown", "", "Debian bookworm (madison)", f"{note}; package version not determinable ({error})",
                       update=None, candidate=False)
-    latest = package.split(":", 1)[-1].rsplit("-", 1)[0]
+    latest = package.split(":", 1)[-1] if full else package.split(":", 1)[-1].rsplit("-", 1)[0]
     if latest != pin["pin"]:
         note += f"; versions.yaml records {pin['pin']}: update it"
     return result(latest, "", "Debian bookworm (madison)", f"{note}; package {package}",
                   update=latest != pin["pin"], candidate=False)
+
+
+def tshark(pin):
+    return debian("wireshark", pin)
+
+
+def netsnmp(pin):
+    return debian("net-snmp", pin, full=True)
 
 
 LOOKUPS = {
@@ -276,6 +287,7 @@ LOOKUPS = {
     "tshark": tshark,
     "umrp": umrp,
     "mrp": mrp,
+    "netsnmp": netsnmp,
 }
 
 
@@ -310,7 +322,7 @@ def resolve(adapter):
         found = LOOKUPS[adapter](pin)
     except Exception as error:  # one failed lookup must not stop the others
         found = result("unknown", source="lookup failed", note=f"{type(error).__name__}: {error}",
-                       candidate=adapter != "tshark")
+                       candidate=adapter not in ("tshark", "netsnmp"))
     update = found.pop("update")
     found["update"] = "unknown" if update is None else ("yes" if update else "no")
     found["candidate"] = "yes" if found["candidate"] else "no"

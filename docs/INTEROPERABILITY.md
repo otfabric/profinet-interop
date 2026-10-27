@@ -129,6 +129,18 @@ linuxkit kernel has not, so there the tests are not applicable (the node
 prints `unsupported` and exits 3). The same tests as with umrp run against
 it, except the FDB flush count, which the kernel does unobservably.
 
+### Net-SNMP (SNMP manager)
+
+The command-line manager of Net-SNMP (snmpget, snmpgetnext, snmpbulkget,
+snmpwalk, snmpbulkwalk, snmpset), the most used open SNMP implementation,
+reads go-profinet's SNMP agent (an IO-Device with `Config.SNMP`): the
+system, interfaces and snmp groups, the LLDP-MIB with neighbors that come
+and go, error statuses and exceptions, v1 and v2c, GetBulk limits,
+`tooBig`. Debian's package has no IETF MIB files, so the tests use numeric
+OIDs and compare values, not MIB-rendered text. Malformed datagrams and a
+request flood come from a Python socket (Net-SNMP sends only well-formed
+requests); Net-SNMP then reads the agent's own error counters.
+
 ### scapy and tshark (decoders)
 
 Every capture of the tests is decoded by both. They are independent of

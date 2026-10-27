@@ -14,7 +14,7 @@ run-name: "Candidate upstream probe by @${{ github.actor }}"
 # GPL release tag; its later trees (the "public" branch and its releases) are
 # evaluation snapshots without ports: reported and flagged, never a candidate.
 # pnio-rs is pinned to a release tag, profinet-py, pnio-dcp and scapy to a
-# PyPI release. tshark is the Debian bookworm package: reported, not built as
+# PyPI release. tshark and netsnmp are Debian bookworm packages: reported, not built as
 # a candidate (a rebuild installs the current package).
 #
 # There is no cross-stack self-test in this repository: a candidate is checked
@@ -36,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        adapter: [pnet, pnio-rs, profinet-py, pnio-dcp, scapy, tshark, umrp, mrp]
+        adapter: [pnet, pnio-rs, profinet-py, pnio-dcp, scapy, tshark, umrp, mrp, netsnmp]
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -151,13 +151,13 @@ jobs:
             echo "Every adapter pins its upstream in \`adapters/<name>/Dockerfile\` as \`ARG UPSTREAM_VERSION\`"
             echo "(a release: pnio-rs, profinet-py, pnio-dcp, scapy, umrp) and/or \`ARG UPSTREAM_SHA\` (a commit: pnet,"
             echo "pnio-rs, umrp, mrp), with \`ARG UPSTREAM_SHA256\` for the pnio-dcp wheel, mirrored in \`versions.yaml\`;"
-            echo "\`scripts/check-versions.sh\` checks that they agree. tshark is the Debian bookworm package"
+            echo "\`scripts/check-versions.sh\` checks that they agree. tshark and netsnmp are Debian bookworm packages"
             echo "(\`versions.yaml\` records its version)."
             echo
             echo "### How to read this"
             echo
             echo "- **Looked up in**: p-net is compared with its newest GPL release tag; pnio-rs with its newest"
-            echo "  GitHub release; profinet-py, pnio-dcp and scapy with PyPI; tshark with Debian bookworm."
+            echo "  GitHub release; profinet-py, pnio-dcp and scapy with PyPI; tshark and netsnmp with Debian bookworm."
             echo "- **Update? = yes** means the pin is not the latest upstream. **flagged** notes say why the latest"
             echo "  is not taken at face value (p-net trees after the pin are not GPL-complete)."
             echo "- **Candidate check** builds the adapter on that upstream and runs the smoke test, its capability"
@@ -187,7 +187,7 @@ jobs:
             echo "## How to read this"
             echo
             echo "- **Update? = yes**: the pin is not the latest upstream (the newest GPL release tag for p-net,"
-            echo "  the newest release for the others, the bookworm package for tshark)."
+            echo "  the newest release for the others, the bookworm package for tshark and netsnmp)."
             echo "- **Candidate check** is the smoke test, the capability document and the contract of the adapter"
             echo "  built on the latest upstream, against the other adapters at their pins. \`success\`: the pin can"
             echo "  move. \`failure\`: read the candidate log in the [workflow run](${RUN_URL}) first."
@@ -202,7 +202,7 @@ jobs:
             echo
             echo "Then move \`ARG UPSTREAM_VERSION\` / \`ARG UPSTREAM_SHA\` (and \`UPSTREAM_SHA256\` for pnio-dcp) in"
             echo "\`adapters/<adapter>/Dockerfile\` and \`versions.yaml\`; \`scripts/check-versions.sh\` checks that they"
-            echo "agree. For tshark only \`versions.yaml\` changes. Record the change in \`RELEASE.md\`."
+            echo "agree. For tshark and netsnmp only \`versions.yaml\` changes. Record the change in \`RELEASE.md\`."
             echo
             echo "_Last checked by [this workflow run](${RUN_URL}). This issue is updated by the weekly"
             echo "probe and closed automatically once every pin is the latest upstream._"

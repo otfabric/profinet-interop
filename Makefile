@@ -6,7 +6,7 @@
 
 .PHONY: help images image-% capabilities check-versions lint contract matrix smoke versions release-notes latest-upstream clean FORCE
 
-ADAPTERS := pnet pnio-rs profinet-py pnio-dcp scapy tshark umrp mrp
+ADAPTERS := pnet pnio-rs profinet-py pnio-dcp scapy tshark umrp mrp netsnmp
 TAG ?= dev
 
 help: ## This help
@@ -49,7 +49,8 @@ versions: ## Print the version of every built image
 # pnio-dcp, scapy) and/or UPSTREAM_SHA (a commit: pnet, pnio-rs). At the pin
 # the release build and its hash checks apply unchanged; any other value
 # takes the Dockerfile's candidate path, which says "candidate build: ..."
-# on stderr. tshark is the Debian bookworm package: no candidate build.
+# on stderr. tshark and netsnmp are Debian bookworm packages: no candidate
+# build.
 # scripts/latest-upstream.py prints the latest upstream of every adapter.
 # Release pins are never modified.
 
@@ -63,7 +64,7 @@ latest-upstream: ## Compare every pin with the latest upstream (decision table; 
 
 candidate-%: FORCE ## Build one adapter on CANDIDATE_VERSION / CANDIDATE_SHA [/ CANDIDATE_SHA256] and check it, e.g. candidate-scapy CANDIDATE_VERSION=2.8.0
 	@case " $(ADAPTERS) " in *" $* "*) ;; *) echo "Error: no adapter $* (one of: $(ADAPTERS))"; exit 1 ;; esac
-	@if [ "$*" = tshark ]; then echo "Error: tshark is the Debian bookworm package, pinned by Debian: a rebuild (make image-tshark) installs the current one"; exit 1; fi
+	@if [ "$*" = tshark ] || [ "$*" = netsnmp ]; then echo "Error: $* is a Debian bookworm package, pinned by Debian: a rebuild (make image-$*) installs the current one"; exit 1; fi
 	@case " $(COMMIT_PINNED) " in \
 		*" $* "*) echo "$(CANDIDATE_SHA)" | grep -qE '^[0-9a-f]{40}$$' || { echo "Error: CANDIDATE_SHA=<the upstream commit, 40 hex digits> is required (scripts/latest-upstream.py $* prints it as latest_sha)"; exit 1; } ;; \
 		*) test -n "$(CANDIDATE_VERSION)" || { echo "Error: CANDIDATE_VERSION=<upstream version> is required (scripts/latest-upstream.py $* prints it as latest)"; exit 1; } ;; \
