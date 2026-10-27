@@ -35,6 +35,40 @@ Tags are immutable. A fix is a new version.
 
 ---
 
+## v0.2.1
+
+**Date:** 2026-10-27
+**Previous release:** v0.2.0
+
+## Summary
+
+The interoperability matrix, regenerated from go-profinet's interop suite
+on its v0.3.0 code (main 8210d3d): 19 test runs, 126 pass, 0 fail, 2 n/a,
+4 attributed peer deviations.
+
+## Changes
+
+- New decoder checks of go-profinet's frames: the SNMP agent (tshark and
+  scapy decode every datagram of a walk), RT_CLASS_UDP frames and
+  Connect, the DCP DHCP blocks, and the PROFINET MRP records.
+- Two decoder deviations recorded, not failures of go-profinet: scapy has
+  no DCP DHCP block class, and Wireshark decodes the data of DHCP options
+  61 and 255 only.
+
+| Peer | pass | fail | n/a | peer-deviation |
+|------|-----:|-----:|----:|---------------:|
+| p-net | 55 | 0 | 0 | 0 |
+| pnio-rs | 12 | 0 | 2 | 0 |
+| profinet-py | 22 | 0 | 0 | 2 |
+| pnio-dcp | 8 | 0 | 0 | 0 |
+| scapy | 11 (was 7) | 0 | 0 | 0 |
+| tshark | 10 (was 7) | 0 | 0 | 0 |
+| tshark and scapy | 8 (was 2) | 0 | 0 | 2 |
+
+No change to the images, the adapters or any upstream pin.
+
+---
+
 ## v0.2.0
 
 **Date:** 2026-10-27
