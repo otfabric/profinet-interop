@@ -9,6 +9,13 @@ jobs:
       - uses: actions/checkout@v7
       - run: docker build -q -t profinet-interop-mrp:dev adapters/mrp
       - run: |
-          uname -r
-          docker run --rm --cap-add NET_ADMIN --cap-add NET_RAW profinet-interop-mrp:dev kernel-mrp; echo "kernel-mrp exit $?"
-          docker run --rm --privileged profinet-interop-mrp:dev kernel-mrp; echo "privileged kernel-mrp exit $?"
+          docker run --rm --privileged --entrypoint sh profinet-interop-mrp:dev -c '
+            set -x
+            mrp_server -m -l 7 > /tmp/s.log 2>&1 &
+            sleep 1
+            ip link add br0 type bridge; ip link add a type veth peer name b; ip link add c type veth peer name d
+            ip link set a master br0; ip link set c master br0; ip link set br0 up; ip link set a up; ip link set c up
+            mrp addmrp bridge br0 ring_nr 1 pport a sport c ring_role mrc; echo "addmrp=$?"
+            mrp getmrp; echo "getmrp=$?"
+            sleep 1; cat /tmp/s.log | tail -40
+          ' || true
