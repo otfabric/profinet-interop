@@ -15,19 +15,31 @@
 # Nothing of p-net's behaviour on the wire is changed. The image variant
 # built with --build-arg ACCEPT_IOSAR=1 also accepts the device access AR
 # (ARType 0x0006), which profinet-py uses for acyclic access.
+#
+# UPSTREAM_SHA is the p-net commit. A candidate build ("make candidate-pnet
+# CANDIDATE_SHA=<commit>") overrides it: the build says so on stderr. Later
+# p-net trees are not GPL-complete (no ports), so a candidate may not build.
 
 ARG DEBIAN=bookworm-20251020-slim
 
 FROM debian:${DEBIAN} AS build
-ARG PNET_COMMIT=ea5e5540b2be55c4dfadffda39b948632c104daa
+ARG UPSTREAM_SHA=ea5e5540b2be55c4dfadffda39b948632c104daa
 ARG ACCEPT_IOSAR=0
 ARG LOG_LEVEL=INFO
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential cmake git ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /src
+# The pin of this file, to tell the release build from a candidate build.
+RUN --mount=type=bind,source=Dockerfile,target=/tmp/pins set -eu; \
+    pinned="$(sed -nE 's/^ARG UPSTREAM_SHA=(.+)$/\1/p' /tmp/pins | head -1)"; \
+    test -n "${pinned}"; \
+    if [ "${UPSTREAM_SHA}" != "${pinned}" ]; then \
+        printf '%s' "${UPSTREAM_SHA}" | grep -qE '^[0-9a-f]{40}$' || { echo "UPSTREAM_SHA must be a full commit hash" >&2; exit 1; }; \
+        echo "candidate build: p-net ${UPSTREAM_SHA} instead of the pin ${pinned} (later trees are not GPL-complete)" >&2; \
+    fi
 RUN git init p-net && cd p-net \
     && git remote add origin https://github.com/rtlabs-com/p-net.git \
-    && git fetch --depth 1 origin "${PNET_COMMIT}" \
+    && git fetch --depth 1 origin "${UPSTREAM_SHA}" \
     && git checkout -q FETCH_HEAD \
     && git submodule update --init --depth 1 \
     && git -C cmake/tools log -1 --format='cmake-tools %H' \

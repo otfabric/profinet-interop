@@ -54,6 +54,32 @@ docker run -d --name pnet --network pn --ip 10.77.0.10 --cap-add NET_RAW --cap-a
 docker run --rm --network pn --ip 10.77.0.4 --cap-add NET_RAW --cap-add NET_ADMIN profinet-interop-pnio-dcp:dev dcp identify-all
 ```
 
+## Upstream candidates
+
+A weekly workflow (`.github/workflows/candidate.yml`, also on demand)
+compares every pin with the latest upstream: p-net with its newest GPL
+release tag (later p-net trees are evaluation snapshots without ports:
+reported and flagged), pnio-rs with its newest GitHub release, profinet-py,
+pnio-dcp and scapy with PyPI, tshark with the Debian bookworm package. Where
+a pin is behind, it builds the adapter on the latest upstream and checks it
+with the smoke test, its capability document and the contract against the
+other adapters at their pins (there is no cross-stack self-test here;
+go-profinet's interop suite is the behavioural test). The decision table
+goes to the Job Summary and to one issue that stays open while any pin is
+behind. Pins are never moved automatically and no image is pushed.
+
+```bash
+make latest-upstream                                   # the decision table
+make images
+make candidate-scapy CANDIDATE_VERSION=2.8.0           # a release pin
+make candidate-pnio-rs CANDIDATE_VERSION=<tag> CANDIDATE_SHA=<commit>
+```
+
+Every Dockerfile takes its upstream as `UPSTREAM_VERSION` and/or
+`UPSTREAM_SHA` (`UPSTREAM_SHA256` for the pnio-dcp wheel). At the pin the
+release build and its hash checks are unchanged; any other value takes a
+candidate path that says `candidate build: ...` on stderr.
+
 ## Licences
 
 The adapters, scripts and documents of this repository are MIT licensed.
@@ -80,7 +106,7 @@ No image is published (see Licences). go-profinet pins a release
 adapters/<name>/      Dockerfile and the adapter script of each implementation
 docs/                 container contract, interoperability notes, matrix
 matrix/results.json   the machine-readable matrix
-scripts/              version check, matrix generation, release notes
+scripts/              version check, latest upstream, matrix generation, release notes
 versions.yaml         every pin, and the version of this repository
 RELEASE.md            how a release is made; the notes of every version
 ```

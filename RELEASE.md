@@ -35,6 +35,51 @@ Tags are immutable. A fix is a new version.
 
 ---
 
+## v0.2.0
+
+**Date:** 2026-10-27
+**Previous release:** v0.1.3
+
+## Summary
+
+A weekly check of every pin against the latest upstream, with candidate
+builds of newer upstreams, as in the other otfabric interop repositories.
+
+## Changes
+
+- **Upstream candidates** workflow (`.github/workflows/candidate.yml`,
+  weekly and on demand): `scripts/latest-upstream.py` compares each pin
+  with the newest upstream: p-net with its newest GPL release tag (the
+  head of its `public` branch and its `public/` releases are reported but
+  flagged: evaluation snapshots without ports, not GPL-complete), pnio-rs
+  with its newest GitHub release, profinet-py, pnio-dcp (with the wheel
+  sha256) and scapy with PyPI, tshark with the Debian bookworm package
+  (pinned by Debian: reported, never built as a candidate). Where a pin is
+  behind, the adapter is built on the latest upstream and checked with the
+  smoke test, its capability document and the contract against the other
+  pins. The decision table goes to the Job Summary and to one issue that
+  stays open while any pin is behind. Pins are never moved automatically
+  and no image is pushed.
+- **`make candidate-<adapter> CANDIDATE_VERSION=... CANDIDATE_SHA=...`**
+  (`CANDIDATE_SHA256=...` for pnio-dcp) and **`make latest-upstream`**.
+- Every Dockerfile names its upstream `UPSTREAM_VERSION` and/or
+  `UPSTREAM_SHA` (`UPSTREAM_SHA256` for pnio-dcp), replacing
+  `PNET_COMMIT`, `PNIO_RS_COMMIT`, `PROFINET_PY_VERSION`,
+  `PNIO_DCP_VERSION`, `PNIO_DCP_SHA256` and `SCAPY_VERSION`. At the pin the
+  build and its hash checks are unchanged; any other value takes a
+  candidate path (says `candidate build: ...` on stderr, skips the pinned
+  hash). `scripts/check-versions.sh` checks the new names and matches the
+  whole `ARG` line.
+- First run: scapy 2.6.1 is behind 2.8.0 (its candidate passes the smoke
+  test, the capability document and the contract; the pin stays at 2.6.1
+  until go-profinet's interop suite has run on it); every other pin is the
+  latest (p-net flagged as above).
+
+The images, the adapters, the contract (1.0), every upstream pin and the
+matrix are unchanged from v0.1.3.
+
+---
+
 ## v0.1.3
 
 **Date:** 2026-10-27
