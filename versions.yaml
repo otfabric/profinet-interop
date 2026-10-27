@@ -2,8 +2,8 @@
 # pinned; nothing floats. The Dockerfiles are the source of truth for a
 # build; scripts/check-versions.sh fails when this file disagrees with them.
 
-interop_version: "0.2.1"
-contract_version: "1.0"        # docs/CONTAINER_CONTRACT.md
+interop_version: "0.3.0"
+contract_version: "1.1"        # docs/CONTAINER_CONTRACT.md
 
 protocol:
   name: "PROFINET IO (IEC 61158 / IEC 61784, CPF 3)"
@@ -84,6 +84,53 @@ implementations:
     license: "GPL-2.0-or-later"
     roles: [decoder]
     published: false
+
+  netsnmp:
+    status: implemented
+    upstream: "Net-SNMP command-line manager (Debian bookworm package snmp)"
+    repository: "https://github.com/net-snmp/net-snmp"
+    version: "5.9.3+dfsg-2+deb12u1"
+    license: "Net-SNMP (BSD-style licences, see /licenses/net-snmp/copyright)"
+    language: "C"
+    roles: [snmp-manager]
+    published: false
+    note: >-
+      Pinned by Debian, like tshark: the image installs the bookworm package
+      current when it is built. Debian's package has no IETF MIB files, so
+      every OID is numeric.
+
+  umrp:
+    status: implemented
+    upstream: "umrp (Rodolfo Giometti), a fork of microchip-ung/mrp"
+    repository: "https://github.com/giometti/umrp"
+    version: "v4.0"
+    revision: "fb193eac1a2df51fe42e19d4ea36bb0157bda09f"   # tag v4.0, 2024-01-05
+    cfm_revision: "7a50f4adcccf2d2e910816ea6d78446fea8fe7d8"   # microchip-ung/cfm (libcfm_netlink)
+    license: "GPL-2.0"
+    language: "C"
+    roles: [mrp-node]
+    patches:
+      - "this adapter's ifdriver_bridge.c (GPL-2.0, added, no upstream file changed): ring port states as an nftables set of blocked ports on a Linux bridge, FDB flush with iproute2; no kernel MRP support needed"
+    published: false
+    note: >-
+      umrp runs the MRP state machine in user space and sends, receives and
+      forwards MRP frames on raw sockets. One container is one ring node.
+
+  mrp:
+    status: implemented
+    upstream: "microchip-ung/mrp (Microchip)"
+    repository: "https://github.com/microchip-ung/mrp"
+    version: "v1.2"
+    revision: "177717ee893d5ccc6e31147b1b8a720c9b798b81"   # master after v1.2 (CMake 4 fixes), 2026-01-20
+    cfm_revision: "7a50f4adcccf2d2e910816ea6d78446fea8fe7d8"
+    license: "GPL-2.0"
+    language: "C"
+    roles: [mrp-node]
+    published: false
+    requires: "a host kernel with CONFIG_BRIDGE_MRP and without CONFIG_NET_SWITCHDEV, or with a switchdev driver that offloads MRP (Docker Desktop: no bridge MRP; GitHub-hosted runners: bridge MRP and switchdev, so the kernel refuses an MRP instance on a software bridge)"
+    note: >-
+      Built unmodified; the kernel's bridge MRP support does the ring work.
+      Where the kernel lacks it the node reports "unsupported" (exit 3).
 
   profinet-python:
     status: rejected

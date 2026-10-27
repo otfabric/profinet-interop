@@ -7,7 +7,7 @@
 set -eu
 TAG=${1:-dev}
 fail=0
-for a in pnet pnio-rs profinet-py pnio-dcp scapy tshark; do
+for a in pnet pnio-rs profinet-py pnio-dcp scapy tshark umrp mrp netsnmp; do
 	img="profinet-interop-$a:$TAG"
 	v=$(docker run --rm "$img" version)
 	[ "$(printf '%s\n' "$v" | wc -l)" -eq 1 ] || { echo "$img: version is not one line: $v"; fail=1; }

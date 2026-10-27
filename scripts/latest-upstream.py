@@ -34,9 +34,15 @@ How each upstream is looked up:
   tag) of core-engineering/pnio-rs; the head of main is reported.
 - profinet-py, pnio-dcp, scapy (pinned by version): the newest stable,
   non-yanked PyPI release; for pnio-dcp also the sha256 of its wheel.
-- tshark: the Debian bookworm package (Debian's madison service); the
-  image installs whatever bookworm ships when it is built, so it is pinned
-  by Debian: reported, never a candidate build.
+- umrp (pinned by tag and commit): the newest tag of giometti/umrp; the
+  head of its default branch is reported.
+- mrp (pinned by commit, past its last tag v1.2): the head of the default
+  branch of microchip-ung/mrp; update = the head moved past the pin. The
+  newest tag is reported.
+- tshark, netsnmp: the Debian bookworm packages wireshark and net-snmp
+  (Debian's madison service); the image installs whatever bookworm ships
+  when it is built, so they are pinned by Debian: reported, never a
+  candidate build.
 
 Pre-releases are never "latest". GITHUB_TOKEN, when set, authenticates
 GitHub API calls. A failed lookup makes that adapter "unknown" without
@@ -57,7 +63,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 AGENT = "profinet-interop latest-upstream (https://github.com/otfabric/profinet-interop)"
-ADAPTERS = ["pnet", "pnio-rs", "profinet-py", "pnio-dcp", "scapy", "tshark"]
+ADAPTERS = ["pnet", "pnio-rs", "profinet-py", "pnio-dcp", "scapy", "tshark", "umrp", "mrp", "netsnmp"]
 
 
 def fetch(url):
@@ -162,7 +168,32 @@ def pnet(pin):
     return result(pin["pin"], pin["pin_sha"], f"GPL release tags of {slug}", "; ".join(notes), update=False, flag=flag)
 
 
+def mrp(pin):
+    slug = "microchip-ung/mrp"
+    tags, head, branch = git_refs(f"https://github.com/{slug}.git")
+    if not head:
+        raise LookupError(f"no head of {slug}")
+    tag = newest(tags)
+    notes = [f"newest tag {tag} ({tags[tag][:7]})"] if tag else []
+    if head == pin["pin_sha"]:
+        notes.append("the pin is the head")
+        return result(pin["pin"], head, f"head of {branch or 'the default branch'} of {slug}", "; ".join(notes), update=False)
+    notes.append(f"head {head[:7]} ({commit_date(slug, head)}) is past the pin")
+    return result(head[:7], head, f"head of {branch or 'the default branch'} of {slug}", "; ".join(notes), update=True)
+
+
 # ── Pinned by release ─────────────────────────────────────────────────────────
+
+def umrp(pin):
+    slug = "giometti/umrp"
+    tags, head, branch = git_refs(f"https://github.com/{slug}.git")
+    latest = newest(tags)
+    notes = []
+    if head and head != tags.get(latest):
+        notes.append(f"head {head[:7]} of {branch or 'the default branch'} is past {latest}")
+    return result(latest, tags.get(latest, ""), f"git tags of {slug}", "; ".join(notes),
+                  update=tags.get(latest, "") != pin["pin_sha"])
+
 
 def pnio_rs(pin):
     slug = "core-engineering/pnio-rs"
@@ -220,21 +251,31 @@ def debian_key(version):
     return (key(upstream) or (), version)
 
 
-def tshark(pin):
+def debian(source, pin, full=False):
+    """The bookworm version of a Debian source package: its upstream
+    version, or (full) the whole Debian version."""
     note = "pinned by Debian: the image installs the bookworm package current at build time, so a rebuild picks it up"
     try:
-        data = fetch_json("https://api.ftp-master.debian.org/madison?package=wireshark"
+        data = fetch_json(f"https://api.ftp-master.debian.org/madison?package={source}"
                           "&s=bookworm,bookworm-security,bookworm-updates&f=json")
-        versions = [v for entry in data for suites in entry.get("wireshark", {}).values() for v in suites]
+        versions = [v for entry in data for suites in entry.get(source, {}).values() for v in suites]
         package = max(versions, key=debian_key)
     except (OSError, ValueError, KeyError) as error:
         return result("unknown", "", "Debian bookworm (madison)", f"{note}; package version not determinable ({error})",
                       update=None, candidate=False)
-    latest = package.split(":", 1)[-1].rsplit("-", 1)[0]
+    latest = package.split(":", 1)[-1] if full else package.split(":", 1)[-1].rsplit("-", 1)[0]
     if latest != pin["pin"]:
         note += f"; versions.yaml records {pin['pin']}: update it"
     return result(latest, "", "Debian bookworm (madison)", f"{note}; package {package}",
                   update=latest != pin["pin"], candidate=False)
+
+
+def tshark(pin):
+    return debian("wireshark", pin)
+
+
+def netsnmp(pin):
+    return debian("net-snmp", pin, full=True)
 
 
 LOOKUPS = {
@@ -244,6 +285,9 @@ LOOKUPS = {
     "pnio-dcp": pnio_dcp,
     "scapy": scapy,
     "tshark": tshark,
+    "umrp": umrp,
+    "mrp": mrp,
+    "netsnmp": netsnmp,
 }
 
 
@@ -278,7 +322,7 @@ def resolve(adapter):
         found = LOOKUPS[adapter](pin)
     except Exception as error:  # one failed lookup must not stop the others
         found = result("unknown", source="lookup failed", note=f"{type(error).__name__}: {error}",
-                       candidate=adapter != "tshark")
+                       candidate=adapter not in ("tshark", "netsnmp"))
     update = found.pop("update")
     found["update"] = "unknown" if update is None else ("yes" if update else "no")
     found["candidate"] = "yes" if found["candidate"] else "no"

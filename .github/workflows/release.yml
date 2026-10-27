@@ -29,7 +29,7 @@ jobs:
       - name: Shellcheck and Python
         run: make lint
       - name: No image is published
-        # p-net and profinet-py are GPL: their images are built by each
+        # p-net, profinet-py, umrp and mrp are GPL: their images are built by each
         # user from upstream, never pushed by this repository.
         run: |
           if grep -rnE 'docker (push|buildx .*--push)' Makefile scripts; then
@@ -77,7 +77,7 @@ jobs:
             echo
             echo "## Images"
             echo
-            echo "No image is published: p-net, profinet-py, Scapy and tshark are GPL. Build them from upstream with \`make images\` at this tag; every upstream and base image is pinned in \`versions.yaml\` (attached), and the release workflow built and contract-checked them on linux/amd64 and linux/arm64. See \`THIRD_PARTY_NOTICES.md\`."
+            echo "No image is published: p-net, profinet-py, umrp, mrp, Scapy and tshark are GPL. Build them from upstream with \`make images\` at this tag; every upstream and base image is pinned in \`versions.yaml\` (attached), and the release workflow built and contract-checked them on linux/amd64 and linux/arm64. See \`THIRD_PARTY_NOTICES.md\`."
           } > "${RUNNER_TEMP}/release-body.md"
           cat "${RUNNER_TEMP}/release-body.md"
 

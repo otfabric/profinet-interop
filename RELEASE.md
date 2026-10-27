@@ -13,7 +13,7 @@
    and the notes agree, builds every image on amd64 and arm64 and checks it
    against the contract, then publishes the GitHub release with
    `versions.yaml`, the matrix results and their checksums. **No image is
-   published**: p-net, profinet-py, Scapy and tshark are GPL, and every
+   published**: p-net, profinet-py, umrp, mrp, Scapy and tshark are GPL, and every
    user builds the images from upstream (`make images`).
 4. go-profinet pins the tag (`INTEROP_REF` in its Makefile and Interop
    workflow).
@@ -32,6 +32,69 @@ Tags are immutable. A fix is a new version.
 | Contract changed incompatibly | major |
 | New adapter, operation, capability or matrix feature | minor |
 | Upstream pin, base image, matrix regeneration or bug fix with unchanged contract | patch |
+
+---
+
+## v0.3.0
+
+**Date:** 2026-10-27
+**Previous release:** v0.2.1
+
+## Summary
+
+Two independent MRP implementations as ring nodes, so that go-profinet's
+MRP manager and client are tested against software that is not
+go-profinet: **umrp** (giometti/umrp, user space, runs on any Linux
+kernel) and **mrp** (microchip-ung/mrp, unmodified, on the kernel's
+bridge MRP support where the host kernel has it); and **Net-SNMP**'s
+manager for go-profinet's SNMP agent. Contract 1.1.
+
+## Changes
+
+- New adapter `umrp`: umrp v4.0 with `ifdriver_bridge.c` (GPL-2.0, this
+  repository's only GPL file), which applies umrp's ring port states to a
+  Linux bridge through an nftables set of blocked ports, so no kernel MRP
+  support is needed. Commands `node` and `status` (ring state, port states,
+  FDB flushes, probe frames received).
+- New adapter `mrp`: microchip-ung/mrp `177717e` (after v1.2) with libcfm,
+  unmodified; needs a host kernel with `CONFIG_BRIDGE_MRP` and, on a
+  software bridge, without `CONFIG_NET_SWITCHDEV`. Neither Docker Desktop
+  (no bridge MRP) nor the GitHub-hosted runners (switchdev built in: the
+  kernel answers the MRP instance with EOPNOTSUPP) qualify, so its tests
+  are not applicable there; `kernel-mrp` tells, `node` prints `unsupported`
+  and exits 3. A kernel built without switchdev, in a VM, would run it.
+- New adapter `netsnmp`: Net-SNMP's command-line manager (Debian bookworm
+  package `snmp` 5.9.3), command `snmp get|getnext|bulkget|walk|bulkwalk|set`
+  with a JSON report of what Net-SNMP decoded. Pinned by Debian like tshark.
+- Contract 1.1 (additions only): profinet-py's `controller --reparam` (PrmBegin, writes, PrmEnd and ApplicationReady on the running AR), the SNMP manager role (`snmp`), the MRP ring node role (`node`, `status`,
+  `kernel-mrp`, exit code 3), and scapy's `decode` reports the frames it
+  has no dissector for (MRP, PTCP) as `notDissected`: they were counted as
+  decoded before, which overstated scapy's evidence for MRP.
+- `scripts/latest-upstream.py`, the candidate workflow and
+  `scripts/check-versions.sh` cover both new adapters (umrp by tag, mrp by
+  the head of its default branch).
+- `scripts/matrix.py` takes go-profinet's role from a test's
+  "(go-profinet: …)" role and lists every role of a peer.
+- The matrix is regenerated from go-profinet's interop suite with the new
+  tests (go-profinet's branches feat/mrp-interop, feat/netsnmp-interop and
+  feat/reparameterize together), run on Docker Desktop (linuxkit 7.0.14,
+  arm64): 33 test runs, 193 pass, 0 fail, 8 n/a (the kernel MRP peer, and
+  re-parameterization that p-net and pnio-rs refuse), 8 attributed
+  deviations (profinet-py's padded I&M1, decoder limits of scapy and
+  Wireshark).
+
+| Peer | pass | fail | n/a | peer-deviation |
+|------|-----:|-----:|----:|---------------:|
+| Net-SNMP | 29 | 0 | 0 | 0 |
+| mrp (kernel) | 0 | 0 | 3 | 0 |
+| p-net | 55 | 0 | 2 | 0 |
+| pnio-dcp | 8 | 0 | 0 | 0 |
+| pnio-rs | 13 | 0 | 3 | 0 |
+| profinet-py | 29 | 0 | 0 | 3 |
+| scapy | 16 | 0 | 0 | 3 |
+| tshark | 15 | 0 | 0 | 0 |
+| tshark/scapy | 8 | 0 | 0 | 2 |
+| umrp | 20 | 0 | 0 | 0 |
 
 ---
 

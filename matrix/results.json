@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0",
-  "generated": "2026-10-27T15:20:08+00:00",
+  "generated": "2026-10-27T22:32:13+00:00",
   "rows": [
     {
       "feature": "MRP Test, TopologyChange, LinkDown, LinkUp; PTCP DelayReq, DelayRes; IOCARSR Connect with SRInfoBlock and MCRBlockReq; MRP records (PDInterfaceMrpDataAdjust/Check/Real, PDPortMrpDataAdjust) encoded (go-profinet)",
@@ -19,7 +19,17 @@
       "goRole": "-",
       "image": "profinet-interop-tshark:dev",
       "outcome": "pass",
-      "detail": "12 frames map[Raw:4 other:2 udp:6], 0 undecoded",
+      "detail": "12 frames map[mrp:4 ptcp:2 udp:6], 0 undecoded, 4 without a scapy dissector",
+      "test": "TestCodecDecoders"
+    },
+    {
+      "feature": "scapy decode codecs.pcap: MRP frames not dissected",
+      "peer": "scapy",
+      "peerRole": "decoder",
+      "goRole": "-",
+      "image": "profinet-interop-tshark:dev",
+      "outcome": "peer-deviation",
+      "detail": "decoder limit: scapy has no MRP dissector; the frames are read, not decoded (tshark decodes them)",
       "test": "TestCodecDecoders"
     },
     {
@@ -69,7 +79,7 @@
       "goRole": "-",
       "image": "profinet-interop-tshark:dev",
       "outcome": "pass",
-      "detail": "7 frames map[dcp:7], 0 undecoded",
+      "detail": "7 frames map[dcp:7], 0 undecoded, 0 without a scapy dissector",
       "test": "TestDCPDHCPDecoders"
     },
     {
@@ -93,6 +103,606 @@
       "test": "TestDCPDHCPDecoders"
     },
     {
+      "feature": "MRP ring with mrp",
+      "peer": "mrp",
+      "peerRole": "MRP manager and client (go-profinet: MRP manager and client)",
+      "goRole": "MRP manager and client",
+      "image": "profinet-interop-mrp:dev",
+      "outcome": "n/a",
+      "detail": "the Docker host's kernel does not accept an MRP instance on a software bridge (no CONFIG_BRIDGE_MRP, or CONFIG_NET_SWITCHDEV built in); microchip-ung/mrp needs it: docker run --rm --cap-add NET_ADMIN --cap-add NET_RAW profinet-interop-mrp:dev kernel-mrp: exit status 1: ",
+      "test": "TestMRPOtfClient/mrp"
+    },
+    {
+      "feature": "MRP ring closed: umrp MRM, go-profinet MRC",
+      "peer": "umrp",
+      "peerRole": "MRP mrm and client (go-profinet: MRP client)",
+      "goRole": "MRP client",
+      "image": "profinet-interop-umrp:dev",
+      "outcome": "pass",
+      "detail": "n2 {Ring:CHK_RC Flushes:2 Probes:0 Ports:[{Name:ringA State:forwarding Oper:up} {Name:ringB State:blocked Oper:up}]}, otfnode {State:PT_IDLE Open:false Blocked:[false false] TopologyChanges:6 LinkChanges:1 TestsReceived:96 Malformed:0}",
+      "test": "TestMRPOtfClient/umrp"
+    },
+    {
+      "feature": "MRP go-profinet MRC: both ring ports forwarding, ring closed",
+      "peer": "umrp",
+      "peerRole": "MRP mrm and client (go-profinet: MRP client)",
+      "goRole": "MRP client",
+      "image": "profinet-interop-umrp:dev",
+      "outcome": "pass",
+      "detail": "{State:PT_IDLE Open:false Blocked:[false false] TopologyChanges:6 LinkChanges:1 TestsReceived:96 Malformed:0}",
+      "test": "TestMRPOtfClient/umrp"
+    },
+    {
+      "feature": "MRP closed ring: no loop, no hole (umrp MRM, go-profinet MRC)",
+      "peer": "umrp",
+      "peerRole": "MRP mrm and client (go-profinet: MRP client)",
+      "goRole": "MRP client",
+      "image": "profinet-interop-umrp:dev",
+      "outcome": "pass",
+      "detail": "probes sent 100, received by n2 100, by n3 100",
+      "test": "TestMRPOtfClient/umrp"
+    },
+    {
+      "feature": "MRP ring open: umrp MRM on go-profinet's link change",
+      "peer": "umrp",
+      "peerRole": "MRP mrm and client (go-profinet: MRP client)",
+      "goRole": "MRP client",
+      "image": "profinet-interop-umrp:dev",
+      "outcome": "pass",
+      "detail": "n2 {Ring:CHK_RO Flushes:3 Probes:2227 Ports:[{Name:ringA State:forwarding Oper:up} {Name:ringB State:forwarding Oper:up}]}",
+      "test": "TestMRPOtfClient/umrp"
+    },
+    {
+      "feature": "MRP link change: go-profinet MRC reports its link down",
+      "peer": "umrp",
+      "peerRole": "MRP mrm and client (go-profinet: MRP client)",
+      "goRole": "MRP client",
+      "image": "profinet-interop-umrp:dev",
+      "outcome": "pass",
+      "detail": "link changes 1 \u2192 2",
+      "test": "TestMRPOtfClient/umrp"
+    },
+    {
+      "feature": "MRP TopologyChange: go-profinet MRC receives umrp's and flushes",
+      "peer": "umrp",
+      "peerRole": "MRP mrm and client (go-profinet: MRP client)",
+      "goRole": "MRP client",
+      "image": "profinet-interop-umrp:dev",
+      "outcome": "pass",
+      "detail": "topology changes 6 \u2192 7",
+      "test": "TestMRPOtfClient/umrp"
+    },
+    {
+      "feature": "MRP measured outage, cable break (umrp MRM, go-profinet MRC, 200 ms profile)",
+      "peer": "umrp",
+      "peerRole": "MRP mrm and client (go-profinet: MRP client)",
+      "goRole": "MRP client",
+      "image": "profinet-interop-umrp:dev",
+      "outcome": "pass",
+      "detail": "9 ms without traffic at the far client (7 of 2127 probes lost); a measurement, not a conformance claim",
+      "test": "TestMRPOtfClient/umrp"
+    },
+    {
+      "feature": "MRP open ring: no loop, no hole (umrp MRM, go-profinet MRC)",
+      "peer": "umrp",
+      "peerRole": "MRP mrm and client (go-profinet: MRP client)",
+      "goRole": "MRP client",
+      "image": "profinet-interop-umrp:dev",
+      "outcome": "pass",
+      "detail": "probes sent 100, received by n2 100, by n3 100",
+      "test": "TestMRPOtfClient/umrp"
+    },
+    {
+      "feature": "MRP ring closes again (umrp MRM, go-profinet MRC)",
+      "peer": "umrp",
+      "peerRole": "MRP mrm and client (go-profinet: MRP client)",
+      "goRole": "MRP client",
+      "image": "profinet-interop-umrp:dev",
+      "outcome": "pass",
+      "detail": "n2 {Ring:CHK_RC Flushes:8 Probes:2327 Ports:[{Name:ringA State:forwarding Oper:up} {Name:ringB State:blocked Oper:up}]}",
+      "test": "TestMRPOtfClient/umrp"
+    },
+    {
+      "feature": "MRP closed again: no loop, no hole (umrp MRM, go-profinet MRC)",
+      "peer": "umrp",
+      "peerRole": "MRP mrm and client (go-profinet: MRP client)",
+      "goRole": "MRP client",
+      "image": "profinet-interop-umrp:dev",
+      "outcome": "pass",
+      "detail": "probes sent 100, received by n2 100, by n3 100",
+      "test": "TestMRPOtfClient/umrp"
+    },
+    {
+      "feature": "scapy decode mrp-otf-client-umrp.pcap",
+      "peer": "scapy",
+      "peerRole": "decoder",
+      "goRole": "-",
+      "image": "profinet-interop-umrp:dev",
+      "outcome": "pass",
+      "detail": "523 frames map[mrp:523], 0 undecoded, 523 without a scapy dissector",
+      "test": "TestMRPOtfClient/umrp"
+    },
+    {
+      "feature": "scapy decode mrp-otf-client-umrp.pcap: MRP frames not dissected",
+      "peer": "scapy",
+      "peerRole": "decoder",
+      "goRole": "-",
+      "image": "profinet-interop-umrp:dev",
+      "outcome": "peer-deviation",
+      "detail": "decoder limit: scapy has no MRP dissector; the frames are read, not decoded (tshark decodes them)",
+      "test": "TestMRPOtfClient/umrp"
+    },
+    {
+      "feature": "tshark check mrp-otf-client-umrp.pcap",
+      "peer": "tshark",
+      "peerRole": "decoder",
+      "goRole": "-",
+      "image": "profinet-interop-umrp:dev",
+      "outcome": "pass",
+      "detail": "523 frames map[PN-MRP:523], 0 malformed, 0 warnings",
+      "test": "TestMRPOtfClient/umrp"
+    },
+    {
+      "feature": "MRP ring with mrp",
+      "peer": "mrp",
+      "peerRole": "MRP manager and client (go-profinet: MRP manager and client)",
+      "goRole": "MRP manager and client",
+      "image": "profinet-interop-mrp:dev",
+      "outcome": "n/a",
+      "detail": "the Docker host's kernel does not accept an MRP instance on a software bridge (no CONFIG_BRIDGE_MRP, or CONFIG_NET_SWITCHDEV built in); microchip-ung/mrp needs it: docker run --rm --cap-add NET_ADMIN --cap-add NET_RAW profinet-interop-mrp:dev kernel-mrp: exit status 1: ",
+      "test": "TestMRPOtfManager/mrp"
+    },
+    {
+      "feature": "MRP ring closed: go-profinet MRM, umrp MRCs",
+      "peer": "umrp",
+      "peerRole": "MRP mrc and client (go-profinet: MRP manager)",
+      "goRole": "MRP manager",
+      "image": "profinet-interop-umrp:dev",
+      "outcome": "pass",
+      "detail": "otfnode {State:CHK_RC Open:false Blocked:[false true] TopologyChanges:1 LinkChanges:1 TestsReceived:54 Malformed:0}, n2 PT_IDLE, n3 PT_IDLE",
+      "test": "TestMRPOtfManager/umrp"
+    },
+    {
+      "feature": "MRP test frames: go-profinet MRM receives its tests through umrp MRCs",
+      "peer": "umrp",
+      "peerRole": "MRP mrc and client (go-profinet: MRP manager)",
+      "goRole": "MRP manager",
+      "image": "profinet-interop-umrp:dev",
+      "outcome": "pass",
+      "detail": "{State:CHK_RC Open:false Blocked:[false true] TopologyChanges:1 LinkChanges:1 TestsReceived:54 Malformed:0}",
+      "test": "TestMRPOtfManager/umrp"
+    },
+    {
+      "feature": "MRP closed ring: no loop, no hole (go-profinet MRM, umrp MRCs)",
+      "peer": "umrp",
+      "peerRole": "MRP mrc and client (go-profinet: MRP manager)",
+      "goRole": "MRP manager",
+      "image": "profinet-interop-umrp:dev",
+      "outcome": "pass",
+      "detail": "probes sent 100, received by n2 100, by n3 100",
+      "test": "TestMRPOtfManager/umrp"
+    },
+    {
+      "feature": "MRP ring open: go-profinet MRM unblocks on a cable break between umrp MRCs",
+      "peer": "umrp",
+      "peerRole": "MRP mrc and client (go-profinet: MRP manager)",
+      "goRole": "MRP manager",
+      "image": "profinet-interop-umrp:dev",
+      "outcome": "pass",
+      "detail": "{State:CHK_RO Open:true Blocked:[false false] TopologyChanges:2 LinkChanges:3 TestsReceived:184 Malformed:0}",
+      "test": "TestMRPOtfManager/umrp"
+    },
+    {
+      "feature": "MRP FDB flush: umrp MRC flushes on go-profinet's TopologyChange",
+      "peer": "umrp",
+      "peerRole": "MRP mrc and client (go-profinet: MRP manager)",
+      "goRole": "MRP manager",
+      "image": "profinet-interop-umrp:dev",
+      "outcome": "pass",
+      "detail": "flushes 3 \u2192 6",
+      "test": "TestMRPOtfManager/umrp"
+    },
+    {
+      "feature": "MRP measured outage, cable break (go-profinet MRM, umrp MRCs, 200 ms profile)",
+      "peer": "umrp",
+      "peerRole": "MRP mrc and client (go-profinet: MRP manager)",
+      "goRole": "MRP manager",
+      "image": "profinet-interop-umrp:dev",
+      "outcome": "pass",
+      "detail": "3 ms without traffic at the far client (2 of 2091 probes lost); a measurement, not a conformance claim",
+      "test": "TestMRPOtfManager/umrp"
+    },
+    {
+      "feature": "MRP open ring: no loop, no hole (go-profinet MRM, umrp MRCs)",
+      "peer": "umrp",
+      "peerRole": "MRP mrc and client (go-profinet: MRP manager)",
+      "goRole": "MRP manager",
+      "image": "profinet-interop-umrp:dev",
+      "outcome": "pass",
+      "detail": "probes sent 100, received by n2 100, by n3 100",
+      "test": "TestMRPOtfManager/umrp"
+    },
+    {
+      "feature": "MRP ring closes again (go-profinet MRM, umrp MRCs)",
+      "peer": "umrp",
+      "peerRole": "MRP mrc and client (go-profinet: MRP manager)",
+      "goRole": "MRP manager",
+      "image": "profinet-interop-umrp:dev",
+      "outcome": "pass",
+      "detail": "{State:CHK_RC Open:false Blocked:[false true] TopologyChanges:3 LinkChanges:5 TestsReceived:187 Malformed:0}",
+      "test": "TestMRPOtfManager/umrp"
+    },
+    {
+      "feature": "MRP closed again: no loop, no hole (go-profinet MRM, umrp MRCs)",
+      "peer": "umrp",
+      "peerRole": "MRP mrc and client (go-profinet: MRP manager)",
+      "goRole": "MRP manager",
+      "image": "profinet-interop-umrp:dev",
+      "outcome": "pass",
+      "detail": "probes sent 100, received by n2 100, by n3 100",
+      "test": "TestMRPOtfManager/umrp"
+    },
+    {
+      "feature": "scapy decode mrp-otf-manager-umrp.pcap",
+      "peer": "scapy",
+      "peerRole": "decoder",
+      "goRole": "-",
+      "image": "profinet-interop-umrp:dev",
+      "outcome": "pass",
+      "detail": "332 frames map[mrp:332], 0 undecoded, 332 without a scapy dissector",
+      "test": "TestMRPOtfManager/umrp"
+    },
+    {
+      "feature": "scapy decode mrp-otf-manager-umrp.pcap: MRP frames not dissected",
+      "peer": "scapy",
+      "peerRole": "decoder",
+      "goRole": "-",
+      "image": "profinet-interop-umrp:dev",
+      "outcome": "peer-deviation",
+      "detail": "decoder limit: scapy has no MRP dissector; the frames are read, not decoded (tshark decodes them)",
+      "test": "TestMRPOtfManager/umrp"
+    },
+    {
+      "feature": "tshark check mrp-otf-manager-umrp.pcap",
+      "peer": "tshark",
+      "peerRole": "decoder",
+      "goRole": "-",
+      "image": "profinet-interop-umrp:dev",
+      "outcome": "pass",
+      "detail": "332 frames map[PN-MRP:332], 0 malformed, 0 warnings",
+      "test": "TestMRPOtfManager/umrp"
+    },
+    {
+      "feature": "MRP ring with mrp",
+      "peer": "mrp",
+      "peerRole": "MRP manager and client (go-profinet: MRP manager and client)",
+      "goRole": "MRP manager and client",
+      "image": "profinet-interop-mrp:dev",
+      "outcome": "n/a",
+      "detail": "the Docker host's kernel does not accept an MRP instance on a software bridge (no CONFIG_BRIDGE_MRP, or CONFIG_NET_SWITCHDEV built in); microchip-ung/mrp needs it: docker run --rm --cap-add NET_ADMIN --cap-add NET_RAW profinet-interop-mrp:dev kernel-mrp: exit status 1: ",
+      "test": "TestMRPRingFaults/mrp"
+    },
+    {
+      "feature": "MRP seeded cable faults, go-profinet MRM with umrp MRCs: settles, no loop, no hole",
+      "peer": "umrp",
+      "peerRole": "MRP mrc and client (go-profinet: MRP manager)",
+      "goRole": "MRP manager",
+      "image": "profinet-interop-umrp:dev",
+      "outcome": "pass",
+      "detail": "seed 1, 8 rounds",
+      "test": "TestMRPRingFaults/umrp"
+    },
+    {
+      "feature": "SNMP v2c Get of unknown names: noSuchObject, noSuchInstance (Net-SNMP)",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent of the IO-Device)",
+      "goRole": "SNMP agent of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "[{OID:1.3.6.1.2.1.1.99.0 Type:noSuchObject Value: Hex:} {OID:1.3.6.1.2.1.1.5.1 Type:noSuchInstance Value: Hex:} {OID:1.3.6.1.4.1.99999.1.0 Type:noSuchObject Value: Hex:}]",
+      "test": "TestNetSNMPErrors"
+    },
+    {
+      "feature": "SNMP v1 Get of an unknown name: noSuchName, index 2 (Net-SNMP)",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent of the IO-Device)",
+      "goRole": "SNMP agent of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "{Exit:2 VarBinds:[{OID:1.3.6.1.2.1.1.5.0 Type:Hex-STRING Value:64 75 74  Hex:647574}] ErrorStatus:noSuchName FailedObject:1.3.6.1.2.1.1.5.1 Timeout:false OK:false Stderr:Created directory: /var/lib/snmp/cert_indexes\nError in packet\nReason: (noSuchName) There is no such variable name in this MIB.\nFailed object: .1.3.6.1.2.1.1.5.1}",
+      "test": "TestNetSNMPErrors"
+    },
+    {
+      "feature": "SNMP v2c GetNext past the end: endOfMibView (Net-SNMP)",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent of the IO-Device)",
+      "goRole": "SNMP agent of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "[{OID:1.3.6.1.2.1.11.999 Type:endOfMibView Value: Hex:} {OID:2.1 Type:endOfMibView Value: Hex:}]",
+      "test": "TestNetSNMPErrors"
+    },
+    {
+      "feature": "SNMP v2c Set refused: notWritable (Net-SNMP)",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent of the IO-Device)",
+      "goRole": "SNMP agent of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "{Exit:2 VarBinds:[] ErrorStatus:notWritable FailedObject:1.3.6.1.2.1.1.5.0 Timeout:false OK:false Stderr:Created directory: /var/lib/snmp/cert_indexes\nError in packet.\nReason: notWritable (That object does not support modification)\nFailed object: .1.3.6.1.2.1.1.5.0}",
+      "test": "TestNetSNMPErrors"
+    },
+    {
+      "feature": "SNMP v1 Set refused: noSuchName (RFC 3584) (Net-SNMP)",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent of the IO-Device)",
+      "goRole": "SNMP agent of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "{Exit:2 VarBinds:[] ErrorStatus:noSuchName FailedObject:1.3.6.1.2.1.1.5.0 Timeout:false OK:false Stderr:Created directory: /var/lib/snmp/cert_indexes\nError in packet.\nReason: (noSuchName) There is no such variable name in this MIB.\nFailed object: .1.3.6.1.2.1.1.5.0}",
+      "test": "TestNetSNMPErrors"
+    },
+    {
+      "feature": "SNMP Set changed nothing (Net-SNMP)",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent of the IO-Device)",
+      "goRole": "SNMP agent of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "[{OID:1.3.6.1.2.1.1.5.0 Type:Hex-STRING Value:64 75 74  Hex:647574}]",
+      "test": "TestNetSNMPErrors"
+    },
+    {
+      "feature": "SNMP wrong community: no answer, snmpInBadCommunityNames counts it (Net-SNMP)",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent of the IO-Device)",
+      "goRole": "SNMP agent of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "{Exit:1 VarBinds:[] ErrorStatus: FailedObject: Timeout:true OK:false Stderr:Created directory: /var/lib/snmp/cert_indexes\nTimeout: No Response from udp:10.112.12.2:161.}",
+      "test": "TestNetSNMPErrors"
+    },
+    {
+      "feature": "SNMP Get of 128-sub-identifier names: noSuchInstance, noSuchObject (Net-SNMP)",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent of the IO-Device)",
+      "goRole": "SNMP agent of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "{Exit:0 VarBinds:[{OID:1.3.6.1.2.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1 Type:noSuchInstance Value: Hex:} {OID:1.3.6.1.4.1.99999.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1 Type:noSuchObject Value: Hex:}] ErrorStatus: FailedObject: Timeout:false OK:true Stderr:Created directory: /var/lib/snmp/cert_indexes}",
+      "test": "TestNetSNMPErrors"
+    },
+    {
+      "feature": "SNMP GetBulk of 10000 repetitions: a truncated answer that fits (Net-SNMP)",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent of the IO-Device)",
+      "goRole": "SNMP agent of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "32 bindings, ",
+      "test": "TestNetSNMPErrors"
+    },
+    {
+      "feature": "SNMP Get whose answer does not fit: tooBig (Net-SNMP)",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent of the IO-Device)",
+      "goRole": "SNMP agent of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "tooBig",
+      "test": "TestNetSNMPErrors"
+    },
+    {
+      "feature": "SNMP flood of 3000 requests: answers bounded by the rate limit",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent of the IO-Device)",
+      "goRole": "SNMP agent of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "210 answers to 3000 requests sent in 0.011 s (limit 311)",
+      "test": "TestNetSNMPFlood"
+    },
+    {
+      "feature": "SNMP agent answers after the flood (Net-SNMP)",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent of the IO-Device)",
+      "goRole": "SNMP agent of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "{Exit:0 VarBinds:[{OID:1.3.6.1.2.1.1.5.0 Type:Hex-STRING Value:64 75 74  Hex:647574}] ErrorStatus: FailedObject: Timeout:false OK:true Stderr:Created directory: /var/lib/snmp/cert_indexes}",
+      "test": "TestNetSNMPFlood"
+    },
+    {
+      "feature": "SNMP lldpRemTable empty without neighbors (Net-SNMP)",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent and LLDP of the IO-Device)",
+      "goRole": "SNMP agent and LLDP of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "map[]",
+      "test": "TestNetSNMPLLDP"
+    },
+    {
+      "feature": "SNMP lldpRemTable shows a neighbor: filter 0, port 1, index 1 (Net-SNMP)",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent and LLDP of the IO-Device)",
+      "goRole": "SNMP agent and LLDP of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "map[nb1:{0 1 1}]",
+      "test": "TestNetSNMPLLDP"
+    },
+    {
+      "feature": "SNMP lldpRemTable: a second neighbor gets index 2, the first keeps 1 (Net-SNMP)",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent and LLDP of the IO-Device)",
+      "goRole": "SNMP agent and LLDP of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "map[nb1:{0 1 1} nb2:{0 1 2}]",
+      "test": "TestNetSNMPLLDP"
+    },
+    {
+      "feature": "SNMP lldpRemTimeMark as a TimeFilter: rows changed since t (Net-SNMP)",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent and LLDP of the IO-Device)",
+      "goRole": "SNMP agent and LLDP of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "[{OID:1.0.8802.1.1.2.1.4.1.1.9.1.1.2 Type:Hex-STRING Value:6E 62 32  Hex:6e6232} {OID:1.0.8802.1.1.2.1.4.1.1.9.1139.1.2 Type:noSuchInstance Value: Hex:}]",
+      "test": "TestNetSNMPLLDP"
+    },
+    {
+      "feature": "SNMP lldpRemTable: a neighbor leaves (TTL), the other keeps its index (Net-SNMP)",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent and LLDP of the IO-Device)",
+      "goRole": "SNMP agent and LLDP of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "map[nb2:{0 1 2}]",
+      "test": "TestNetSNMPLLDP"
+    },
+    {
+      "feature": "SNMP lldpRemTable: a returning neighbor gets a new index (Net-SNMP)",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent and LLDP of the IO-Device)",
+      "goRole": "SNMP agent and LLDP of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "map[nb1:{0 1 3} nb2:{0 1 2}]",
+      "test": "TestNetSNMPLLDP"
+    },
+    {
+      "feature": "SNMP malformed datagrams counted in snmpInASNParseErrs (Net-SNMP reads it)",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent of the IO-Device)",
+      "goRole": "SNMP agent of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "sent 205, counted 205 (seed 20261028)",
+      "test": "TestNetSNMPMalformed"
+    },
+    {
+      "feature": "SNMP unknown versions (5, 3) counted in snmpInBadVersions (Net-SNMP reads it)",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent of the IO-Device)",
+      "goRole": "SNMP agent of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "sent 2, counted 2",
+      "test": "TestNetSNMPMalformed"
+    },
+    {
+      "feature": "SNMP agent answers after the hostile datagrams (Net-SNMP)",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent of the IO-Device)",
+      "goRole": "SNMP agent of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "{Exit:0 VarBinds:[{OID:1.3.6.1.2.1.1.5.0 Type:Hex-STRING Value:64 75 74  Hex:647574}] ErrorStatus: FailedObject: Timeout:false OK:true Stderr:Created directory: /var/lib/snmp/cert_indexes}",
+      "test": "TestNetSNMPMalformed"
+    },
+    {
+      "feature": "SNMP Get v2c of the system group (Net-SNMP)",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent of the IO-Device)",
+      "goRole": "SNMP agent of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "[{OID:1.3.6.1.2.1.1.1.0 Type:Hex-STRING Value:67 6F 2D 70 72 6F 66 69 6E 65 74 20 69 6E 74 65  72 6F 70 20 64 65 76 69 63 65 Hex:676f2d70726f66696e657420696e7465726f7020646576696365} {OID:1.3.6.1.2.1.1.2.0 Type:OID Value:.0.0 Hex:} {OID:1.3.6.1.2.1.1.3.0 Type:Timeticks Value:155 Hex:} {OID:1.3.6.1.2.1.1.5.0 Type:Hex-STRING Value:64 75 74  Hex:647574}]",
+      "test": "TestNetSNMPRead"
+    },
+    {
+      "feature": "SNMP Get v1 (Net-SNMP)",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent of the IO-Device)",
+      "goRole": "SNMP agent of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "{Exit:0 VarBinds:[{OID:1.3.6.1.2.1.1.5.0 Type:Hex-STRING Value:64 75 74  Hex:647574}] ErrorStatus: FailedObject: Timeout:false OK:true Stderr:Created directory: /var/lib/snmp/cert_indexes}",
+      "test": "TestNetSNMPRead"
+    },
+    {
+      "feature": "SNMP GetNext (Net-SNMP)",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent of the IO-Device)",
+      "goRole": "SNMP agent of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "[{OID:1.3.6.1.2.1.1.2.0 Type:OID Value:.0.0 Hex:}]",
+      "test": "TestNetSNMPRead"
+    },
+    {
+      "feature": "SNMP GetBulk with non-repeaters and repetitions (Net-SNMP)",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent of the IO-Device)",
+      "goRole": "SNMP agent of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "got [1.3.6.1.2.1.1.1.0 1.3.6.1.2.1.1.2.0 1.3.6.1.2.1.2.1.0 1.3.6.1.2.1.1.3.0 1.3.6.1.2.1.2.2.1.1.1 1.3.6.1.2.1.1.4.0 1.3.6.1.2.1.2.2.1.2.1], want [1.3.6.1.2.1.1.1.0 1.3.6.1.2.1.1.2.0 1.3.6.1.2.1.2.1.0 1.3.6.1.2.1.1.3.0 1.3.6.1.2.1.2.2.1.1.1 1.3.6.1.2.1.1.4.0 1.3.6.1.2.1.2.2.1.2.1]",
+      "test": "TestNetSNMPRead"
+    },
+    {
+      "feature": "SNMP ifTable: one Ethernet port with the device's MAC (Net-SNMP)",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent of the IO-Device)",
+      "goRole": "SNMP agent of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "[{OID:1.3.6.1.2.1.2.1.0 Type:INTEGER Value:1 Hex:} {OID:1.3.6.1.2.1.2.2.1.6.1 Type:Hex-STRING Value:02 42 0A 6C 0B 02  Hex:02420a6c0b02} {OID:1.3.6.1.2.1.2.2.1.3.1 Type:INTEGER Value:6 Hex:}]",
+      "test": "TestNetSNMPRead"
+    },
+    {
+      "feature": "SNMP LLDP-MIB lldpLocSysName (Net-SNMP)",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent of the IO-Device)",
+      "goRole": "SNMP agent of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "[{OID:1.0.8802.1.1.2.1.3.3.0 Type:Hex-STRING Value:64 75 74  Hex:647574}]",
+      "test": "TestNetSNMPRead"
+    },
+    {
+      "feature": "SNMP walks agree: GetNext and GetBulk (Net-SNMP)",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent of the IO-Device)",
+      "goRole": "SNMP agent of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "39 instances, differences []",
+      "test": "TestNetSNMPRead"
+    },
+    {
+      "feature": "SNMP walks agree: v1 and v2c (Net-SNMP)",
+      "peer": "Net-SNMP",
+      "peerRole": "SNMP manager (go-profinet: SNMP agent of the IO-Device)",
+      "goRole": "SNMP agent of the IO-Device",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "differences []",
+      "test": "TestNetSNMPRead"
+    },
+    {
+      "feature": "scapy decode netsnmp-read.pcap",
+      "peer": "scapy",
+      "peerRole": "decoder",
+      "goRole": "-",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "240 frames map[ARP:40 IP:1 IPv6:11 udp:188], 0 undecoded, 0 without a scapy dissector",
+      "test": "TestNetSNMPRead"
+    },
+    {
+      "feature": "tshark check netsnmp-read.pcap",
+      "peer": "tshark",
+      "peerRole": "decoder",
+      "goRole": "-",
+      "image": "profinet-interop-netsnmp:dev",
+      "outcome": "pass",
+      "detail": "240 frames map[ARP:40 ICMPv6:11 IGMPv3:1 SNMP:188], 0 malformed, 0 warnings",
+      "test": "TestNetSNMPRead"
+    },
+    {
       "feature": "DCP Hello sent by the device (go-profinet)",
       "peer": "tshark/scapy",
       "peerRole": "decoder",
@@ -109,7 +719,7 @@
       "goRole": "-",
       "image": "profinet-interop-tshark:dev",
       "outcome": "pass",
-      "detail": "15 frames map[ARP:3 IPv6:9 dcp:3], 0 undecoded",
+      "detail": "19 frames map[ARP:5 IP:1 IPv6:10 dcp:3], 0 undecoded, 0 without a scapy dissector",
       "test": "TestOtfHelloDecoders"
     },
     {
@@ -119,7 +729,7 @@
       "goRole": "-",
       "image": "profinet-interop-tshark:dev",
       "outcome": "pass",
-      "detail": "15 frames map[ARP:3 ICMPv6:9 PN-DCP:3], 0 malformed, 0 warnings",
+      "detail": "19 frames map[ARP:5 ICMPv6:10 IGMPv3:1 PN-DCP:3], 0 malformed, 0 warnings",
       "test": "TestOtfHelloDecoders"
     },
     {
@@ -249,7 +859,7 @@
       "goRole": "IO-Controller",
       "image": "profinet-interop-pnet:dev",
       "outcome": "pass",
-      "detail": "[{Slot:0 Subslot:32769 OwnPortID:port-001 Peers:[] MAUType:0 DomainBoundary:0 MulticastBoundary:0 LinkState:1 MediaType:3}] <nil> map[data:0400005001000000000000000000800002400020010008706e65742d6475740002420a7b0d0a00000a7b0d0affffff000a7b0d010251001c010000000000128f000010400000000100000000000000000000000004000058010000000000000000008001020f0028010000000000800108706f72742d30303100000000000000000000000000000000010000000000030251001c010000000000128f0000104000000001000000000000000000000000 index:63553 op:read slot:0 subslot:1]",
+      "detail": "[{Slot:0 Subslot:32769 OwnPortID:port-001 Peers:[] MAUType:0 DomainBoundary:0 MulticastBoundary:0 LinkState:1 MediaType:3}] <nil> map[data:0400005001000000000000000000800002400020010008706e65742d6475740002420a74170a00000a74170affffff000a7417010251001c010000000000140b000010400000000100000000000000000000000004000058010000000000000000008001020f0028010000000000800108706f72742d30303100000000000000000000000000000000010000000000030251001c010000000000140b0000104000000001000000000000000000000000 index:63553 op:read slot:0 subslot:1]",
       "test": "TestPnetController"
     },
     {
@@ -319,7 +929,7 @@
       "goRole": "IO-Controller",
       "image": "profinet-interop-pnet:dev",
       "outcome": "pass",
-      "detail": "map[Expired:0 LastCounter:62976 Malformed:0 Received:501 Stale:0 WrongSource:0]",
+      "detail": "map[Expired:0 LastCounter:63232 Malformed:0 Received:502 Stale:0 WrongSource:0]",
       "test": "TestPnetController"
     },
     {
@@ -329,7 +939,7 @@
       "goRole": "IO-Controller",
       "image": "profinet-interop-pnet:dev",
       "outcome": "pass",
-      "detail": "map[SendErrors:0 Sent:501]",
+      "detail": "map[SendErrors:0 Sent:502]",
       "test": "TestPnetController"
     },
     {
@@ -409,7 +1019,7 @@
       "goRole": "-",
       "image": "profinet-interop-pnet:dev",
       "outcome": "pass",
-      "detail": "1046 frames map[ARP:7 IP:1 IPv6:8 Raw:1 dcp:3 rt:988 udp:38], 0 undecoded",
+      "detail": "1024 frames map[ARP:9 IPv6:12 Raw:1 dcp:4 rt:960 udp:38], 0 undecoded, 0 without a scapy dissector",
       "test": "TestPnetController"
     },
     {
@@ -419,7 +1029,7 @@
       "goRole": "-",
       "image": "profinet-interop-pnet:dev",
       "outcome": "pass",
-      "detail": "1046 frames map[ARP:7 ICMPv6:8 IGMPv3:1 LLDP:1 PN-DCP:3 PNIO-CM:38 PNIO_PS:988], 0 malformed, 0 warnings",
+      "detail": "1024 frames map[ARP:9 ICMPv6:12 LLDP:1 PN-DCP:4 PNIO-CM:38 PNIO_PS:960], 0 malformed, 0 warnings",
       "test": "TestPnetController"
     },
     {
@@ -429,7 +1039,7 @@
       "goRole": "IO-Controller",
       "image": "profinet-interop-pnet:dev",
       "outcome": "pass",
-      "detail": "[map[deviceId:2 ip:map[Addr:10.102.16.10 Gateway:10.102.16.1 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:66:10:0a nameOfStation:pnet-dut options:[258 257 513 514 515 516 517 518 1281 1282 1283 1285 1286 65535] role:1 typeOfStation:P-Net Sample Application vendorId:1171]]",
+      "detail": "[map[deviceId:2 ip:map[Addr:10.110.27.10 Gateway:10.110.27.1 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:6e:1b:0a nameOfStation:pnet-dut options:[258 257 513 514 515 516 517 518 1281 1282 1283 1285 1286 65535] role:1 typeOfStation:P-Net Sample Application vendorId:1171]]",
       "test": "TestPnetDCP"
     },
     {
@@ -439,7 +1049,7 @@
       "goRole": "IO-Controller",
       "image": "profinet-interop-pnet:dev",
       "outcome": "pass",
-      "detail": "map[event:dcp identity:map[deviceId:2 ip:map[Addr:10.102.16.10 Gateway:10.102.16.1 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:66:10:0a nameOfStation:pnet-dut role:1 typeOfStation:P-Net Sample Application vendorId:1171] op:get]",
+      "detail": "map[event:dcp identity:map[deviceId:2 ip:map[Addr:10.110.27.10 Gateway:10.110.27.1 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:6e:1b:0a nameOfStation:pnet-dut role:1 typeOfStation:P-Net Sample Application vendorId:1171] op:get]",
       "test": "TestPnetDCP"
     },
     {
@@ -459,7 +1069,7 @@
       "goRole": "IO-Controller",
       "image": "profinet-interop-pnet:dev",
       "outcome": "pass",
-      "detail": "[map[deviceId:2 ip:map[Addr:10.102.16.10 Gateway:10.102.16.1 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:66:10:0a nameOfStation:pnet-renamed options:[258 257 513 514 515 516 517 518 1281 1282 1283 1285 1286 65535] role:1 typeOfStation:P-Net Sample Application vendorId:1171]]",
+      "detail": "[map[deviceId:2 ip:map[Addr:10.110.27.10 Gateway:10.110.27.1 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:6e:1b:0a nameOfStation:pnet-renamed options:[258 257 513 514 515 516 517 518 1281 1282 1283 1285 1286 65535] role:1 typeOfStation:P-Net Sample Application vendorId:1171]]",
       "test": "TestPnetDCP"
     },
     {
@@ -509,7 +1119,7 @@
       "goRole": "IO-Controller",
       "image": "profinet-interop-pnet:dev",
       "outcome": "pass",
-      "detail": "map[Addr:10.102.16.11 Gateway:0.0.0.0 Mask:255.255.255.0]",
+      "detail": "map[Addr:10.110.27.11 Gateway:0.0.0.0 Mask:255.255.255.0]",
       "test": "TestPnetDCP"
     },
     {
@@ -529,7 +1139,7 @@
       "goRole": "IO-Controller",
       "image": "profinet-interop-pnet:dev",
       "outcome": "pass",
-      "detail": "[map[deviceId:2 ip:map[Addr:0.0.0.0 Gateway:0.0.0.0 Mask:0.0.0.0] ipInfo:0 mac:02:42:0a:66:10:0a nameOfStation: options:[258 257 513 514 515 516 517 518 1281 1282 1283 1285 1286 65535] role:1 typeOfStation:P-Net Sample Application vendorId:1171]]",
+      "detail": "[map[deviceId:2 ip:map[Addr:0.0.0.0 Gateway:0.0.0.0 Mask:0.0.0.0] ipInfo:0 mac:02:42:0a:6e:1b:0a nameOfStation: options:[258 257 513 514 515 516 517 518 1281 1282 1283 1285 1286 65535] role:1 typeOfStation:P-Net Sample Application vendorId:1171]]",
       "test": "TestPnetDCP"
     },
     {
@@ -549,7 +1159,7 @@
       "goRole": "IO-Controller",
       "image": "profinet-interop-pnet:dev",
       "outcome": "pass",
-      "detail": "running true, stats map[Aborts:0 Alarms:0 Connects:1 Consumer:map[Expired:0 LastCounter:64256 Malformed:0 Received:250 Stale:0 WrongSource:0] Cycle:map[Cycles:250 MaxInterval:8.816725e+06 MaxLateness:977086 MeanLateness:184143 MinInterval:7.204637e+06 Missed:0] Hellos:1 Provider:map[SendErrors:0 Sent:250]], 2.428023216s after p-net started",
+      "detail": "running true, stats map[Aborts:0 Alarms:0 Connects:1 Consumer:map[Expired:0 LastCounter:64256 Malformed:0 Received:250 Stale:0 WrongSource:0] Cycle:map[Cycles:250 MaxInterval:9.799459e+06 MaxLateness:1.956876e+06 MeanLateness:518796 MinInterval:6.289875e+06 Missed:0] Hellos:1 Provider:map[SendErrors:0 Sent:250]], 2.315179083s after p-net started",
       "test": "TestPnetHello"
     },
     {
@@ -559,7 +1169,7 @@
       "goRole": "-",
       "image": "profinet-interop-pnet:dev",
       "outcome": "pass",
-      "detail": "20 frames map[ARP:8 IP:1 IPv6:9 dcp:2], 0 undecoded",
+      "detail": "25 frames map[ARP:10 IP:1 IPv6:12 dcp:2], 0 undecoded, 0 without a scapy dissector",
       "test": "TestPnetHello"
     },
     {
@@ -569,7 +1179,7 @@
       "goRole": "-",
       "image": "profinet-interop-pnet:dev",
       "outcome": "pass",
-      "detail": "20 frames map[ARP:8 ICMPv6:9 IGMPv3:1 PN-DCP:2], 0 malformed, 0 warnings",
+      "detail": "25 frames map[ARP:10 ICMPv6:12 IGMPv3:1 PN-DCP:2], 0 malformed, 0 warnings",
       "test": "TestPnetHello"
     },
     {
@@ -579,7 +1189,7 @@
       "goRole": "IO-Controller",
       "image": "profinet-interop-pnet:dev",
       "outcome": "pass",
-      "detail": "map[alias:port-001.pnet-dut chassis:P-Net Sample Application  12345 Abcdefghijk    007                  3 V  0  2  0 chassisMac:02:42:0a:7b:11:0a mac:02:42:0a:7b:11:0a port:port-001.pnet-dut portStatus:map[rtClass2:0 rtClass3:0] systemDescription: ttl:20]",
+      "detail": "map[alias:port-001.pnet-dut chassis:P-Net Sample Application  12345 Abcdefghijk    007                  3 V  0  2  0 chassisMac:02:42:0a:5f:1c:0a mac:02:42:0a:5f:1c:0a port:port-001.pnet-dut portStatus:map[rtClass2:0 rtClass3:0] systemDescription: ttl:20]",
       "test": "TestPnetLLDP"
     },
     {
@@ -589,7 +1199,7 @@
       "goRole": "IO-Controller",
       "image": "profinet-interop-pnet:dev",
       "outcome": "pass",
-      "detail": "map[alias:port-001.pnet-dut chassis:P-Net Sample Application  12345 Abcdefghijk    007                  3 V  0  2  0 chassisMac:02:42:0a:7b:11:0a mac:02:42:0a:7b:11:0a port:port-001.pnet-dut portStatus:map[rtClass2:0 rtClass3:0] systemDescription: ttl:20]",
+      "detail": "map[alias:port-001.pnet-dut chassis:P-Net Sample Application  12345 Abcdefghijk    007                  3 V  0  2  0 chassisMac:02:42:0a:5f:1c:0a mac:02:42:0a:5f:1c:0a port:port-001.pnet-dut portStatus:map[rtClass2:0 rtClass3:0] systemDescription: ttl:20]",
       "test": "TestPnetLLDP"
     },
     {
@@ -599,7 +1209,7 @@
       "goRole": "IO-Controller",
       "image": "profinet-interop-pnet:dev",
       "outcome": "pass",
-      "detail": "[map[alias:port-001.pnet-dut chassis:P-Net Sample Application  12345 Abcdefghijk    007                  3 V  0  2  0 chassisMac:02:42:0a:7b:11:0a mac:02:42:0a:7b:11:0a port:port-001.pnet-dut portStatus:map[rtClass2:0 rtClass3:0] systemDescription: ttl:20]]",
+      "detail": "[map[alias:port-001.pnet-dut chassis:P-Net Sample Application  12345 Abcdefghijk    007                  3 V  0  2  0 chassisMac:02:42:0a:5f:1c:0a mac:02:42:0a:5f:1c:0a port:port-001.pnet-dut portStatus:map[rtClass2:0 rtClass3:0] systemDescription: ttl:20]]",
       "test": "TestPnetLLDP"
     },
     {
@@ -618,8 +1228,8 @@
       "peerRole": "device",
       "goRole": "IO-Controller",
       "image": "profinet-interop-pnet:dev",
-      "outcome": "pass",
-      "detail": "[]",
+      "outcome": "n/a",
+      "detail": "this bridge reflects p-net's own LLDP and p-net takes itself for a neighbor",
       "test": "TestPnetPortCheck"
     },
     {
@@ -641,6 +1251,46 @@
       "outcome": "pass",
       "detail": "",
       "test": "TestPnetPortCheck"
+    },
+    {
+      "feature": "Re-parameterization in Data (p-net)",
+      "peer": "p-net",
+      "peerRole": "device",
+      "goRole": "IO-Controller",
+      "image": "profinet-interop-pnet:dev",
+      "outcome": "n/a",
+      "detail": "p-net refuses PrmBegin: every DControl but PrmEnd is answered DD 81 14 08 (pf_cmrpc.c checks ControlCommand == PrmEnd); controller: pnet-dut: re-parameterize: PrmBegin: pnio: IODControlReq(PrmBegin): DD 81 14 08 (control: faulty IODControlReq, code 8)",
+      "test": "TestPnetReparameterize"
+    },
+    {
+      "feature": "A refused PrmBegin leaves the AR running with its parameters (p-net)",
+      "peer": "p-net",
+      "peerRole": "device",
+      "goRole": "IO-Controller",
+      "image": "profinet-interop-pnet:dev",
+      "outcome": "pass",
+      "detail": "map[error:controller: pnet-dut: re-parameterize: PrmBegin: pnio: IODControlReq(PrmBegin): DD 81 14 08 (control: faulty IODControlReq, code 8) op:reparameterize parameters:1 state:Running] map[data:01020304 index:123 op:read slot:1 subslot:1]",
+      "test": "TestPnetReparameterize"
+    },
+    {
+      "feature": "scapy decode pnet-reparameterize.pcap",
+      "peer": "scapy",
+      "peerRole": "decoder",
+      "goRole": "-",
+      "image": "profinet-interop-pnet:dev",
+      "outcome": "pass",
+      "detail": "485 frames map[ARP:8 IPv6:11 Raw:1 dcp:4 rt:449 udp:12], 0 undecoded, 0 without a scapy dissector",
+      "test": "TestPnetReparameterize"
+    },
+    {
+      "feature": "tshark check pnet-reparameterize.pcap",
+      "peer": "tshark",
+      "peerRole": "decoder",
+      "goRole": "-",
+      "image": "profinet-interop-pnet:dev",
+      "outcome": "pass",
+      "detail": "485 frames map[ARP:8 ICMPv6:11 LLDP:1 PN-DCP:4 PNIO-CM:12 PNIO_PS:449], 0 malformed, 0 warnings",
+      "test": "TestPnetReparameterize"
     },
     {
       "feature": "Two IOCARs at once: both controllers reach Running (p-net)",
@@ -679,7 +1329,7 @@
       "goRole": "IO-Controller",
       "image": "profinet-interop-pnet:dev",
       "outcome": "pass",
-      "detail": "map[1:1:map[data:4e iops:128] 2:1:map[data:0000000000000000 iops:128]]",
+      "detail": "map[1:1:map[data:48 iops:128] 2:1:map[data:0000000000000000 iops:128]]",
       "test": "TestPnetSharedDevice"
     },
     {
@@ -709,7 +1359,7 @@
       "goRole": "IO-Controller",
       "image": "profinet-interop-pnet:dev",
       "outcome": "pass",
-      "detail": "true Running map[Aborts:0 Alarms:0 Connects:1 Consumer:map[Expired:0 LastCounter:30528 Malformed:0 Received:3001 Stale:0 WrongSource:0] Cycle:map[Cycles:3001 MaxInterval:1.777156e+06 MaxLateness:945840 MeanLateness:812585 MinInterval:103284 Missed:0] Hellos:0 Provider:map[SendErrors:0 Sent:3001]]",
+      "detail": "true Running map[Aborts:0 Alarms:0 Connects:1 Consumer:map[Expired:0 LastCounter:30432 Malformed:0 Received:2998 Stale:0 WrongSource:0] Cycle:map[Cycles:2927 MaxInterval:4.064458e+06 MaxLateness:999543 MeanLateness:792794 MinInterval:11584 Missed:74] Hellos:0 Provider:map[SendErrors:0 Sent:2927]]",
       "test": "TestPnetStartupModes"
     },
     {
@@ -719,7 +1369,7 @@
       "goRole": "DCP responder",
       "image": "profinet-interop-pnio-dcp:dev",
       "outcome": "pass",
-      "detail": "map[adapter:pnio-dcp devices:[map[family:go-profinet interop device gateway:0.0.0.0 ip:10.126.12.20 mac:02:42:0a:7e:0c:14 mask:255.255.255.0 name:otf-dut]] ok:true op:identify-all schemaVersion:1.0 version:1.2.0]",
+      "detail": "map[adapter:pnio-dcp devices:[map[family:go-profinet interop device gateway:0.0.0.0 ip:10.99.22.20 mac:02:42:0a:63:16:14 mask:255.255.255.0 name:otf-dut]] ok:true op:identify-all schemaVersion:1.0 version:1.2.0]",
       "test": "TestPnioDCP"
     },
     {
@@ -769,7 +1419,7 @@
       "goRole": "DCP responder",
       "image": "profinet-interop-pnio-dcp:dev",
       "outcome": "pass",
-      "detail": "map[adapter:pnio-dcp ok:true op:get-ip schemaVersion:1.0 value:10.126.12.22 version:1.2.0]",
+      "detail": "map[adapter:pnio-dcp ok:true op:get-ip schemaVersion:1.0 value:10.99.22.22 version:1.2.0]",
       "test": "TestPnioDCP"
     },
     {
@@ -799,7 +1449,7 @@
       "goRole": "-",
       "image": "profinet-interop-pnio-dcp:dev",
       "outcome": "pass",
-      "detail": "38 frames map[ARP:12 IP:1 IPv6:9 Raw:2 dcp:14], 0 undecoded",
+      "detail": "45 frames map[ARP:14 IP:1 IPv6:12 Raw:2 dcp:16], 0 undecoded, 0 without a scapy dissector",
       "test": "TestPnioDCP"
     },
     {
@@ -809,7 +1459,7 @@
       "goRole": "-",
       "image": "profinet-interop-pnio-dcp:dev",
       "outcome": "pass",
-      "detail": "38 frames map[ARP:12 ICMPv6:9 IGMPv3:1 LLDP:2 PN-DCP:14], 0 malformed, 0 warnings",
+      "detail": "45 frames map[ARP:14 ICMPv6:12 IGMPv3:1 LLDP:2 PN-DCP:16], 0 malformed, 0 warnings",
       "test": "TestPnioDCP"
     },
     {
@@ -829,7 +1479,7 @@
       "goRole": "IO-Controller",
       "image": "profinet-interop-pnio-rs:dev",
       "outcome": "pass",
-      "detail": "map[HardwareRevision:1 OrderID:PNIO-SAMPLE ProfileID:0 ProfileType:0 RevisionCounter:0 SerialNumber:PNIO-5F081E SoftwareRevision:map[BugFix:1 FunctionalEnhance:0 InternalChange:0 Prefix:86] Supported:14 VendorID:65535 VersionMajor:1 VersionMinor:1]",
+      "detail": "map[HardwareRevision:1 OrderID:PNIO-SAMPLE ProfileID:0 ProfileType:0 RevisionCounter:0 SerialNumber:PNIO-7D101E SoftwareRevision:map[BugFix:1 FunctionalEnhance:0 InternalChange:0 Prefix:86] Supported:14 VendorID:65535 VersionMajor:1 VersionMinor:1]",
       "test": "TestPnioRsController"
     },
     {
@@ -899,7 +1549,7 @@
       "goRole": "IO-Controller",
       "image": "profinet-interop-pnio-rs:dev",
       "outcome": "pass",
-      "detail": "[map[adapter:pnio-rs event:start iface:eth0 ip:10.95.8.30 mac:02:42:0a:5f:08:1e station:pnio-dut] map[event:ar-state state:Idle] map[event:rt-stats] map[event:ar-state state:Connected] map[event:ar-state state:Data] map[event:rt-stats] map[event:rt-stats] map[event:rt-stats] map[event:rt-stats] map[event:ar-state state:Idle (abort: ControllerRelease)]]",
+      "detail": "[map[adapter:pnio-rs event:start iface:eth0 ip:10.125.16.30 mac:02:42:0a:7d:10:1e station:pnio-dut] map[event:ar-state state:Idle] map[event:rt-stats] map[event:ar-state state:Connected] map[event:ar-state state:Data] map[event:rt-stats] map[event:rt-stats] map[event:rt-stats] map[event:rt-stats] map[event:ar-state state:Idle (abort: ControllerRelease)]]",
       "test": "TestPnioRsController"
     },
     {
@@ -929,7 +1579,7 @@
       "goRole": "-",
       "image": "profinet-interop-pnio-rs:dev",
       "outcome": "pass",
-      "detail": "1070 frames map[ARP:14 IP:1 IPv6:10 dcp:14 rt:1001 udp:30], 0 undecoded",
+      "detail": "1072 frames map[ARP:16 IPv6:11 dcp:14 rt:1001 udp:30], 0 undecoded, 0 without a scapy dissector",
       "test": "TestPnioRsController"
     },
     {
@@ -939,7 +1589,7 @@
       "goRole": "-",
       "image": "profinet-interop-pnio-rs:dev",
       "outcome": "pass",
-      "detail": "1070 frames map[ARP:14 ICMPv6:10 IGMPv3:1 PN-DCP:14 PNIO-CM:30 PNIO_PS:1001], 0 malformed, 0 warnings",
+      "detail": "1072 frames map[ARP:16 ICMPv6:11 PN-DCP:14 PNIO-CM:30 PNIO_PS:1001], 0 malformed, 0 warnings",
       "test": "TestPnioRsController"
     },
     {
@@ -949,7 +1599,7 @@
       "goRole": "IO-Controller",
       "image": "profinet-interop-pnio-rs:dev",
       "outcome": "pass",
-      "detail": "[map[deviceId:1 instance:1 ip:map[Addr:10.96.9.30 Gateway:10.96.9.30 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:60:09:1e nameOfStation:pnio-dut options:[258 514 515] role:1 typeOfStation:pnio sample device vendorId:65535]]",
+      "detail": "[map[deviceId:1 instance:1 ip:map[Addr:10.94.17.30 Gateway:10.94.17.30 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:5e:11:1e nameOfStation:pnio-dut options:[258 514 515] role:1 typeOfStation:pnio sample device vendorId:65535]]",
       "test": "TestPnioRsDCP"
     },
     {
@@ -959,7 +1609,7 @@
       "goRole": "IO-Controller",
       "image": "profinet-interop-pnio-rs:dev",
       "outcome": "pass",
-      "detail": "[map[deviceId:1 instance:1 ip:map[Addr:10.96.9.30 Gateway:10.96.9.30 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:60:09:1e nameOfStation:pnio-dut options:[258 514 515] role:1 typeOfStation:pnio sample device vendorId:65535]]",
+      "detail": "[map[deviceId:1 instance:1 ip:map[Addr:10.94.17.30 Gateway:10.94.17.30 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:5e:11:1e nameOfStation:pnio-dut options:[258 514 515] role:1 typeOfStation:pnio sample device vendorId:65535]]",
       "test": "TestPnioRsDCP"
     },
     {
@@ -973,13 +1623,33 @@
       "test": "TestPnioRsDCP"
     },
     {
+      "feature": "Re-parameterization in Data (pnio-rs)",
+      "peer": "pnio-rs",
+      "peerRole": "device",
+      "goRole": "IO-Controller",
+      "image": "profinet-interop-pnio-rs:dev",
+      "outcome": "n/a",
+      "detail": "pnio-rs refuses PrmBegin in Data: controller: pnio-dut: re-parameterize: PrmBegin: pnio: IODControlReq(PrmBegin): DD 81 3D 03 (control: CMDEV, code 3)",
+      "test": "TestPnioRsReparameterize"
+    },
+    {
+      "feature": "A refused PrmBegin leaves the AR running (pnio-rs)",
+      "peer": "pnio-rs",
+      "peerRole": "device",
+      "goRole": "IO-Controller",
+      "image": "profinet-interop-pnio-rs:dev",
+      "outcome": "pass",
+      "detail": "map[error:controller: pnio-dut: re-parameterize: PrmBegin: pnio: IODControlReq(PrmBegin): DD 81 3D 03 (control: CMDEV, code 3) op:reparameterize parameters:1 state:Running] Running",
+      "test": "TestPnioRsReparameterize"
+    },
+    {
       "feature": "DCP discovery by profinet-py",
       "peer": "profinet-py",
       "peerRole": "controller",
       "goRole": "IO-Device",
       "image": "profinet-interop-profinet-py:dev",
       "outcome": "pass",
-      "detail": "[{discover true map[ip:10.123.10.20 mac:02:42:0a:7b:0a:14 name:otf-dut] } {read-im0 true map[hardwareRevision:1 orderId:b'OTF-INTEROP-1' serial:b'0001' vendorId:61440] } {write-im1 false <nil> PNIOError: Unknown error (Decode=0xB8) [ErrorCode1=0x80, ErrorCode2=0xDF]} {read-im1 true map[tagFunction:b'' tagLocation:b''] } {read-im2 true PNInM2 packet (22 bytes)\n  block_header: b'\\x00\"\\x00\\x12\\x01\\x00'\n  im_date:                  } {read-im3 true PNInM3 packet (60 bytes)\n  block_header: b'\\x00#\\x008\\x01\\x00'\n  im_descriptor:                                                        } {read-im4 true PNInM4 packet (60 bytes)\n  block_header: b'\\x00$\\x008\\x01\\x00'\n  im_signature: b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00' } {write-record true <nil> } {read-record true 0005 } {read-implicit-im0 true 002000380100f0004f54462d494e5445524f502d3120202020202020303030312020202020202020202020200001560100000000000000000101001e } {read-invalid-index false <nil> PNIOError: Unknown error (Decode=0xB0) [ErrorCode1=0x80, ErrorCode2=0xDE]} {module-diff true ModuleDiffBlock(modules=[]) } {diagnosis true {61440: DiagnosisData(api=0, slot=0, subslot=0, entries=[ChannelDiagnosis(api=0, slot=0, subslot=0, channel_number=19, channel_properties=ChannelProperties(raw=78, channel_type=<ChannelType.ALL: 2>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=False, maintenance_demanded=True, specifier=<ChannelSpecifier.ALL_DISAPPEARS: 0>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=1, error_type_name='Short circuit'), ChannelDiagnosis(api=0, slot=4, subslot=0, channel_number=0, channel_properties=ChannelProperties(raw=256, channel_type=<ChannelType.RESERVED: 0>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=False, maintenance_demanded=False, specifier=<ChannelSpecifier.APPEARS: 1>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=1, error_type_name='Short circuit'), ChannelDiagnosis(api=0, slot=4, subslot=0, channel_number=0, channel_properties=ChannelProperties(raw=1, channel_type=<ChannelType.SPECIFIC: 1>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=False, maintenance_demanded=False, specifier=<ChannelSpecifier.ALL_DISAPPEARS: 0>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=0, error_type_name='Reserved'), ChannelDiagnosis(api=0, slot=4, subslot=0, channel_number=32768, channel_properties=ChannelProperties(raw=32769, channel_type=<ChannelType.SPECIFIC: 1>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=False, maintenance_demanded=False, specifier=<ChannelSpecifier.ALL_DISAPPEARS: 0>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=32769, error_type_name='Remote mismatch'), ChannelDiagnosis(api=0, slot=4, subslot=0, channel_number=1, channel_properties=ChannelProperties(raw=0, channel_type=<ChannelType.RESERVED: 0>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=False, maintenance_demanded=False, specifier=<ChannelSpecifier.ALL_DISAPPEARS: 0>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=1, error_type_name='Short circuit'), ChannelDiagnosis(api=0, slot=4, subslot=0, channel_number=1, channel_properties=ChannelProperties(raw=0, channel_type=<ChannelType.RESERVED: 0>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=False, maintenance_demanded=False, specifier=<ChannelSpecifier.ALL_DISAPPEARS: 0>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=2, error_type_name='Undervoltage'), ChannelDiagnosis(api=32, slot=1, subslot=1, channel_number=0, channel_properties=ChannelProperties(raw=33, channel_type=<ChannelType.SPECIFIC: 1>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=True, maintenance_demanded=False, specifier=<ChannelSpecifier.ALL_DISAPPEARS: 0>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=0, error_type_name='Reserved'), ChannelDiagnosis(api=32, slot=1, subslot=1, channel_number=48, channel_properties=ChannelProperties(raw=1, channel_type=<ChannelType.SPECIFIC: 1>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=False, maintenance_demanded=False, specifier=<ChannelSpecifier.ALL_DISAPPEARS: 0>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=0, error_type_name='Reserved')], raw_data=b'\\x00\\x13\\x00N\\x01\\x01\\x00\\x01\\x00\\x00\\x00\\x00\\x00\\x04\\x00\\x00\\x00\\x00\\x01\\x00\\x00\\x03\\x00\\x01\\x00\\x00\\x00\\x01\\x80\\x00\\x00\\x00\\x80\\x00\\x80\\x01\\x00\\x00\\x80\\x01\\x00\\x01\\x00\\x00\\x00\\x10\\x00\\x01\\x00\\x01\\x00\\x00\\x00\\x11\\x00\\x02\\x00\\x00\\x00 \\x00\\x01\\x00\\x01\\x00\\x00\\x00!\\x00\\x03\\x00\\x00\\x000\\x00\\x01\\x00\\x01\\x00\\x00\\x001')} } {discover-slots true [SlotInfo(api=0, slot=0, subslot=0x0001) SlotInfo(api=0, slot=0, subslot=0x8000) SlotInfo(api=0, slot=0, subslot=0x8001) SlotInfo(api=0, slot=1, subslot=0x0001) SlotInfo(api=0, slot=2, subslot=0x0001) SlotInfo(api=0, slot=3, subslot=0x0001)] } {start-cyclic true [map[in:0 out:0 slot:0 subslot:1] map[in:0 out:0 slot:0 subslot:32768] map[in:0 out:0 slot:0 subslot:32769] map[in:8 out:0 slot:1 subslot:1] map[in:0 out:4 slot:2 subslot:1] map[in:2 out:2 slot:3 subslot:1]] } {set-output 2:1 true <nil> } {set-output 3:1 true <nil> } {input 1:1 true 2d2e2f3031323334 } {input 3:1 true 2d2e } {cyclic-stats true map[_cycle_count:93 _cycle_time_sum_us:2.975937e+06 consecutive_timeouts:0 frames_duplicate:0 frames_invalid:0 frames_missed:0 frames_out_of_order:0 frames_received:94 frames_sent:94 last_cycle_time_us:32000 last_receive_time:235.059796626 max_cycle_time_us:32041 max_jitter_us:42 min_cycle_time_us:31958] } {stop-cyclic true <nil> } {close true <nil> }]",
+      "detail": "[{discover true map[ip:10.98.18.20 mac:02:42:0a:62:12:14 name:otf-dut] } {read-im0 true map[hardwareRevision:1 orderId:b'OTF-INTEROP-1' serial:b'0001' vendorId:61440] } {write-im1 false <nil> PNIOError: Unknown error (Decode=0xB8) [ErrorCode1=0x80, ErrorCode2=0xDF]} {read-im1 true map[tagFunction:b'' tagLocation:b''] } {read-im2 true PNInM2 packet (22 bytes)\n  block_header: b'\\x00\"\\x00\\x12\\x01\\x00'\n  im_date:                  } {read-im3 true PNInM3 packet (60 bytes)\n  block_header: b'\\x00#\\x008\\x01\\x00'\n  im_descriptor:                                                        } {read-im4 true PNInM4 packet (60 bytes)\n  block_header: b'\\x00$\\x008\\x01\\x00'\n  im_signature: b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00' } {write-record true <nil> } {read-record true 0005 } {read-implicit-im0 true 002000380100f0004f54462d494e5445524f502d3120202020202020303030312020202020202020202020200001560100000000000000000101001e } {read-invalid-index false <nil> PNIOError: Unknown error (Decode=0xB0) [ErrorCode1=0x80, ErrorCode2=0xDE]} {module-diff true ModuleDiffBlock(modules=[]) } {diagnosis true {61440: DiagnosisData(api=0, slot=0, subslot=0, entries=[ChannelDiagnosis(api=0, slot=0, subslot=0, channel_number=19, channel_properties=ChannelProperties(raw=78, channel_type=<ChannelType.ALL: 2>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=False, maintenance_demanded=True, specifier=<ChannelSpecifier.ALL_DISAPPEARS: 0>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=1, error_type_name='Short circuit'), ChannelDiagnosis(api=0, slot=4, subslot=0, channel_number=0, channel_properties=ChannelProperties(raw=256, channel_type=<ChannelType.RESERVED: 0>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=False, maintenance_demanded=False, specifier=<ChannelSpecifier.APPEARS: 1>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=1, error_type_name='Short circuit'), ChannelDiagnosis(api=0, slot=4, subslot=0, channel_number=0, channel_properties=ChannelProperties(raw=1, channel_type=<ChannelType.SPECIFIC: 1>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=False, maintenance_demanded=False, specifier=<ChannelSpecifier.ALL_DISAPPEARS: 0>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=0, error_type_name='Reserved'), ChannelDiagnosis(api=0, slot=4, subslot=0, channel_number=32768, channel_properties=ChannelProperties(raw=32769, channel_type=<ChannelType.SPECIFIC: 1>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=False, maintenance_demanded=False, specifier=<ChannelSpecifier.ALL_DISAPPEARS: 0>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=32769, error_type_name='Remote mismatch'), ChannelDiagnosis(api=0, slot=4, subslot=0, channel_number=1, channel_properties=ChannelProperties(raw=0, channel_type=<ChannelType.RESERVED: 0>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=False, maintenance_demanded=False, specifier=<ChannelSpecifier.ALL_DISAPPEARS: 0>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=1, error_type_name='Short circuit'), ChannelDiagnosis(api=0, slot=4, subslot=0, channel_number=1, channel_properties=ChannelProperties(raw=0, channel_type=<ChannelType.RESERVED: 0>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=False, maintenance_demanded=False, specifier=<ChannelSpecifier.ALL_DISAPPEARS: 0>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=2, error_type_name='Undervoltage'), ChannelDiagnosis(api=32, slot=1, subslot=1, channel_number=0, channel_properties=ChannelProperties(raw=33, channel_type=<ChannelType.SPECIFIC: 1>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=True, maintenance_demanded=False, specifier=<ChannelSpecifier.ALL_DISAPPEARS: 0>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=0, error_type_name='Reserved'), ChannelDiagnosis(api=32, slot=1, subslot=1, channel_number=48, channel_properties=ChannelProperties(raw=1, channel_type=<ChannelType.SPECIFIC: 1>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=False, maintenance_demanded=False, specifier=<ChannelSpecifier.ALL_DISAPPEARS: 0>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=0, error_type_name='Reserved')], raw_data=b'\\x00\\x13\\x00N\\x01\\x01\\x00\\x01\\x00\\x00\\x00\\x00\\x00\\x04\\x00\\x00\\x00\\x00\\x01\\x00\\x00\\x03\\x00\\x01\\x00\\x00\\x00\\x01\\x80\\x00\\x00\\x00\\x80\\x00\\x80\\x01\\x00\\x00\\x80\\x01\\x00\\x01\\x00\\x00\\x00\\x10\\x00\\x01\\x00\\x01\\x00\\x00\\x00\\x11\\x00\\x02\\x00\\x00\\x00 \\x00\\x01\\x00\\x01\\x00\\x00\\x00!\\x00\\x03\\x00\\x00\\x000\\x00\\x01\\x00\\x01\\x00\\x00\\x001')} } {discover-slots true [SlotInfo(api=0, slot=0, subslot=0x0001) SlotInfo(api=0, slot=0, subslot=0x8000) SlotInfo(api=0, slot=0, subslot=0x8001) SlotInfo(api=0, slot=1, subslot=0x0001) SlotInfo(api=0, slot=2, subslot=0x0001) SlotInfo(api=0, slot=3, subslot=0x0001)] } {start-cyclic true [map[in:0 out:0 slot:0 subslot:1] map[in:0 out:0 slot:0 subslot:32768] map[in:0 out:0 slot:0 subslot:32769] map[in:8 out:0 slot:1 subslot:1] map[in:0 out:4 slot:2 subslot:1] map[in:2 out:2 slot:3 subslot:1]] } {set-output 2:1 true <nil> } {set-output 3:1 true <nil> } {input 1:1 true 2c2d2e2f30313233 } {input 3:1 true 2c2d } {cyclic-stats true map[_cycle_count:93 _cycle_time_sum_us:2.977482e+06 consecutive_timeouts:0 frames_duplicate:0 frames_invalid:0 frames_missed:0 frames_out_of_order:0 frames_received:94 frames_sent:94 last_cycle_time_us:33534 last_receive_time:4820.76312865 max_cycle_time_us:40020 max_jitter_us:8960 min_cycle_time_us:23040] } {stop-cyclic true <nil> } {close true <nil> }]",
       "test": "TestProfinetPyController"
     },
     {
@@ -1069,7 +1739,7 @@
       "goRole": "IO-Device",
       "image": "profinet-interop-profinet-py:dev",
       "outcome": "pass",
-      "detail": "[{discover true map[ip:10.123.10.20 mac:02:42:0a:7b:0a:14 name:otf-dut] } {read-im0 true map[hardwareRevision:1 orderId:b'OTF-INTEROP-1' serial:b'0001' vendorId:61440] } {write-im1 false <nil> PNIOError: Unknown error (Decode=0xB8) [ErrorCode1=0x80, ErrorCode2=0xDF]} {read-im1 true map[tagFunction:b'' tagLocation:b''] } {read-im2 true PNInM2 packet (22 bytes)\n  block_header: b'\\x00\"\\x00\\x12\\x01\\x00'\n  im_date:                  } {read-im3 true PNInM3 packet (60 bytes)\n  block_header: b'\\x00#\\x008\\x01\\x00'\n  im_descriptor:                                                        } {read-im4 true PNInM4 packet (60 bytes)\n  block_header: b'\\x00$\\x008\\x01\\x00'\n  im_signature: b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00' } {write-record true <nil> } {read-record true 0005 } {read-implicit-im0 true 002000380100f0004f54462d494e5445524f502d3120202020202020303030312020202020202020202020200001560100000000000000000101001e } {read-invalid-index false <nil> PNIOError: Unknown error (Decode=0xB0) [ErrorCode1=0x80, ErrorCode2=0xDE]} {module-diff true ModuleDiffBlock(modules=[]) } {diagnosis true {61440: DiagnosisData(api=0, slot=0, subslot=0, entries=[ChannelDiagnosis(api=0, slot=0, subslot=0, channel_number=19, channel_properties=ChannelProperties(raw=78, channel_type=<ChannelType.ALL: 2>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=False, maintenance_demanded=True, specifier=<ChannelSpecifier.ALL_DISAPPEARS: 0>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=1, error_type_name='Short circuit'), ChannelDiagnosis(api=0, slot=4, subslot=0, channel_number=0, channel_properties=ChannelProperties(raw=256, channel_type=<ChannelType.RESERVED: 0>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=False, maintenance_demanded=False, specifier=<ChannelSpecifier.APPEARS: 1>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=1, error_type_name='Short circuit'), ChannelDiagnosis(api=0, slot=4, subslot=0, channel_number=0, channel_properties=ChannelProperties(raw=1, channel_type=<ChannelType.SPECIFIC: 1>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=False, maintenance_demanded=False, specifier=<ChannelSpecifier.ALL_DISAPPEARS: 0>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=0, error_type_name='Reserved'), ChannelDiagnosis(api=0, slot=4, subslot=0, channel_number=32768, channel_properties=ChannelProperties(raw=32769, channel_type=<ChannelType.SPECIFIC: 1>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=False, maintenance_demanded=False, specifier=<ChannelSpecifier.ALL_DISAPPEARS: 0>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=32769, error_type_name='Remote mismatch'), ChannelDiagnosis(api=0, slot=4, subslot=0, channel_number=1, channel_properties=ChannelProperties(raw=0, channel_type=<ChannelType.RESERVED: 0>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=False, maintenance_demanded=False, specifier=<ChannelSpecifier.ALL_DISAPPEARS: 0>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=1, error_type_name='Short circuit'), ChannelDiagnosis(api=0, slot=4, subslot=0, channel_number=1, channel_properties=ChannelProperties(raw=0, channel_type=<ChannelType.RESERVED: 0>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=False, maintenance_demanded=False, specifier=<ChannelSpecifier.ALL_DISAPPEARS: 0>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=2, error_type_name='Undervoltage'), ChannelDiagnosis(api=32, slot=1, subslot=1, channel_number=0, channel_properties=ChannelProperties(raw=33, channel_type=<ChannelType.SPECIFIC: 1>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=True, maintenance_demanded=False, specifier=<ChannelSpecifier.ALL_DISAPPEARS: 0>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=0, error_type_name='Reserved'), ChannelDiagnosis(api=32, slot=1, subslot=1, channel_number=48, channel_properties=ChannelProperties(raw=1, channel_type=<ChannelType.SPECIFIC: 1>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=False, maintenance_demanded=False, specifier=<ChannelSpecifier.ALL_DISAPPEARS: 0>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=0, error_type_name='Reserved')], raw_data=b'\\x00\\x13\\x00N\\x01\\x01\\x00\\x01\\x00\\x00\\x00\\x00\\x00\\x04\\x00\\x00\\x00\\x00\\x01\\x00\\x00\\x03\\x00\\x01\\x00\\x00\\x00\\x01\\x80\\x00\\x00\\x00\\x80\\x00\\x80\\x01\\x00\\x00\\x80\\x01\\x00\\x01\\x00\\x00\\x00\\x10\\x00\\x01\\x00\\x01\\x00\\x00\\x00\\x11\\x00\\x02\\x00\\x00\\x00 \\x00\\x01\\x00\\x01\\x00\\x00\\x00!\\x00\\x03\\x00\\x00\\x000\\x00\\x01\\x00\\x01\\x00\\x00\\x001')} } {discover-slots true [SlotInfo(api=0, slot=0, subslot=0x0001) SlotInfo(api=0, slot=0, subslot=0x8000) SlotInfo(api=0, slot=0, subslot=0x8001) SlotInfo(api=0, slot=1, subslot=0x0001) SlotInfo(api=0, slot=2, subslot=0x0001) SlotInfo(api=0, slot=3, subslot=0x0001)] } {start-cyclic true [map[in:0 out:0 slot:0 subslot:1] map[in:0 out:0 slot:0 subslot:32768] map[in:0 out:0 slot:0 subslot:32769] map[in:8 out:0 slot:1 subslot:1] map[in:0 out:4 slot:2 subslot:1] map[in:2 out:2 slot:3 subslot:1]] } {set-output 2:1 true <nil> } {set-output 3:1 true <nil> } {input 1:1 true 2d2e2f3031323334 } {input 3:1 true 2d2e } {cyclic-stats true map[_cycle_count:93 _cycle_time_sum_us:2.975937e+06 consecutive_timeouts:0 frames_duplicate:0 frames_invalid:0 frames_missed:0 frames_out_of_order:0 frames_received:94 frames_sent:94 last_cycle_time_us:32000 last_receive_time:235.059796626 max_cycle_time_us:32041 max_jitter_us:42 min_cycle_time_us:31958] } {stop-cyclic true <nil> } {close true <nil> }]",
+      "detail": "[{discover true map[ip:10.98.18.20 mac:02:42:0a:62:12:14 name:otf-dut] } {read-im0 true map[hardwareRevision:1 orderId:b'OTF-INTEROP-1' serial:b'0001' vendorId:61440] } {write-im1 false <nil> PNIOError: Unknown error (Decode=0xB8) [ErrorCode1=0x80, ErrorCode2=0xDF]} {read-im1 true map[tagFunction:b'' tagLocation:b''] } {read-im2 true PNInM2 packet (22 bytes)\n  block_header: b'\\x00\"\\x00\\x12\\x01\\x00'\n  im_date:                  } {read-im3 true PNInM3 packet (60 bytes)\n  block_header: b'\\x00#\\x008\\x01\\x00'\n  im_descriptor:                                                        } {read-im4 true PNInM4 packet (60 bytes)\n  block_header: b'\\x00$\\x008\\x01\\x00'\n  im_signature: b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00' } {write-record true <nil> } {read-record true 0005 } {read-implicit-im0 true 002000380100f0004f54462d494e5445524f502d3120202020202020303030312020202020202020202020200001560100000000000000000101001e } {read-invalid-index false <nil> PNIOError: Unknown error (Decode=0xB0) [ErrorCode1=0x80, ErrorCode2=0xDE]} {module-diff true ModuleDiffBlock(modules=[]) } {diagnosis true {61440: DiagnosisData(api=0, slot=0, subslot=0, entries=[ChannelDiagnosis(api=0, slot=0, subslot=0, channel_number=19, channel_properties=ChannelProperties(raw=78, channel_type=<ChannelType.ALL: 2>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=False, maintenance_demanded=True, specifier=<ChannelSpecifier.ALL_DISAPPEARS: 0>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=1, error_type_name='Short circuit'), ChannelDiagnosis(api=0, slot=4, subslot=0, channel_number=0, channel_properties=ChannelProperties(raw=256, channel_type=<ChannelType.RESERVED: 0>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=False, maintenance_demanded=False, specifier=<ChannelSpecifier.APPEARS: 1>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=1, error_type_name='Short circuit'), ChannelDiagnosis(api=0, slot=4, subslot=0, channel_number=0, channel_properties=ChannelProperties(raw=1, channel_type=<ChannelType.SPECIFIC: 1>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=False, maintenance_demanded=False, specifier=<ChannelSpecifier.ALL_DISAPPEARS: 0>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=0, error_type_name='Reserved'), ChannelDiagnosis(api=0, slot=4, subslot=0, channel_number=32768, channel_properties=ChannelProperties(raw=32769, channel_type=<ChannelType.SPECIFIC: 1>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=False, maintenance_demanded=False, specifier=<ChannelSpecifier.ALL_DISAPPEARS: 0>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=32769, error_type_name='Remote mismatch'), ChannelDiagnosis(api=0, slot=4, subslot=0, channel_number=1, channel_properties=ChannelProperties(raw=0, channel_type=<ChannelType.RESERVED: 0>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=False, maintenance_demanded=False, specifier=<ChannelSpecifier.ALL_DISAPPEARS: 0>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=1, error_type_name='Short circuit'), ChannelDiagnosis(api=0, slot=4, subslot=0, channel_number=1, channel_properties=ChannelProperties(raw=0, channel_type=<ChannelType.RESERVED: 0>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=False, maintenance_demanded=False, specifier=<ChannelSpecifier.ALL_DISAPPEARS: 0>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=2, error_type_name='Undervoltage'), ChannelDiagnosis(api=32, slot=1, subslot=1, channel_number=0, channel_properties=ChannelProperties(raw=33, channel_type=<ChannelType.SPECIFIC: 1>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=True, maintenance_demanded=False, specifier=<ChannelSpecifier.ALL_DISAPPEARS: 0>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=0, error_type_name='Reserved'), ChannelDiagnosis(api=32, slot=1, subslot=1, channel_number=48, channel_properties=ChannelProperties(raw=1, channel_type=<ChannelType.SPECIFIC: 1>, accumulative=<ChannelAccumulative.NO: 0>, maintenance_required=False, maintenance_demanded=False, specifier=<ChannelSpecifier.ALL_DISAPPEARS: 0>, direction=<ChannelDirection.MANUFACTURER: 0>), error_type=0, error_type_name='Reserved')], raw_data=b'\\x00\\x13\\x00N\\x01\\x01\\x00\\x01\\x00\\x00\\x00\\x00\\x00\\x04\\x00\\x00\\x00\\x00\\x01\\x00\\x00\\x03\\x00\\x01\\x00\\x00\\x00\\x01\\x80\\x00\\x00\\x00\\x80\\x00\\x80\\x01\\x00\\x00\\x80\\x01\\x00\\x01\\x00\\x00\\x00\\x10\\x00\\x01\\x00\\x01\\x00\\x00\\x00\\x11\\x00\\x02\\x00\\x00\\x00 \\x00\\x01\\x00\\x01\\x00\\x00\\x00!\\x00\\x03\\x00\\x00\\x000\\x00\\x01\\x00\\x01\\x00\\x00\\x001')} } {discover-slots true [SlotInfo(api=0, slot=0, subslot=0x0001) SlotInfo(api=0, slot=0, subslot=0x8000) SlotInfo(api=0, slot=0, subslot=0x8001) SlotInfo(api=0, slot=1, subslot=0x0001) SlotInfo(api=0, slot=2, subslot=0x0001) SlotInfo(api=0, slot=3, subslot=0x0001)] } {start-cyclic true [map[in:0 out:0 slot:0 subslot:1] map[in:0 out:0 slot:0 subslot:32768] map[in:0 out:0 slot:0 subslot:32769] map[in:8 out:0 slot:1 subslot:1] map[in:0 out:4 slot:2 subslot:1] map[in:2 out:2 slot:3 subslot:1]] } {set-output 2:1 true <nil> } {set-output 3:1 true <nil> } {input 1:1 true 2c2d2e2f30313233 } {input 3:1 true 2c2d } {cyclic-stats true map[_cycle_count:93 _cycle_time_sum_us:2.977482e+06 consecutive_timeouts:0 frames_duplicate:0 frames_invalid:0 frames_missed:0 frames_out_of_order:0 frames_received:94 frames_sent:94 last_cycle_time_us:33534 last_receive_time:4820.76312865 max_cycle_time_us:40020 max_jitter_us:8960 min_cycle_time_us:23040] } {stop-cyclic true <nil> } {close true <nil> }]",
       "test": "TestProfinetPyController"
     },
     {
@@ -1079,7 +1749,7 @@
       "goRole": "IO-Device",
       "image": "profinet-interop-profinet-py:dev",
       "outcome": "pass",
-      "detail": "2d2e2f3031323334",
+      "detail": "2c2d2e2f30313233",
       "test": "TestProfinetPyController"
     },
     {
@@ -1089,7 +1759,7 @@
       "goRole": "IO-Device",
       "image": "profinet-interop-profinet-py:dev",
       "outcome": "pass",
-      "detail": "map[_cycle_count:93 _cycle_time_sum_us:2.975937e+06 consecutive_timeouts:0 frames_duplicate:0 frames_invalid:0 frames_missed:0 frames_out_of_order:0 frames_received:94 frames_sent:94 last_cycle_time_us:32000 last_receive_time:235.059796626 max_cycle_time_us:32041 max_jitter_us:42 min_cycle_time_us:31958]",
+      "detail": "map[_cycle_count:93 _cycle_time_sum_us:2.977482e+06 consecutive_timeouts:0 frames_duplicate:0 frames_invalid:0 frames_missed:0 frames_out_of_order:0 frames_received:94 frames_sent:94 last_cycle_time_us:33534 last_receive_time:4820.76312865 max_cycle_time_us:40020 max_jitter_us:8960 min_cycle_time_us:23040]",
       "test": "TestProfinetPyController"
     },
     {
@@ -1129,7 +1799,7 @@
       "goRole": "-",
       "image": "profinet-interop-profinet-py:dev",
       "outcome": "pass",
-      "detail": "242 frames map[ARP:7 IP:2 IPv6:9 alarm:4 dcp:2 rt:172 udp:46], 0 undecoded",
+      "detail": "241 frames map[ARP:9 IP:2 IPv6:11 alarm:4 dcp:2 rt:167 udp:46], 0 undecoded, 0 without a scapy dissector",
       "test": "TestProfinetPyController"
     },
     {
@@ -1149,7 +1819,7 @@
       "goRole": "-",
       "image": "profinet-interop-profinet-py:dev",
       "outcome": "pass",
-      "detail": "242 frames map[ARP:7 ICMP:1 ICMPv6:9 IGMPv3:1 PN-DCP:2 PNIO-AL:4 PNIO-CM:46 PNIO_PS:172], 0 malformed, 0 warnings",
+      "detail": "241 frames map[ARP:9 ICMP:1 ICMPv6:11 IGMPv3:1 PN-DCP:2 PNIO-AL:4 PNIO-CM:46 PNIO_PS:167], 0 malformed, 0 warnings",
       "test": "TestProfinetPyController"
     },
     {
@@ -1159,7 +1829,7 @@
       "goRole": "DCP responder",
       "image": "profinet-interop-profinet-py:dev",
       "outcome": "pass",
-      "detail": "[map[deviceId:257 ip:10.122.11.20 mac:02:42:0a:7a:0b:14 name:otf-dut vendorId:61440]]",
+      "detail": "[map[deviceId:257 ip:10.112.21.20 mac:02:42:0a:70:15:14 name:otf-dut vendorId:61440]]",
       "test": "TestProfinetPyDCP"
     },
     {
@@ -1233,6 +1903,106 @@
       "test": "TestProfinetPyDCP"
     },
     {
+      "feature": "Cyclic AR (IOCARSingle) by profinet-py",
+      "peer": "profinet-py",
+      "peerRole": "controller",
+      "goRole": "IO-Device",
+      "image": "profinet-interop-profinet-py:dev",
+      "outcome": "pass",
+      "detail": "map[close:ok cyclic-stats:ok diagnosis:ok discover:ok discover-slots:ok input 1:1:ok module-diff:ok prm-begin:ok prm-end:ok read-im0:ok read-im1:ok read-im2:ok read-im3:ok read-im4:ok read-implicit-im0:ok read-invalid-index:PNIOError: Unknown error (Decode=0xB0) [ErrorCode1=0x80, ErrorCode2=0xDE] read-record:ok reparam-application-ready:ok reparam-write 2:1:0x10:ok start-cyclic:ok stop-cyclic:ok write-im1:PNIOError: Unknown error (Decode=0xB8) [ErrorCode1=0x80, ErrorCode2=0xDF] write-record:ok]",
+      "test": "TestProfinetPyReparameterize"
+    },
+    {
+      "feature": "PrmBegin in Data accepted (profinet-py)",
+      "peer": "profinet-py",
+      "peerRole": "controller",
+      "goRole": "IO-Device",
+      "image": "profinet-interop-profinet-py:dev",
+      "outcome": "pass",
+      "detail": "ok",
+      "test": "TestProfinetPyReparameterize"
+    },
+    {
+      "feature": "Record write between PrmBegin and PrmEnd (profinet-py)",
+      "peer": "profinet-py",
+      "peerRole": "controller",
+      "goRole": "IO-Device",
+      "image": "profinet-interop-profinet-py:dev",
+      "outcome": "pass",
+      "detail": "ok",
+      "test": "TestProfinetPyReparameterize"
+    },
+    {
+      "feature": "PrmEnd after re-parameterization (profinet-py)",
+      "peer": "profinet-py",
+      "peerRole": "controller",
+      "goRole": "IO-Device",
+      "image": "profinet-interop-profinet-py:dev",
+      "outcome": "pass",
+      "detail": "ok",
+      "test": "TestProfinetPyReparameterize"
+    },
+    {
+      "feature": "ApplicationReady after re-parameterization, answered by profinet-py",
+      "peer": "profinet-py",
+      "peerRole": "controller",
+      "goRole": "IO-Device",
+      "image": "profinet-interop-profinet-py:dev",
+      "outcome": "pass",
+      "detail": "ok",
+      "test": "TestProfinetPyReparameterize"
+    },
+    {
+      "feature": "Device AR: Data, Parameterizing, ApplicationReadyPending, Data",
+      "peer": "profinet-py",
+      "peerRole": "controller",
+      "goRole": "IO-Device",
+      "image": "profinet-interop-profinet-py:dev",
+      "outcome": "pass",
+      "detail": "Parameterizing,ApplicationReadyPending,Data,Parameterizing,ApplicationReadyPending,Data,Closed",
+      "test": "TestProfinetPyReparameterize"
+    },
+    {
+      "feature": "Cyclic inputs after re-parameterization",
+      "peer": "profinet-py",
+      "peerRole": "controller",
+      "goRole": "IO-Device",
+      "image": "profinet-interop-profinet-py:dev",
+      "outcome": "pass",
+      "detail": "ok",
+      "test": "TestProfinetPyReparameterize"
+    },
+    {
+      "feature": "scapy decode profinet-py-reparameterize.pcap",
+      "peer": "scapy",
+      "peerRole": "decoder",
+      "goRole": "-",
+      "image": "profinet-interop-profinet-py:dev",
+      "outcome": "pass",
+      "detail": "243 frames map[ARP:9 IP:1 IPv6:11 dcp:2 rt:166 udp:54], 0 undecoded, 0 without a scapy dissector",
+      "test": "TestProfinetPyReparameterize"
+    },
+    {
+      "feature": "tshark: PNIO-CM \"Trailing stray characters\"",
+      "peer": "profinet-py",
+      "peerRole": "controller",
+      "goRole": "IO-Device",
+      "image": "profinet-interop-profinet-py:dev",
+      "outcome": "peer-deviation",
+      "detail": "profinet-py writes I&M1 with BlockLength 58 and two padding octets (its scenario's write-im1 step)",
+      "test": "TestProfinetPyReparameterize"
+    },
+    {
+      "feature": "tshark check profinet-py-reparameterize.pcap",
+      "peer": "tshark",
+      "peerRole": "decoder",
+      "goRole": "-",
+      "image": "profinet-interop-profinet-py:dev",
+      "outcome": "pass",
+      "detail": "243 frames map[ARP:9 ICMP:1 ICMPv6:11 PN-DCP:2 PNIO-CM:54 PNIO_PS:166], 0 malformed, 0 warnings",
+      "test": "TestProfinetPyReparameterize"
+    },
+    {
       "feature": "SNMP walk of the device's agent captured (go-profinet)",
       "peer": "tshark/scapy",
       "peerRole": "decoder",
@@ -1249,7 +2019,7 @@
       "goRole": "-",
       "image": "profinet-interop-tshark:dev",
       "outcome": "pass",
-      "detail": "180 frames map[ARP:2 udp:178], 0 undecoded",
+      "detail": "180 frames map[ARP:2 udp:178], 0 undecoded, 0 without a scapy dissector",
       "test": "TestSNMPDecoders"
     },
     {
@@ -1309,7 +2079,7 @@
       "goRole": "-",
       "image": "profinet-interop-tshark:dev",
       "outcome": "pass",
-      "detail": "2 frames map[udp:2], 0 undecoded",
+      "detail": "2 frames map[udp:2], 0 undecoded, 0 without a scapy dissector",
       "test": "TestUDPRTDecoders"
     },
     {
