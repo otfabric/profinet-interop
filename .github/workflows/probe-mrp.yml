@@ -1,9 +1,0 @@
-name: probe-mrp
-on:
-  push:
-    branches: [feat/umrp]
-jobs:
-  probe:
-    runs-on: ubuntu-latest
-    steps:
-      - run: grep -E "SWITCHDEV|BRIDGE_MRP|BRIDGE_CFM|NET_DSA=" /boot/config-$(uname -r); uname -r

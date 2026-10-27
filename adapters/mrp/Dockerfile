@@ -3,8 +3,11 @@
 # for the Linux bridge's MRP support, with libcfm of microchip-ung/cfm
 # (GPL-2.0), built unmodified. The kernel does the ring work (test frames,
 # port states, MRP forwarding): it needs a host kernel with
-# CONFIG_BRIDGE_MRP (Ubuntu's kernels, the GitHub-hosted runners; not
-# Docker Desktop's). One container is one ring node: a Linux bridge over
+# CONFIG_BRIDGE_MRP and, for a software bridge, without
+# CONFIG_NET_SWITCHDEV (with switchdev built in, the kernel refuses an MRP
+# instance that no switchdev driver offloads: br_mrp_switchdev_add). Neither
+# Docker Desktop nor the GitHub-hosted runners qualify; the node then says
+# "unsupported". One container is one ring node: a Linux bridge over
 # two ring ports, driven by mrp_server.
 #
 # UPSTREAM_SHA is the mrp commit (master after v1.2: CMake 4 fixes),

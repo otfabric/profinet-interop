@@ -57,9 +57,12 @@ manager for go-profinet's SNMP agent. Contract 1.1.
   support is needed. Commands `node` and `status` (ring state, port states,
   FDB flushes, probe frames received).
 - New adapter `mrp`: microchip-ung/mrp `177717e` (after v1.2) with libcfm,
-  unmodified; needs a host kernel with `CONFIG_BRIDGE_MRP` (GitHub-hosted
-  runners: yes; Docker Desktop: no). `kernel-mrp` tells; `node` prints
-  `unsupported` and exits 3 without it.
+  unmodified; needs a host kernel with `CONFIG_BRIDGE_MRP` and, on a
+  software bridge, without `CONFIG_NET_SWITCHDEV`. Neither Docker Desktop
+  (no bridge MRP) nor the GitHub-hosted runners (switchdev built in: the
+  kernel answers the MRP instance with EOPNOTSUPP) qualify, so its tests
+  are not applicable there; `kernel-mrp` tells, `node` prints `unsupported`
+  and exits 3. A kernel built without switchdev, in a VM, would run it.
 - New adapter `netsnmp`: Net-SNMP's command-line manager (Debian bookworm
   package `snmp` 5.9.3), command `snmp get|getnext|bulkget|walk|bulkwalk|set`
   with a JSON report of what Net-SNMP decoded. Pinned by Debian like tshark.

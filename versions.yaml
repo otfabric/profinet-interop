@@ -127,7 +127,7 @@ implementations:
     language: "C"
     roles: [mrp-node]
     published: false
-    requires: "a host kernel with CONFIG_BRIDGE_MRP (Ubuntu kernels, GitHub-hosted runners); not Docker Desktop's"
+    requires: "a host kernel with CONFIG_BRIDGE_MRP and without CONFIG_NET_SWITCHDEV, or with a switchdev driver that offloads MRP (Docker Desktop: no bridge MRP; GitHub-hosted runners: bridge MRP and switchdev, so the kernel refuses an MRP instance on a software bridge)"
     note: >-
       Built unmodified; the kernel's bridge MRP support does the ring work.
       Where the kernel lacks it the node reports "unsupported" (exit 3).

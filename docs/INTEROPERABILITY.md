@@ -123,11 +123,25 @@ faults.
 microchip-ung/mrp, Microchip's daemon for the Linux bridge's MRP support
 (`CONFIG_BRIDGE_MRP`, Linux 5.8 and later), built unmodified: the kernel
 sends the test frames, forwards MRP frames and sets the port states, the
-daemon runs the state machine. It needs a host kernel with bridge MRP: the
-Ubuntu kernels of the GitHub-hosted runners have it; Docker Desktop's
-linuxkit kernel has not, so there the tests are not applicable (the node
-prints `unsupported` and exits 3). The same tests as with umrp run against
-it, except the FDB flush count, which the kernel does unobservably.
+daemon runs the state machine. It needs a host kernel with bridge MRP
+that accepts an MRP instance on a software bridge, and none was found:
+
+- Docker Desktop's linuxkit kernel has no `CONFIG_BRIDGE_MRP`.
+- The GitHub-hosted runners' Ubuntu kernel (6.17-azure) has
+  `CONFIG_BRIDGE_MRP=y` and `CONFIG_NET_SWITCHDEV=y`. With switchdev built
+  in, `br_mrp_add` offers the instance to switchdev drivers
+  (`br_mrp_switchdev_add`, net/bridge/br_mrp_switchdev.c) and returns their
+  "not supported" when none takes it: the kernel answers the daemon's
+  `RTM_SETLINK` (`IFLA_BRIDGE_MRP_INSTANCE`) with `EOPNOTSUPP` on a bridge
+  of veth ports, in a privileged container as well (traced with strace on
+  the runner). The software fallback of the later MRP calls is never
+  reached.
+
+So the tests are not applicable on either (the node prints `unsupported`
+and exits 3). A kernel with `CONFIG_BRIDGE_MRP=y` and
+`CONFIG_NET_SWITCHDEV` not set (for example in a micro-VM) would run it;
+the same tests as with umrp would then apply, except the FDB flush count,
+which the kernel does unobservably.
 
 ### Net-SNMP (SNMP manager)
 
