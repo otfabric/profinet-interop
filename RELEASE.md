@@ -73,8 +73,28 @@ manager for go-profinet's SNMP agent. Contract 1.1.
 - `scripts/latest-upstream.py`, the candidate workflow and
   `scripts/check-versions.sh` cover both new adapters (umrp by tag, mrp by
   the head of its default branch).
-- The matrix is regenerated from go-profinet's interop suite with the MRP
-  ring tests.
+- `scripts/matrix.py` takes go-profinet's role from a test's
+  "(go-profinet: …)" role and lists every role of a peer.
+- The matrix is regenerated from go-profinet's interop suite with the new
+  tests (go-profinet's branches feat/mrp-interop, feat/netsnmp-interop and
+  feat/reparameterize together), run on Docker Desktop (linuxkit 7.0.14,
+  arm64): 33 test runs, 193 pass, 0 fail, 8 n/a (the kernel MRP peer, and
+  re-parameterization that p-net and pnio-rs refuse), 8 attributed
+  deviations (profinet-py's padded I&M1, decoder limits of scapy and
+  Wireshark).
+
+| Peer | pass | fail | n/a | peer-deviation |
+|------|-----:|-----:|----:|---------------:|
+| Net-SNMP | 29 | 0 | 0 | 0 |
+| mrp (kernel) | 0 | 0 | 3 | 0 |
+| p-net | 55 | 0 | 2 | 0 |
+| pnio-dcp | 8 | 0 | 0 | 0 |
+| pnio-rs | 13 | 0 | 3 | 0 |
+| profinet-py | 29 | 0 | 0 | 3 |
+| scapy | 16 | 0 | 0 | 3 |
+| tshark | 15 | 0 | 0 | 0 |
+| tshark/scapy | 8 | 0 | 0 | 2 |
+| umrp | 20 | 0 | 0 | 0 |
 
 ---
 

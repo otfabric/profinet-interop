@@ -7,10 +7,20 @@ usage: matrix.py RESULTS_DIR OUT.json OUT.md
 import datetime
 import glob
 import json
+import re
 import os
 import sys
 
 ROLE_OF_GO = {"device": "IO-Controller", "controller": "IO-Device", "dcp-tool": "DCP responder", "decoder": "-"}
+
+
+def go_role(role):
+    """go-profinet's role against a peer: from the peer's role, or the
+    "(go-profinet: ...)" a test writes into it."""
+    if role in ROLE_OF_GO:
+        return ROLE_OF_GO[role]
+    m = re.search(r"\(go-profinet: ([^)]+)\)", role)
+    return m.group(1) if m else "-"
 
 
 def main():
@@ -30,7 +40,7 @@ def main():
                 peer_row, role = peer, r.get("role", "")
             rows.append({
                 "feature": c["feature"], "peer": peer_row, "peerRole": role,
-                "goRole": ROLE_OF_GO.get(role, "-"), "image": r.get("image", ""),
+                "goRole": go_role(role), "image": r.get("image", ""),
                 "outcome": c["outcome"], "detail": c.get("detail", ""), "test": r.get("test", ""),
             })
     doc = {"schemaVersion": "1.0", "generated": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"), "rows": rows}
@@ -47,7 +57,8 @@ def main():
              "| Peer | go-profinet role | pass | fail | n/a | peer-deviation |", "|------|------------------|------|------|-----|----------------|"]
     for p in peers:
         pr = [r for r in rows if r["peer"] == p]
-        lines.append(f"| {p} | {pr[0]['goRole']} | {sum(r['outcome']=='pass' for r in pr)} | {sum(r['outcome']=='fail' for r in pr)} | {sum(r['outcome']=='n/a' for r in pr)} | {sum(r['outcome']=='peer-deviation' for r in pr)} |")
+        roles = ", ".join(dict.fromkeys(r["goRole"] for r in pr if r["goRole"] != "-")) or "-"
+        lines.append(f"| {p} | {roles} | {sum(r['outcome']=='pass' for r in pr)} | {sum(r['outcome']=='fail' for r in pr)} | {sum(r['outcome']=='n/a' for r in pr)} | {sum(r['outcome']=='peer-deviation' for r in pr)} |")
     for p in peers:
         lines += ["", f"## {p}", "", "| Feature | go-profinet role | Outcome | Detail | Test |", "|---------|------------------|---------|--------|------|"]
         for r in [x for x in rows if x["peer"] == p]:
