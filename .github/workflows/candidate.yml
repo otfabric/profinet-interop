@@ -1,0 +1,221 @@
+name: Upstream candidates
+run-name: "Candidate upstream probe by @${{ github.actor }}"
+
+# Resolves the latest upstream of every adapter (scripts/latest-upstream.py),
+# builds a candidate image where the pin is behind, checks it (smoke test,
+# capability document, contract) and publishes a pin-vs-latest decision table
+# in the workflow Job Summary. When a pin is behind, an issue is opened (or
+# the open one updated) with that table; it is closed once every pin is the
+# latest upstream again. Release pins (Dockerfiles, versions.yaml) are never
+# mutated, and no image is pushed: the candidate images live and die on the
+# runner.
+#
+# p-net is pinned to its last complete GPLv3 tree and compared with the newest
+# GPL release tag; its later trees (the "public" branch and its releases) are
+# evaluation snapshots without ports: reported and flagged, never a candidate.
+# pnio-rs is pinned to a release tag, profinet-py, pnio-dcp and scapy to a
+# PyPI release. tshark is the Debian bookworm package: reported, not built as
+# a candidate (a rebuild installs the current package).
+#
+# There is no cross-stack self-test in this repository: a candidate is checked
+# like a release image (smoke, capabilities, contract); go-profinet's interop
+# suite is the behavioural test once the pin moves.
+on:
+  schedule:
+    - cron: "41 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  candidate:
+    name: ${{ matrix.adapter }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        adapter: [pnet, pnio-rs, profinet-py, pnio-dcp, scapy, tshark]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Resolve the pin against upstream
+        id: resolve
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -o pipefail
+          scripts/latest-upstream.py "${{ matrix.adapter }}" | tee -a "$GITHUB_OUTPUT"
+
+      - name: Build the pinned images
+        if: steps.resolve.outputs.update == 'yes' && steps.resolve.outputs.candidate == 'yes'
+        run: make -j3 --output-sync=target images
+
+      - name: Build and check the candidate at the latest upstream
+        id: test
+        if: steps.resolve.outputs.update == 'yes' && steps.resolve.outputs.candidate == 'yes'
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          make "candidate-${{ matrix.adapter }}" \
+            CANDIDATE_VERSION="${{ steps.resolve.outputs.latest }}" \
+            CANDIDATE_SHA="${{ steps.resolve.outputs.latest_sha }}" \
+            CANDIDATE_SHA256="${{ steps.resolve.outputs.latest_sha256 }}" 2>&1 | tee candidate.log
+
+      - name: Write the table row
+        if: always()
+        env:
+          PIN: ${{ steps.resolve.outputs.pin }}
+          PIN_SHA: ${{ steps.resolve.outputs.pin_sha }}
+          LATEST: ${{ steps.resolve.outputs.latest }}
+          LATEST_SHA: ${{ steps.resolve.outputs.latest_sha }}
+          SOURCE: ${{ steps.resolve.outputs.source }}
+          NOTE: ${{ steps.resolve.outputs.note }}
+          FLAG: ${{ steps.resolve.outputs.flag }}
+          UPDATE: ${{ steps.resolve.outputs.update }}
+          CANDIDATE: ${{ steps.resolve.outputs.candidate }}
+          OUTCOME: ${{ steps.test.outcome }}
+        run: |
+          case "${OUTCOME}" in
+            ""|skipped)
+              if [[ "${CANDIDATE}" == "no" ]]; then tested="not checkable"
+              elif [[ "${UPDATE}" == "no" ]]; then tested="same as pin"
+              else tested="not run"; fi ;;
+            *) tested="\`${OUTCOME}\`" ;;
+          esac
+          notes="${NOTE}${FLAG:+${NOTE:+<br>}**flagged**: ${FLAG}}"
+          pin="\`${PIN:-?}\`"
+          [[ -n "${PIN_SHA}" && "${PIN}" != "${PIN_SHA:0:7}" ]] && pin="${pin}<br>\`${PIN_SHA:0:7}\`"
+          latest="\`${LATEST:-?}\`"
+          [[ -n "${LATEST_SHA}" && "${LATEST}" != "${LATEST_SHA:0:7}" ]] && latest="${latest}<br>\`${LATEST_SHA:0:7}\`"
+          printf '| %s | %s | %s | %s | %s | **%s** | %s |\n' \
+            "${{ matrix.adapter }}" "${SOURCE:-?}" "${pin}" "${latest}" \
+            "${tested}" "${UPDATE:-?}" "${notes//|/\\|}" > "row-${{ matrix.adapter }}.md"
+
+      - name: Upload the row and the candidate log
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: candidate-${{ matrix.adapter }}
+          path: |
+            row-${{ matrix.adapter }}.md
+            candidate.log
+          if-no-files-found: ignore
+
+  summary:
+    name: Decision table
+    runs-on: ubuntu-latest
+    needs: candidate
+    if: always()
+    permissions:
+      contents: read
+      issues: write
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_REPO: ${{ github.repository }}
+      ISSUE_TITLE: "Upstream releases: pins behind the latest"
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      ADAPTER_COUNT: "6"
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: candidate-*
+          merge-multiple: true
+
+      - name: Write pin-vs-latest summary
+        id: table
+        run: |
+          {
+            echo "| Adapter | Looked up in | Pin | Latest upstream | Candidate check | Update? | Notes |"
+            echo "|---|---|---|---|---|---|---|"
+            cat row-*.md 2>/dev/null || echo "| no rows: every candidate job failed before resolving | | | | | | |"
+          } > table.md
+          # A row exists for every adapter whose job got as far as writing one;
+          # a row without yes or no means the lookup itself failed.
+          rows=$(cat row-*.md 2>/dev/null | grep -c '^| ' || true)
+          resolved=$(cat row-*.md 2>/dev/null | grep -cE '\| \*\*(yes|no)\*\* \|' || true)
+          behind=$(cat row-*.md 2>/dev/null | grep -cF '| **yes** |' || true)
+          echo "behind=${behind}" >> "$GITHUB_OUTPUT"
+          echo "complete=$([[ "${rows}" -eq "${ADAPTER_COUNT}" && "${resolved}" -eq "${ADAPTER_COUNT}" ]] && echo yes || echo no)" >> "$GITHUB_OUTPUT"
+          {
+            echo "## Upstream candidate report"
+            echo
+            echo "Release pins were **not** modified and no image was pushed. Use this table to decide whether to bump."
+            echo
+            cat table.md
+            echo
+            echo "### Pin locations"
+            echo
+            echo "Every adapter pins its upstream in \`adapters/<name>/Dockerfile\` as \`ARG UPSTREAM_VERSION\`"
+            echo "(a release: pnio-rs, profinet-py, pnio-dcp, scapy) and/or \`ARG UPSTREAM_SHA\` (a commit: pnet,"
+            echo "pnio-rs), with \`ARG UPSTREAM_SHA256\` for the pnio-dcp wheel, mirrored in \`versions.yaml\`;"
+            echo "\`scripts/check-versions.sh\` checks that they agree. tshark is the Debian bookworm package"
+            echo "(\`versions.yaml\` records its version)."
+            echo
+            echo "### How to read this"
+            echo
+            echo "- **Looked up in**: p-net is compared with its newest GPL release tag; pnio-rs with its newest"
+            echo "  GitHub release; profinet-py, pnio-dcp and scapy with PyPI; tshark with Debian bookworm."
+            echo "- **Update? = yes** means the pin is not the latest upstream. **flagged** notes say why the latest"
+            echo "  is not taken at face value (p-net trees after the pin are not GPL-complete)."
+            echo "- **Candidate check** builds the adapter on that upstream and runs the smoke test, its capability"
+            echo "  document and the contract against the pinned other adapters. \`success\`: the pin can move"
+            echo "  (then run go-profinet's interop suite); \`failure\`: read the uploaded log before bumping."
+            echo "- Bump deliberately, after reading the upstream changelog, and record the change in"
+            echo "  \`RELEASE.md\`."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Find the open tracking issue
+        id: issue
+        run: |
+          number="$(gh issue list --state open --search "\"${ISSUE_TITLE}\" in:title" --json number,title \
+            --jq "[.[] | select(.title == env.ISSUE_TITLE)][0].number // empty")"
+          echo "number=${number}" >> "$GITHUB_OUTPUT"
+
+      - name: Open or update the tracking issue
+        if: steps.table.outputs.behind != '0'
+        env:
+          ISSUE_NUMBER: ${{ steps.issue.outputs.number }}
+        run: |
+          {
+            echo "The weekly probe found upstreams newer than the pins of this repository."
+            echo
+            cat table.md
+            echo
+            echo "## How to read this"
+            echo
+            echo "- **Update? = yes**: the pin is not the latest upstream (the newest GPL release tag for p-net,"
+            echo "  the newest release for the others, the bookworm package for tshark)."
+            echo "- **Candidate check** is the smoke test, the capability document and the contract of the adapter"
+            echo "  built on the latest upstream, against the other adapters at their pins. \`success\`: the pin can"
+            echo "  move. \`failure\`: read the candidate log in the [workflow run](${RUN_URL}) first."
+            echo
+            echo "## To update"
+            echo
+            echo '```sh'
+            echo "scripts/latest-upstream.py <adapter>          # latest, latest_sha, latest_sha256"
+            echo "make images                                   # the pinned images"
+            echo "make candidate-<adapter> CANDIDATE_VERSION=<latest> CANDIDATE_SHA=<latest_sha>"
+            echo '```'
+            echo
+            echo "Then move \`ARG UPSTREAM_VERSION\` / \`ARG UPSTREAM_SHA\` (and \`UPSTREAM_SHA256\` for pnio-dcp) in"
+            echo "\`adapters/<adapter>/Dockerfile\` and \`versions.yaml\`; \`scripts/check-versions.sh\` checks that they"
+            echo "agree. For tshark only \`versions.yaml\` changes. Record the change in \`RELEASE.md\`."
+            echo
+            echo "_Last checked by [this workflow run](${RUN_URL}). This issue is updated by the weekly"
+            echo "probe and closed automatically once every pin is the latest upstream._"
+          } > body.md
+          if [ -n "${ISSUE_NUMBER}" ]; then
+            gh issue edit "${ISSUE_NUMBER}" --body-file body.md
+            echo "Updated issue #${ISSUE_NUMBER}."
+          else
+            gh issue create --title "${ISSUE_TITLE}" --body-file body.md
+          fi
+
+      - name: Close the tracking issue when every pin is the latest
+        if: steps.table.outputs.behind == '0' && steps.table.outputs.complete == 'yes' && steps.issue.outputs.number != ''
+        env:
+          ISSUE_NUMBER: ${{ steps.issue.outputs.number }}
+        run: gh issue close "${ISSUE_NUMBER}" --comment "Every pin is the latest upstream again."
