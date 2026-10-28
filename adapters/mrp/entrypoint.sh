@@ -5,8 +5,10 @@
 #   profinet-interop node --role mrm|mrc|mra [--prio N] [--pport IF] [--sport IF] [--recv 200|500] [--ring-nr N]
 #       waits for both ring ports (the harness moves veth ends into the
 #       container), bridges them (br0), starts mrp_server and prints one
-#       JSON event per line: start, ready, ring (state changes), until
-#       SIGTERM; "unsupported" and exit 3 when the kernel has no bridge MRP
+#       JSON event per line: start, ready, ring (role and state changes),
+#       exit; unsupported (exit 3) when the kernel has no bridge MRP, error
+#       (exit 1) when the ports or the daemon do not come up. On SIGTERM it
+#       deletes the ring instance and the bridge
 #   profinet-interop status       ring state, port states, probe frames received
 #                                 and port counters (JSON); flushes are not
 #                                 observable (the kernel flushes): -1
@@ -81,7 +83,7 @@ print-capabilities)
 	cat <<'JSON'
 {"schemaVersion":"1.0","adapter":"mrp","implementation":"microchip-ung/mrp","version":"v1.2+","license":"GPL-2.0","roles":["mrp-node"],
  "features":{"mrm":true,"mrc":true,"mra":true,"interconnection":false,"recoveryProfiles":["200","500"],"kernelMRP":true,
-   "requires":"a host kernel with CONFIG_BRIDGE_MRP"}}
+   "requires":"a host kernel with CONFIG_BRIDGE_MRP and without CONFIG_NET_SWITCHDEV"}}
 JSON
 	;;
 kernel-mrp)

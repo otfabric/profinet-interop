@@ -2,11 +2,11 @@
 
 # Interoperability matrix
 
-Generated 2026-10-28T07:58:16+00:00 from 39 test runs. Outcomes: **pass**, **fail**, **n/a** (the peer does not implement the feature; the detail says why), **peer-deviation** (the peer deviates from the standard; the detail says how). Reproduce with `make interop` in go-profinet (see [INTEROPERABILITY.md](INTEROPERABILITY.md)).
+Generated 2026-10-28T14:17:04+00:00 from 39 test runs. Outcomes: **pass**, **fail**, **n/a** (the peer does not implement the feature; the detail says why), **peer-deviation** (the peer deviates from the standard; the detail says how). Reproduce with `make interop` in go-profinet (see [INTEROPERABILITY.md](INTEROPERABILITY.md)).
 
 | Peer | go-profinet role | pass | fail | n/a | peer-deviation |
 |------|------------------|------|------|-----|----------------|
-| Net-SNMP | SNMP agent of the IO-Device, SNMP agent and LLDP of the IO-Device | 29 | 0 | 0 | 0 |
+| Net-SNMP | SNMP agent of the IO-Device | 29 | 0 | 0 | 0 |
 | mrp | MRA, MRP client, MRP manager | 31 | 0 | 1 | 0 |
 | p-net | IO-Controller | 56 | 0 | 1 | 0 |
 | pnio-dcp | DCP responder | 8 | 0 | 0 | 0 |
@@ -33,12 +33,12 @@ Generated 2026-10-28T07:58:16+00:00 from 39 test runs. Outcomes: **pass**, **fai
 | SNMP Get whose answer does not fit: tooBig (Net-SNMP) | SNMP agent of the IO-Device | pass | tooBig | `TestNetSNMPErrors` |
 | SNMP flood of 3000 requests: answers bounded by the rate limit | SNMP agent of the IO-Device | pass | 232 answers to 3000 requests sent in 0.032 s (limit 332) | `TestNetSNMPFlood` |
 | SNMP agent answers after the flood (Net-SNMP) | SNMP agent of the IO-Device | pass | {Exit:0 VarBinds:[{OID:1.3.6.1.2.1.1.5.0 Type:Hex-STRING Value:64 75 74  Hex:647574}] ErrorStatus: FailedObject: Timeout:false OK:true Stderr:Created directo... | `TestNetSNMPFlood` |
-| SNMP lldpRemTable empty without neighbors (Net-SNMP) | SNMP agent and LLDP of the IO-Device | pass | map[] | `TestNetSNMPLLDP` |
-| SNMP lldpRemTable shows a neighbor: filter 0, port 1, index 1 (Net-SNMP) | SNMP agent and LLDP of the IO-Device | pass | map[nb1:{0 1 1}] | `TestNetSNMPLLDP` |
-| SNMP lldpRemTable: a second neighbor gets index 2, the first keeps 1 (Net-SNMP) | SNMP agent and LLDP of the IO-Device | pass | map[nb1:{0 1 1} nb2:{0 1 2}] | `TestNetSNMPLLDP` |
-| SNMP lldpRemTimeMark as a TimeFilter: rows changed since t (Net-SNMP) | SNMP agent and LLDP of the IO-Device | pass | [{OID:1.0.8802.1.1.2.1.4.1.1.9.1.1.2 Type:Hex-STRING Value:6E 62 32  Hex:6e6232} {OID:1.0.8802.1.1.2.1.4.1.1.9.1142.1.2 Type:noSuchInstance Value: Hex:}] | `TestNetSNMPLLDP` |
-| SNMP lldpRemTable: a neighbor leaves (TTL), the other keeps its index (Net-SNMP) | SNMP agent and LLDP of the IO-Device | pass | map[nb2:{0 1 2}] | `TestNetSNMPLLDP` |
-| SNMP lldpRemTable: a returning neighbor gets a new index (Net-SNMP) | SNMP agent and LLDP of the IO-Device | pass | map[nb1:{0 1 3} nb2:{0 1 2}] | `TestNetSNMPLLDP` |
+| SNMP lldpRemTable empty without neighbors (Net-SNMP) | SNMP agent of the IO-Device | pass | map[] | `TestNetSNMPLLDP` |
+| SNMP lldpRemTable shows a neighbor: filter 0, port 1, index 1 (Net-SNMP) | SNMP agent of the IO-Device | pass | map[nb1:{0 1 1}] | `TestNetSNMPLLDP` |
+| SNMP lldpRemTable: a second neighbor gets index 2, the first keeps 1 (Net-SNMP) | SNMP agent of the IO-Device | pass | map[nb1:{0 1 1} nb2:{0 1 2}] | `TestNetSNMPLLDP` |
+| SNMP lldpRemTimeMark as a TimeFilter: rows changed since t (Net-SNMP) | SNMP agent of the IO-Device | pass | [{OID:1.0.8802.1.1.2.1.4.1.1.9.1.1.2 Type:Hex-STRING Value:6E 62 32  Hex:6e6232} {OID:1.0.8802.1.1.2.1.4.1.1.9.1142.1.2 Type:noSuchInstance Value: Hex:}] | `TestNetSNMPLLDP` |
+| SNMP lldpRemTable: a neighbor leaves (TTL), the other keeps its index (Net-SNMP) | SNMP agent of the IO-Device | pass | map[nb2:{0 1 2}] | `TestNetSNMPLLDP` |
+| SNMP lldpRemTable: a returning neighbor gets a new index (Net-SNMP) | SNMP agent of the IO-Device | pass | map[nb1:{0 1 3} nb2:{0 1 2}] | `TestNetSNMPLLDP` |
 | SNMP malformed datagrams counted in snmpInASNParseErrs (Net-SNMP reads it) | SNMP agent of the IO-Device | pass | sent 205, counted 205 (seed 20261028) | `TestNetSNMPMalformed` |
 | SNMP unknown versions (5, 3) counted in snmpInBadVersions (Net-SNMP reads it) | SNMP agent of the IO-Device | pass | sent 2, counted 2 | `TestNetSNMPMalformed` |
 | SNMP agent answers after the hostile datagrams (Net-SNMP) | SNMP agent of the IO-Device | pass | {Exit:0 VarBinds:[{OID:1.3.6.1.2.1.1.5.0 Type:Hex-STRING Value:64 75 74  Hex:647574}] ErrorStatus: FailedObject: Timeout:false OK:true Stderr:Created directo... | `TestNetSNMPMalformed` |

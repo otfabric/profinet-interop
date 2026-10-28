@@ -35,6 +35,44 @@ Tags are immutable. A fix is a new version.
 
 ---
 
+## v0.4.1
+
+**Date:** 2026-10-28
+**Previous release:** v0.4.0
+
+## Summary
+
+Documentation and metadata corrections; contract 1.2 unchanged. The
+matrix: 39 test runs, 248 pass, 0 fail, 6 n/a, 14 attributed peer
+deviations.
+
+| Peer | pass | fail | n/a | peer deviation |
+|------|-----:|-----:|----:|---------------:|
+| p-net | 56 | 0 | 1 | 0 |
+| pnio-rs | 13 | 0 | 3 | 0 |
+| profinet-py | 32 | 0 | 1 | 3 |
+| pnio-dcp | 8 | 0 | 0 | 0 |
+| umrp | 32 | 0 | 0 | 2 |
+| microchip-ung/mrp (kernel, micro-VM) | 31 | 0 | 1 | 0 |
+| Net-SNMP | 29 | 0 | 0 | 0 |
+| tshark, scapy (decoders) | 47 | 0 | 0 | 9 |
+
+## Changes
+
+- `versions.yaml`: `published` says what this project publishes (no
+  image), the new `publishable` what the licences would allow;
+  THIRD_PARTY_NOTICES.md says the same. The mrp entry names go-profinet's
+  Kernel MRP micro-VMs.
+- Capabilities: umrp's ifdriver is described as what it is (an nftables
+  set of blocked ports); mrp requires a kernel without
+  `CONFIG_NET_SWITCHDEV` as well.
+- Contract text: the ring nodes' `error` and `unsupported` events, their
+  SIGTERM cleanup, umrp's `fdbDynamic`, pnio-rs's `--diag`, profinet-py's
+  `--timeout`, and the ring nodes' interfaces.
+- Matrix: one go-profinet role for Net-SNMP.
+
+---
+
 ## v0.4.0
 
 **Date:** 2026-10-28
@@ -46,7 +84,7 @@ The MRP automatic manager (MRA) on both ring node adapters, so that
 go-profinet's MRA is tested against umrp's and the kernel's; contract 1.2;
 and the first matrix with microchip-ung/mrp on the kernel's bridge MRP
 (Linux 6.12 without switchdev, in go-profinet's Kernel MRP micro-VM
-workflow): 31 pass, 0 fail.
+workflow): 31 pass, 0 fail, 1 n/a (the FDB flush the kernel does).
 
 ## Changes
 

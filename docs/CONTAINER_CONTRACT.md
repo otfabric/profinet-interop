@@ -17,7 +17,7 @@ bumps the major version; an addition bumps the minor one. Documents carry
 | Image | `profinet-interop-<adapter>` (local builds: `:dev`); see [versions.yaml](../versions.yaml) for which images may be published |
 | Entrypoint | `/usr/local/bin/profinet-interop` |
 | Capabilities | the container needs `CAP_NET_RAW` and `CAP_NET_ADMIN` (raw Ethernet sockets; DCP Set IP changes the interface address) |
-| Interface | `eth0`, attached to a Docker bridge network with a static IPv4 address |
+| Interface | `eth0`, attached to a Docker bridge network with a static IPv4 address (MRP ring nodes: no Docker network, ring ports moved in by the consumer: see `node`) |
 | Licences | `/licenses/<implementation>/` (the upstream licence and the pinned commit) |
 | Runtime directory | `/run/profinet-interop/` (raw logs of the implementation, readiness file `ready`) |
 
@@ -56,6 +56,7 @@ and an unknown command exits 2.
 |------|---------|---------|
 | `--iface IF` | `eth0` | interface |
 | `--station NAME` | implementation default | NameOfStation |
+| `--diag SLOT:CH:ERROR` | none | pnio-rs only: a channel diagnosis the device reports |
 
 The device writes one JSON object per line on stdout. Every object has an
 `event` member; the first is
@@ -82,7 +83,7 @@ Adapter-specific commands of the device role:
 
 ```text
 profinet-interop controller --station NAME [--iface eth0] [--gsdml FILE]
-        [--rr N] [--duration S] [--output SLOT:SUBSLOT:HEX]... [--read-input SLOT:SUBSLOT]...
+        [--rr N] [--duration S] [--timeout S] [--output SLOT:SUBSLOT:HEX]... [--read-input SLOT:SUBSLOT]...
         [--reparam SLOT:SUBSLOT:INDEX:HEX]...
 ```
 
@@ -133,8 +134,10 @@ bridges them (`br0`), starts the MRP daemon and runs until SIGTERM.
 Events: `start`, `ready`, `ring` (`role`: what the node acts as, `MRM` or
 `MRC`, since 1.2; `state`: the daemon's MRM or MRC state,
 `CHK_RC` ring closed, `CHK_RO` ring open, `PT_IDLE`, `DE_IDLE`, …), `exit`;
-the mrp adapter prints `unsupported` and exits 3 when the kernel has no
-bridge MRP support. `status` prints
+`error` (`error`: why; exit 1) when the ring ports or the daemon do not
+come up; the mrp adapter prints the event `unsupported` and exits 3 when
+the kernel has no bridge MRP support. On SIGTERM a node deletes its ring
+instance and its bridge, then exits. `status` prints
 
 ```json
 {"ring":"CHK_RC","role":"MRM","flushes":3,"probes":100,
@@ -142,7 +145,8 @@ bridge MRP support. `status` prints
 ```
 
 `role` (since 1.2) is what the node acts as: an `mra` node is `MRM` or
-`MRC`. `flushes` counts the FDB flushes of the MRP daemon (-1 where the kernel
+`MRC`. umrp adds `fdbDynamic`, the dynamic FDB entries of its bridge.
+`flushes` counts the FDB flushes of the MRP daemon (-1 where the kernel
 does them and they cannot be observed), `probes` the probe frames
 (EtherType 0x88B5, broadcast) the node's bridge delivered to the node: a
 consumer sends a known number around the ring to find a loop (a probe
