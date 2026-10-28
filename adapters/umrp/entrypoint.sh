@@ -2,12 +2,12 @@
 # profinet-interop adapter for umrp: one MRP ring node. See
 # docs/CONTAINER_CONTRACT.md.
 #
-#   profinet-interop node --role mrm|mrc [--pport IF] [--sport IF] [--recv 200|500] [--ring-nr N]
+#   profinet-interop node --role mrm|mrc|mra [--prio N] [--pport IF] [--sport IF] [--recv 200|500] [--ring-nr N]
 #       waits for both ring ports (the harness moves veth ends into the
 #       container), bridges them (br0), starts mrp_server and prints one
 #       JSON event per line: start, ready, ring (state changes), until SIGTERM
-#   profinet-interop status       ring state, port states, FDB flushes, probe frames received
-#                                 and port counters (JSON)
+#   profinet-interop status       ring role (what an MRA acts as) and state, port states, FDB
+#                                 flushes, probe frames received and port counters (JSON)
 #   profinet-interop print-capabilities | version
 set -eu
 RUN=/run/profinet-interop
@@ -18,6 +18,11 @@ cmd=${1:-node}
 # ring_state: the state umrp's mrp tool reports, or "none".
 ring_state() {
 	mrp getmrp 2>/dev/null | sed -nE 's/.*ring_state: ([A-Z_0-9]+).*/\1/p' | head -n1
+}
+
+# ring_role: the role umrp acts in (MRM or MRC; an MRA is either).
+ring_role() {
+	mrp getmrp 2>/dev/null | sed -nE 's/.*ring_role: ([A-Za-z]+).*/\1/p' | head -n1
 }
 
 # counter IF NAME: an interface statistic, 0 when the interface is gone.
@@ -39,7 +44,7 @@ version)
 print-capabilities)
 	cat <<'JSON'
 {"schemaVersion":"1.0","adapter":"umrp","implementation":"umrp","version":"v4.0","license":"GPL-2.0","roles":["mrp-node"],
- "features":{"mrm":true,"mrc":true,"mra":false,"interconnection":false,"recoveryProfiles":["200","500"],"kernelMRP":false,
+ "features":{"mrm":true,"mrc":true,"mra":true,"interconnection":false,"recoveryProfiles":["200","500"],"kernelMRP":false,
    "ifdriver":"bridge (generic Linux bridge port states; this adapter's ifdriver_bridge.c)"}}
 JSON
 	;;
@@ -49,8 +54,8 @@ status)
 	flushes=$(wc -l <"$RUN/flushes" 2>/dev/null || echo 0)
 	fdb=$(bridge fdb show br br0 dynamic 2>/dev/null | grep -vc permanent || true)
 	probes=$(nft list counter bridge mrp probes 2>/dev/null | sed -nE 's/.*packets ([0-9]+).*/\1/p' | head -n1)
-	printf '{"ring":"%s","flushes":%s,"fdbDynamic":%s,"probes":%s,"ports":[%s,%s]}\n' \
-		"$(ring_state)" "$((flushes + 0))" "$((fdb + 0))" "${probes:-0}" "$(port_json "$pport")" "$(port_json "$sport")"
+	printf '{"ring":"%s","role":"%s","flushes":%s,"fdbDynamic":%s,"probes":%s,"ports":[%s,%s]}\n' \
+		"$(ring_state)" "$(ring_role)" "$((flushes + 0))" "$((fdb + 0))" "${probes:-0}" "$(port_json "$pport")" "$(port_json "$sport")"
 	;;
 node)
 	role=""
@@ -58,6 +63,7 @@ node)
 	sport=ringB
 	recv=200
 	ringnr=1
+	prio=""
 	while [ $# -gt 0 ]; do
 		case "$1" in
 		--role) role=$2; shift 2 ;;
@@ -65,12 +71,13 @@ node)
 		--sport) sport=$2; shift 2 ;;
 		--recv) recv=$2; shift 2 ;;
 		--ring-nr) ringnr=$2; shift 2 ;;
+		--prio) prio=$2; shift 2 ;;
 		*) echo "unknown flag $1" >&2; exit 2 ;;
 		esac
 	done
 	case "$role" in
-	mrm|mrc) ;;
-	*) echo "--role must be mrm or mrc" >&2; exit 2 ;;
+	mrm|mrc|mra) ;;
+	*) echo "--role must be mrm, mrc or mra" >&2; exit 2 ;;
 	esac
 	echo "$pport" >"$RUN/pport"
 	echo "$sport" >"$RUN/sport"
@@ -125,15 +132,16 @@ NFT
 		[ $i -gt 100 ] && { echo '{"event":"error","error":"mrp_server did not start"}'; exit 1; }
 		sleep 0.1
 	done
-	mrp addmrp bridge br0 ring_nr "$ringnr" pport "$pport" sport "$sport" ring_role "$role" ring_recv "$recv"
+	mrp addmrp bridge br0 ring_nr "$ringnr" pport "$pport" sport "$sport" ring_role "$role" ring_recv "$recv" ${prio:+prio "$prio"}
 	touch "$RUN/ready"
 	printf '{"event":"ready","bridge":"br0"}\n'
 	last=""
 	while kill -0 "$server" 2>/dev/null; do
 		s=$(ring_state)
-		if [ "$s" != "$last" ]; then
-			printf '{"event":"ring","state":"%s"}\n' "${s:-none}"
-			last=$s
+		ro=$(ring_role)
+		if [ "$ro/$s" != "$last" ]; then
+			printf '{"event":"ring","role":"%s","state":"%s"}\n' "$ro" "${s:-none}"
+			last="$ro/$s"
 		fi
 		sleep 0.05
 	done

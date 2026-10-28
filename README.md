@@ -27,8 +27,8 @@ results the [interoperability matrix](docs/MATRIX.md) is generated from.
 | `scapy` | [scapy](https://scapy.net) contrib pnio | 2.6.1 | GPL-2.0-only | decoder | every capture |
 | `tshark` | Wireshark tshark | 4.0.17 (Debian) | GPL-2.0-or-later | decoder | every capture |
 | `netsnmp` | [Net-SNMP](https://www.net-snmp.org) command-line manager | 5.9.3 (Debian) | BSD-style | SNMP manager (C) | SNMP agent of the IO-Device |
-| `umrp` | [umrp](https://github.com/giometti/umrp) with this repository's bridge ifdriver | v4.0 | GPL-2.0 | MRP ring node, MRM or MRC (C, user space); any Linux kernel | MRP manager and client in a ring |
-| `mrp` | [microchip-ung/mrp](https://github.com/microchip-ung/mrp), unmodified | `177717e` (after v1.2) | GPL-2.0 | MRP ring node, MRM or MRC (C, on the kernel's bridge MRP); needs a host kernel with `CONFIG_BRIDGE_MRP` and without `CONFIG_NET_SWITCHDEV` (Docker Desktop: no bridge MRP; GitHub-hosted runners: switchdev built in, so the kernel refuses it: not applicable on either) | MRP manager and client in a ring |
+| `umrp` | [umrp](https://github.com/giometti/umrp) with this repository's bridge ifdriver | v4.0 | GPL-2.0 | MRP ring node, MRM, MRC or MRA (C, user space); any Linux kernel | MRP manager, client and automatic manager in a ring |
+| `mrp` | [microchip-ung/mrp](https://github.com/microchip-ung/mrp), unmodified | `177717e` (after v1.2) | GPL-2.0 | MRP ring node, MRM, MRC or MRA (C, on the kernel's bridge MRP); needs a host kernel with `CONFIG_BRIDGE_MRP` and without `CONFIG_NET_SWITCHDEV` (Docker Desktop: no bridge MRP; GitHub-hosted runners: switchdev built in, so the kernel refuses it: not applicable on either) | MRP manager and client in a ring |
 
 Evaluated and not used: **profinet-python** (M256-Automation; no licence, a
 Connect that compliant devices reject, unmaintained) and the **PI

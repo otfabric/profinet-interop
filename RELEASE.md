@@ -35,6 +35,28 @@ Tags are immutable. A fix is a new version.
 
 ---
 
+## v0.4.0
+
+**Date:** 2026-10-28
+**Previous release:** v0.3.0
+
+## Summary
+
+The MRP automatic manager (MRA) on both ring node adapters, so that
+go-profinet's MRA is tested against umrp's; contract 1.2.
+
+## Changes
+
+- Contract 1.2 (additions only): `node --role mra` and `--prio N` for the
+  MRP ring nodes (umrp, mrp); `status` and the `ring` events report `role`,
+  what the node acts as (`MRM` or `MRC`).
+- `umrp` and `mrp`: capability `mra` true.
+- Documented umrp's MRA deviation: as a client it keeps reclaiming the
+  manager role (its test monitor ignores the manager it gave way to), and
+  its MRP_Options carry the OUI 00-00-00, which tshark does not decode.
+
+---
+
 ## v0.3.0
 
 **Date:** 2026-10-27
