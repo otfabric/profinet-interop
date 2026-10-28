@@ -151,10 +151,22 @@ that accepts an MRP instance on a software bridge, and none was found:
   reached.
 
 So the tests are not applicable on either (the node prints `unsupported`
-and exits 3). A kernel with `CONFIG_BRIDGE_MRP=y` and
-`CONFIG_NET_SWITCHDEV` not set (for example in a micro-VM) would run it;
-the same tests as with umrp would then apply, except the FDB flush count,
-which the kernel does unobservably.
+and exits 3). Since 0.4.0 they run in go-profinet's **Kernel MRP**
+workflow: a Linux 6.12 built with `CONFIG_BRIDGE_MRP=y` and without
+`CONFIG_NET_SWITCHDEV` (go-profinet's `scripts/mrp-kernel.sh`), booted in
+a virtme-ng micro-VM with a Docker daemon inside, one boot per test
+(`scripts/microvm-interop.sh`). The matrix's mrp rows come from there; the
+same tests as with umrp apply, except the FDB flush count, which the
+kernel does unobservably.
+
+Two kernel behaviours seen there (Linux 6.12): as an MRA the bridge
+appends to its test frames an MRP_Option whose length field is the size of
+a pointer plus the body, five octets more than it writes
+(net/bridge/br_mrp.c, `br_mrp_alloc_test_skb`): a decoder that checks
+TLV lengths rejects the frame (go-profinet takes the option to the end of
+the frame). And removing a container whose bridge holds an MRP instance
+can hang the kernel's network namespace cleanup on RTNL, which is why the
+workflow tears nothing down.
 
 ### Net-SNMP (SNMP manager)
 

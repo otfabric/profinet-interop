@@ -43,7 +43,10 @@ Tags are immutable. A fix is a new version.
 ## Summary
 
 The MRP automatic manager (MRA) on both ring node adapters, so that
-go-profinet's MRA is tested against umrp's; contract 1.2.
+go-profinet's MRA is tested against umrp's and the kernel's; contract 1.2;
+and the first matrix with microchip-ung/mrp on the kernel's bridge MRP
+(Linux 6.12 without switchdev, in go-profinet's Kernel MRP micro-VM
+workflow): 31 pass, 0 fail.
 
 ## Changes
 
@@ -51,6 +54,11 @@ go-profinet's MRA is tested against umrp's; contract 1.2.
   MRP ring nodes (umrp, mrp); `status` and the `ring` events report `role`,
   what the node acts as (`MRM` or `MRC`).
 - `umrp` and `mrp`: capability `mra` true.
+- Ring nodes delete their MRP instance and bridge on SIGTERM.
+- Matrix regenerated: go-profinet's Interop workflow against this release
+  plus its Kernel MRP workflow for the mrp rows.
+- Documented the kernel's overlong MRA option and the namespace teardown
+  hang seen in the micro-VM (docs/INTEROPERABILITY.md).
 - Documented umrp's MRA deviation: as a client it keeps reclaiming the
   manager role (its test monitor ignores the manager it gave way to), and
   its MRP_Options carry the OUI 00-00-00, which tshark does not decode.
