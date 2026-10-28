@@ -125,7 +125,9 @@ table bridge mrp {
 NFT
 	mrp_server -d >"$RUN/umrp.log" 2>&1 &
 	server=$!
-	trap 'kill $server 2>/dev/null; exit 0' TERM INT
+	# On SIGTERM the ring instance goes first, then the daemon and the
+	# bridge: the kernel then tears down no bridge with an MRP instance.
+	trap 'mrp delmrp bridge br0 ring_nr "$ringnr" >/dev/null 2>&1; kill $server 2>/dev/null; ip link del br0 2>/dev/null; exit 0' TERM INT
 	i=0
 	until mrp getmrp >/dev/null 2>&1; do
 		i=$((i + 1))

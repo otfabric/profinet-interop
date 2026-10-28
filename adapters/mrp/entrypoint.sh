@@ -124,7 +124,9 @@ node)
 	echo "$sport" >"$RUN/sport"
 	printf '{"event":"start","adapter":"mrp","role":"%s","pport":"%s","sport":"%s","recv":"%s"}\n' "$role" "$pport" "$sport" "$recv"
 	start_server
-	trap 'kill $server 2>/dev/null; exit 0' TERM INT
+	# On SIGTERM the ring instance goes first, then the daemon and the
+	# bridge: the kernel then tears down no bridge with an MRP instance.
+	trap 'mrp delmrp bridge br0 ring_nr "$ringnr" >/dev/null 2>&1; kill $server 2>/dev/null; ip link del br0 2>/dev/null; exit 0' TERM INT
 	if ! kernel_mrp; then
 		printf '{"event":"unsupported","reason":"the kernel has no bridge MRP support (CONFIG_BRIDGE_MRP)","kernel":"%s"}\n' "$(uname -r)"
 		exit 3
