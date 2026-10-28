@@ -5,7 +5,9 @@
 #   profinet-interop node --role mrm|mrc|mra [--prio N] [--pport IF] [--sport IF] [--recv 200|500] [--ring-nr N]
 #       waits for both ring ports (the harness moves veth ends into the
 #       container), bridges them (br0), starts mrp_server and prints one
-#       JSON event per line: start, ready, ring (state changes), until SIGTERM
+#       JSON event per line: start, ready, ring (role and state changes),
+#       exit; error (exit 1) when the ports or the daemon do not come up. On
+#       SIGTERM it deletes the ring instance and the bridge
 #   profinet-interop status       ring role (what an MRA acts as) and state, port states, FDB
 #                                 flushes, probe frames received and port counters (JSON)
 #   profinet-interop print-capabilities | version
@@ -45,7 +47,7 @@ print-capabilities)
 	cat <<'JSON'
 {"schemaVersion":"1.0","adapter":"umrp","implementation":"umrp","version":"v4.0","license":"GPL-2.0","roles":["mrp-node"],
  "features":{"mrm":true,"mrc":true,"mra":true,"interconnection":false,"recoveryProfiles":["200","500"],"kernelMRP":false,
-   "ifdriver":"bridge (generic Linux bridge port states; this adapter's ifdriver_bridge.c)"}}
+   "ifdriver":"nftables set of blocked ports on a Linux bridge (this adapter's ifdriver_bridge.c)"}}
 JSON
 	;;
 status)

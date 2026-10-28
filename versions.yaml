@@ -1,8 +1,11 @@
 # Machine-readable version manifest of profinet-interop. Every upstream is
 # pinned; nothing floats. The Dockerfiles are the source of truth for a
 # build; scripts/check-versions.sh fails when this file disagrees with them.
+# published: whether this project publishes the image (none is: every user
+# builds them, make images); publishable: whether the licences would allow
+# it (not for GPL code).
 
-interop_version: "0.4.0"
+interop_version: "0.4.1"
 contract_version: "1.2"        # docs/CONTAINER_CONTRACT.md
 
 protocol:
@@ -27,6 +30,7 @@ implementations:
       - "-Werror removed (newer GCC)"
       - "optional build arg ACCEPT_IOSAR=1: accept ARType 0x0006 (image variant, not the default)"
     published: false
+    publishable: false
     note: >-
       Built locally (make image-pnet) from source fetched by commit; the
       image is not published. The tree predates the v1.0.2 fixes of
@@ -41,7 +45,8 @@ implementations:
     license: "MIT OR Apache-2.0"
     language: "Rust"
     roles: [device]
-    published: true
+    published: false
+    publishable: true
 
   profinet-py:
     status: implemented
@@ -54,6 +59,7 @@ implementations:
     language: "Python"
     roles: [controller, dcp-tool]
     published: false
+    publishable: false
     note: "Installed from PyPI into a locally built image; not redistributed."
 
   pnio-dcp:
@@ -66,7 +72,8 @@ implementations:
     license: "MIT"
     language: "Python"
     roles: [dcp-tool]
-    published: true
+    published: false
+    publishable: true
 
   scapy:
     status: implemented
@@ -76,6 +83,7 @@ implementations:
     license: "GPL-2.0-only"
     roles: [decoder]
     published: false
+    publishable: false
 
   tshark:
     status: implemented
@@ -84,6 +92,7 @@ implementations:
     license: "GPL-2.0-or-later"
     roles: [decoder]
     published: false
+    publishable: false
 
   netsnmp:
     status: implemented
@@ -94,6 +103,7 @@ implementations:
     language: "C"
     roles: [snmp-manager]
     published: false
+    publishable: true
     note: >-
       Pinned by Debian, like tshark: the image installs the bookworm package
       current when it is built. Debian's package has no IETF MIB files, so
@@ -112,6 +122,7 @@ implementations:
     patches:
       - "this adapter's ifdriver_bridge.c (GPL-2.0, added, no upstream file changed): ring port states as an nftables set of blocked ports on a Linux bridge, FDB flush with iproute2; no kernel MRP support needed"
     published: false
+    publishable: false
     note: >-
       umrp runs the MRP state machine in user space and sends, receives and
       forwards MRP frames on raw sockets. One container is one ring node.
@@ -127,7 +138,8 @@ implementations:
     language: "C"
     roles: [mrp-node]
     published: false
-    requires: "a host kernel with CONFIG_BRIDGE_MRP and without CONFIG_NET_SWITCHDEV, or with a switchdev driver that offloads MRP (Docker Desktop: no bridge MRP; GitHub-hosted runners: bridge MRP and switchdev, so the kernel refuses an MRP instance on a software bridge)"
+    publishable: false
+    requires: "a host kernel with CONFIG_BRIDGE_MRP and without CONFIG_NET_SWITCHDEV, or with a switchdev driver that offloads MRP (Docker Desktop: no bridge MRP; GitHub-hosted runners: bridge MRP and switchdev, so the kernel refuses an MRP instance on a software bridge); go-profinet's Kernel MRP workflow runs it in micro-VMs with a Linux 6.12 built without switchdev"
     note: >-
       Built unmodified; the kernel's bridge MRP support does the ring work.
       Where the kernel lacks it the node reports "unsupported" (exit 3).
