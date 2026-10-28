@@ -116,7 +116,20 @@ clients, ring open on a break between them, the clients' FDB flush on
 go-profinet's TopologyChange) and a client next to a umrp manager (link
 change frames, TopologyChange received), each with probe frames counted
 at every umrp node for loops and holes, a measured outage and seeded cable
-faults.
+faults. Since 0.4.0 also the automatic manager (MRA, `--role mra --prio N`):
+three MRAs settle on the best priority as the manager, the others giving
+way after its MRP_TestMgrNAck, and take over when it fails.
+
+Deviation (umrp v4.0, MRA): as a client, umrp's test monitor ignores the
+tests of the manager it gave way to (`ring_mac`, state_machine.c
+`mrp_mra_recv_ring_test`) and resets only on the tests of another, better
+manager or on its own TestPropagate; it takes the manager role back after
+TSTNRmax test intervals, is told to give way again, and so on, every few
+tens of milliseconds, whoever the manager is (two umrp nodes alike). The
+ring stays loop-free (the manager blocks), so the tests record it as the
+peer's deviation. umrp's MRP_Options carry the OUI 00-00-00, which tshark
+does not decode ("Undecoded Data"); it parses the sub-TLV at its offset
+whatever the OUI.
 
 ### mrp (MRP ring node on the kernel)
 
@@ -138,10 +151,22 @@ that accepts an MRP instance on a software bridge, and none was found:
   reached.
 
 So the tests are not applicable on either (the node prints `unsupported`
-and exits 3). A kernel with `CONFIG_BRIDGE_MRP=y` and
-`CONFIG_NET_SWITCHDEV` not set (for example in a micro-VM) would run it;
-the same tests as with umrp would then apply, except the FDB flush count,
-which the kernel does unobservably.
+and exits 3). Since 0.4.0 they run in go-profinet's **Kernel MRP**
+workflow: a Linux 6.12 built with `CONFIG_BRIDGE_MRP=y` and without
+`CONFIG_NET_SWITCHDEV` (go-profinet's `scripts/mrp-kernel.sh`), booted in
+a virtme-ng micro-VM with a Docker daemon inside, one boot per test
+(`scripts/microvm-interop.sh`). The matrix's mrp rows come from there; the
+same tests as with umrp apply, except the FDB flush count, which the
+kernel does unobservably.
+
+Two kernel behaviours seen there (Linux 6.12): as an MRA the bridge
+appends to its test frames an MRP_Option whose length field is the size of
+a pointer plus the body, five octets more than it writes
+(net/bridge/br_mrp.c, `br_mrp_alloc_test_skb`): a decoder that checks
+TLV lengths rejects the frame (go-profinet takes the option to the end of
+the frame). And removing a container whose bridge holds an MRP instance
+can hang the kernel's network namespace cleanup on RTNL, which is why the
+workflow tears nothing down.
 
 ### Net-SNMP (SNMP manager)
 

@@ -2,7 +2,7 @@
 # profinet-interop adapter for mrp (microchip-ung/mrp): one MRP ring node on
 # the kernel's bridge MRP support. See docs/CONTAINER_CONTRACT.md.
 #
-#   profinet-interop node --role mrm|mrc [--pport IF] [--sport IF] [--recv 200|500] [--ring-nr N]
+#   profinet-interop node --role mrm|mrc|mra [--prio N] [--pport IF] [--sport IF] [--recv 200|500] [--ring-nr N]
 #       waits for both ring ports (the harness moves veth ends into the
 #       container), bridges them (br0), starts mrp_server and prints one
 #       JSON event per line: start, ready, ring (state changes), until
@@ -20,6 +20,11 @@ cmd=${1:-node}
 
 ring_state() {
 	mrp getmrp 2>/dev/null | sed -nE 's/.*ring_state: ([A-Z_0-9]+).*/\1/p' | head -n1
+}
+
+# ring_role: the role the daemon acts in (MRM or MRC; an MRA is either).
+ring_role() {
+	mrp getmrp 2>/dev/null | sed -nE 's/.*ring_role: ([A-Za-z]+).*/\1/p' | head -n1
 }
 
 counter() {
@@ -75,7 +80,7 @@ version)
 print-capabilities)
 	cat <<'JSON'
 {"schemaVersion":"1.0","adapter":"mrp","implementation":"microchip-ung/mrp","version":"v1.2+","license":"GPL-2.0","roles":["mrp-node"],
- "features":{"mrm":true,"mrc":true,"mra":false,"interconnection":false,"recoveryProfiles":["200","500"],"kernelMRP":true,
+ "features":{"mrm":true,"mrc":true,"mra":true,"interconnection":false,"recoveryProfiles":["200","500"],"kernelMRP":true,
    "requires":"a host kernel with CONFIG_BRIDGE_MRP"}}
 JSON
 	;;
@@ -90,8 +95,8 @@ status)
 	pport=$(cat "$RUN/pport" 2>/dev/null || echo ringA)
 	sport=$(cat "$RUN/sport" 2>/dev/null || echo ringB)
 	probes=$(nft list counter bridge mrp probes 2>/dev/null | sed -nE 's/.*packets ([0-9]+).*/\1/p' | head -n1)
-	printf '{"ring":"%s","flushes":-1,"probes":%s,"ports":[%s,%s]}\n' \
-		"$(ring_state)" "${probes:-0}" "$(port_json "$pport")" "$(port_json "$sport")"
+	printf '{"ring":"%s","role":"%s","flushes":-1,"probes":%s,"ports":[%s,%s]}\n' \
+		"$(ring_state)" "$(ring_role)" "${probes:-0}" "$(port_json "$pport")" "$(port_json "$sport")"
 	;;
 node)
 	role=""
@@ -99,6 +104,7 @@ node)
 	sport=ringB
 	recv=200
 	ringnr=1
+	prio=""
 	while [ $# -gt 0 ]; do
 		case "$1" in
 		--role) role=$2; shift 2 ;;
@@ -106,18 +112,21 @@ node)
 		--sport) sport=$2; shift 2 ;;
 		--recv) recv=$2; shift 2 ;;
 		--ring-nr) ringnr=$2; shift 2 ;;
+		--prio) prio=$2; shift 2 ;;
 		*) echo "unknown flag $1" >&2; exit 2 ;;
 		esac
 	done
 	case "$role" in
-	mrm|mrc) ;;
-	*) echo "--role must be mrm or mrc" >&2; exit 2 ;;
+	mrm|mrc|mra) ;;
+	*) echo "--role must be mrm, mrc or mra" >&2; exit 2 ;;
 	esac
 	echo "$pport" >"$RUN/pport"
 	echo "$sport" >"$RUN/sport"
 	printf '{"event":"start","adapter":"mrp","role":"%s","pport":"%s","sport":"%s","recv":"%s"}\n' "$role" "$pport" "$sport" "$recv"
 	start_server
-	trap 'kill $server 2>/dev/null; exit 0' TERM INT
+	# On SIGTERM the ring instance goes first, then the daemon and the
+	# bridge: the kernel then tears down no bridge with an MRP instance.
+	trap 'mrp delmrp bridge br0 ring_nr "$ringnr" >/dev/null 2>&1; kill $server 2>/dev/null; ip link del br0 2>/dev/null; exit 0' TERM INT
 	if ! kernel_mrp; then
 		printf '{"event":"unsupported","reason":"the kernel has no bridge MRP support (CONFIG_BRIDGE_MRP)","kernel":"%s"}\n' "$(uname -r)"
 		exit 3
@@ -145,15 +154,16 @@ table bridge mrp {
 	}
 }
 NFT
-	mrp addmrp bridge br0 ring_nr "$ringnr" pport "$pport" sport "$sport" ring_role "$role" ring_recv "$recv"
+	mrp addmrp bridge br0 ring_nr "$ringnr" pport "$pport" sport "$sport" ring_role "$role" ring_recv "$recv" ${prio:+prio "$prio"}
 	touch "$RUN/ready"
 	printf '{"event":"ready","bridge":"br0"}\n'
 	last=""
 	while kill -0 "$server" 2>/dev/null; do
 		s=$(ring_state)
-		if [ "$s" != "$last" ]; then
-			printf '{"event":"ring","state":"%s"}\n' "${s:-none}"
-			last=$s
+		ro=$(ring_role)
+		if [ "$ro/$s" != "$last" ]; then
+			printf '{"event":"ring","role":"%s","state":"%s"}\n' "$ro" "${s:-none}"
+			last="$ro/$s"
 		fi
 		sleep 0.05
 	done

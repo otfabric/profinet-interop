@@ -1,6 +1,6 @@
 # Container contract
 
-Version: **1.1** (`contract_version` in [versions.yaml](../versions.yaml))
+Version: **1.2** (`contract_version` in [versions.yaml](../versions.yaml))
 
 Every adapter image runs one reference implementation of PROFINET IO and
 exposes it through the same entrypoint, `profinet-interop`, with the commands
@@ -39,7 +39,7 @@ profinet-interop decode FILE.pcap             # decoder roles (scapy)
 profinet-interop check FILE.pcap              # decoder roles (tshark)
 profinet-interop button2                      # pnet: press the sample application's button 2
 profinet-interop print-gsdml                  # pnio-rs: the device's GSDML
-profinet-interop node --role mrm|mrc [flags]  # MRP ring node roles (umrp, mrp): run until SIGTERM
+profinet-interop node --role mrm|mrc|mra [flags]  # MRP ring node roles (umrp, mrp): run until SIGTERM
 profinet-interop status                       # MRP ring node roles: the node's state (JSON)
 profinet-interop kernel-mrp                   # mrp: exit 0 when the kernel has bridge MRP support
 profinet-interop snmp OP --host IP [flags] OID... # SNMP manager roles (netsnmp): one operation, one report
@@ -124,22 +124,25 @@ bridges them (`br0`), starts the MRP daemon and runs until SIGTERM.
 
 | Flag | Default | Meaning |
 |------|---------|---------|
-| `--role mrm\|mrc` | (required) | ring role: manager or client |
+| `--role mrm\|mrc\|mra` | (required) | ring role: manager, client or automatic manager (since 1.2) |
+| `--prio N` | the daemon's: 0x8000, 0xA000 for `mra` | manager priority (since 1.2) |
 | `--pport IF`, `--sport IF` | `ringA`, `ringB` | primary and secondary ring port |
 | `--recv 200\|500` | `200` | recovery profile (ms) |
 | `--ring-nr N` | `1` | ring instance |
 
-Events: `start`, `ready`, `ring` (`state`: the daemon's MRM or MRC state,
+Events: `start`, `ready`, `ring` (`role`: what the node acts as, `MRM` or
+`MRC`, since 1.2; `state`: the daemon's MRM or MRC state,
 `CHK_RC` ring closed, `CHK_RO` ring open, `PT_IDLE`, `DE_IDLE`, …), `exit`;
 the mrp adapter prints `unsupported` and exits 3 when the kernel has no
 bridge MRP support. `status` prints
 
 ```json
-{"ring":"CHK_RC","flushes":3,"probes":100,
+{"ring":"CHK_RC","role":"MRM","flushes":3,"probes":100,
  "ports":[{"name":"ringA","state":"forwarding","oper":"up","rxPackets":…,"txPackets":…,"rxDropped":…},…]}
 ```
 
-`flushes` counts the FDB flushes of the MRP daemon (-1 where the kernel
+`role` (since 1.2) is what the node acts as: an `mra` node is `MRM` or
+`MRC`. `flushes` counts the FDB flushes of the MRP daemon (-1 where the kernel
 does them and they cannot be observed), `probes` the probe frames
 (EtherType 0x88B5, broadcast) the node's bridge delivered to the node: a
 consumer sends a known number around the ring to find a loop (a probe
