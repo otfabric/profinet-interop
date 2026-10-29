@@ -35,6 +35,38 @@ Tags are immutable. A fix is a new version.
 
 ---
 
+## v0.6.0
+
+**Date:** 2026-10-29
+**Previous release:** v0.4.1
+
+## Summary
+
+Released together with go-profinet v0.6.0 and profinetctl v0.6.0: from
+this version the three repositories share one version number (there is no
+v0.5.x of profinet-interop). Contract 1.2 and every adapter are unchanged.
+The matrix, regenerated from go-profinet v0.6.0's Interop and Kernel MRP
+workflows: 40 test runs, 248 pass, 0 fail, 6 n/a, 14 attributed peer
+deviations.
+
+| Peer | pass | fail | n/a | peer deviation |
+|------|-----:|-----:|----:|---------------:|
+| p-net | 56 | 0 | 1 | 0 |
+| pnio-rs | 13 | 0 | 3 | 0 |
+| profinet-py | 32 | 0 | 1 | 3 |
+| pnio-dcp | 8 | 0 | 0 | 0 |
+| umrp | 32 | 0 | 0 | 2 |
+| microchip-ung/mrp (kernel, micro-VM) | 31 | 0 | 1 | 0 |
+| Net-SNMP | 29 | 0 | 0 | 0 |
+| tshark, scapy (decoders) | 47 | 0 | 0 | 9 |
+
+## Changes
+
+- Matrix regenerated; go-profinet's MRA tests now run the 500 ms profile
+  (`--recv 500`), which INTEROPERABILITY.md explains.
+
+---
+
 ## v0.4.1
 
 **Date:** 2026-10-28
