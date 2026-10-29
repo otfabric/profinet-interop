@@ -118,7 +118,10 @@ change frames, TopologyChange received), each with probe frames counted
 at every umrp node for loops and holes, a measured outage and seeded cable
 faults. Since 0.4.0 also the automatic manager (MRA, `--role mra --prio N`):
 three MRAs settle on the best priority as the manager, the others giving
-way after its MRP_TestMgrNAck, and take over when it fails.
+way after its MRP_TestMgrNAck, and take over when it fails. The MRA tests
+run the 500 ms profile (`--recv 500`): in the 200 ms profile a client
+takes over after a stall of the manager's tests shorter than a loaded
+micro-VM can cause.
 
 Deviation (umrp v4.0, MRA): as a client, umrp's test monitor ignores the
 tests of the manager it gave way to (`ring_mac`, state_machine.c
