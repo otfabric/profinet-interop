@@ -27,13 +27,18 @@ check adapters/mrp/Dockerfile UPSTREAM_SHA "$(yaml mrp revision)"
 check adapters/mrp/Dockerfile CFM_SHA "$(yaml mrp cfm_revision)"
 # Every base image is pinned by a digest that versions.yaml lists.
 for f in adapters/*/Dockerfile; do
-	for ref in $(sed -nE 's/^(FROM|ARG (DEBIAN|RUST)=)[[:space:]]*//p' "$f" | awk '{print $1}' | grep -v '^debian:\$' | grep -v '^rust:\$'); do
+	refs=$(sed -nE 's/^(FROM|ARG (DEBIAN|RUST)=)[[:space:]]*//p' "$f" | awk '{print $1}' | grep -v '^debian:\$' | grep -v '^rust:\$' || true)
+	# A here-document, not a pipe: the loop sets fail in this shell.
+	while read -r ref; do
+		[ -n "$ref" ] || continue
 		digest=${ref##*@}
 		case "$digest" in
 		sha256:*) grep -q "$digest" versions.yaml || { echo "$f: $ref is not in versions.yaml"; fail=1; } ;;
 		*) echo "$f: $ref is not pinned by digest"; fail=1 ;;
 		esac
-	done
+	done <<EOF
+$refs
+EOF
 done
 [ "$fail" = 0 ] && echo "versions.yaml agrees with the Dockerfiles"
 exit "$fail"
