@@ -8,6 +8,13 @@
 interop_version: "0.6.0"
 contract_version: "1.2"        # docs/CONTAINER_CONTRACT.md
 
+# Multi-arch index digests; scripts/check-versions.sh fails when an adapter
+# Dockerfile uses a base image that is not listed here.
+base_images:
+  debian: "docker.io/library/debian:bookworm-20251020-slim@sha256:78d2f66e0fec9e5a39fb2c72ea5e052b548df75602b5215ed01a17171529f706"
+  python: "docker.io/library/python:3.12.12-slim-bookworm@sha256:593bd06efe90efa80dc4eee3948be7c0fde4134606dd40d8dd8dbcade98e669c"
+  rust: "docker.io/library/rust:1.90-bookworm@sha256:3914072ca0c3b8aad871db9169a651ccfce30cf58303e5d6f2db16d1d8a7e58f"
+
 protocol:
   name: "PROFINET IO (IEC 61158 / IEC 61784, CPF 3)"
   rpc_port: 34964

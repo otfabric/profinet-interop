@@ -4,7 +4,7 @@
 # bookworm package "snmp", driven by adapter.py. Debian's package has no
 # IETF MIB files: every OID is numeric (-On) and no MIB is loaded. Pinned
 # by Debian, like tshark: versions.yaml records the version.
-FROM debian:bookworm-20251020-slim
+FROM debian:bookworm-20251020-slim@sha256:78d2f66e0fec9e5a39fb2c72ea5e052b548df75602b5215ed01a17171529f706
 RUN apt-get update && apt-get install -y --no-install-recommends snmp python3 \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir -p /licenses/net-snmp && cp /usr/share/doc/libsnmp40/copyright /licenses/net-snmp/copyright \

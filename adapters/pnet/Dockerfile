@@ -20,7 +20,7 @@
 # CANDIDATE_SHA=<commit>") overrides it: the build says so on stderr. Later
 # p-net trees are not GPL-complete (no ports), so a candidate may not build.
 
-ARG DEBIAN=bookworm-20251020-slim
+ARG DEBIAN=bookworm-20251020-slim@sha256:78d2f66e0fec9e5a39fb2c72ea5e052b548df75602b5215ed01a17171529f706
 
 FROM debian:${DEBIAN} AS build
 ARG UPSTREAM_SHA=ea5e5540b2be55c4dfadffda39b948632c104daa

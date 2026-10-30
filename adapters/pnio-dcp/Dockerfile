@@ -7,7 +7,7 @@
 # [CANDIDATE_SHA256=<wheel sha256>]") overrides UPSTREAM_VERSION: it says
 # so on stderr and skips the pinned hash; the release is checked against
 # UPSTREAM_SHA256 only when that is overridden too.
-FROM python:3.12.12-slim-bookworm
+FROM python:3.12.12-slim-bookworm@sha256:593bd06efe90efa80dc4eee3948be7c0fde4134606dd40d8dd8dbcade98e669c
 ARG UPSTREAM_VERSION=1.2.0
 ARG UPSTREAM_SHA256=8d7d63077838c416b3dc6e58ec3790ef422e13d8bdb38be59a2da8713e3e061a
 RUN --mount=type=bind,source=Dockerfile,target=/tmp/pins set -eu; \

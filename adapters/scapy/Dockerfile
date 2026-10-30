@@ -4,7 +4,7 @@
 # at the pinned version and used unmodified. A candidate build ("make
 # candidate-scapy CANDIDATE_VERSION=<version>") overrides UPSTREAM_VERSION:
 # it says so on stderr.
-FROM python:3.12.12-slim-bookworm
+FROM python:3.12.12-slim-bookworm@sha256:593bd06efe90efa80dc4eee3948be7c0fde4134606dd40d8dd8dbcade98e669c
 ARG UPSTREAM_VERSION=2.6.1
 RUN --mount=type=bind,source=Dockerfile,target=/tmp/pins set -eu; \
     pinned="$(sed -nE 's/^ARG UPSTREAM_VERSION=(.+)$/\1/p' /tmp/pins | head -1)"; \

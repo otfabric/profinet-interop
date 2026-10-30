@@ -14,7 +14,7 @@
 # CFM_SHA the cfm commit. A candidate build ("make candidate-mrp
 # CANDIDATE_SHA=<commit>") overrides UPSTREAM_SHA: the build says so on
 # stderr. Built locally, never published.
-FROM debian:bookworm-20251020-slim AS build
+FROM debian:bookworm-20251020-slim@sha256:78d2f66e0fec9e5a39fb2c72ea5e052b548df75602b5215ed01a17171529f706 AS build
 ARG UPSTREAM_VERSION=v1.2
 ARG UPSTREAM_SHA=177717ee893d5ccc6e31147b1b8a720c9b798b81
 ARG CFM_SHA=7a50f4adcccf2d2e910816ea6d78446fea8fe7d8
@@ -47,7 +47,7 @@ RUN cmake -B build -S . && make -C build \
     && echo "${UPSTREAM_SHA}" > /out/licenses/mrp/COMMIT \
     && echo "${CFM_SHA}" > /out/licenses/cfm/COMMIT
 
-FROM debian:bookworm-20251020-slim
+FROM debian:bookworm-20251020-slim@sha256:78d2f66e0fec9e5a39fb2c72ea5e052b548df75602b5215ed01a17171529f706
 RUN apt-get update && apt-get install -y --no-install-recommends \
         iproute2 nftables libnl-3-200 libnl-genl-3-200 libev4 libmnl0 \
     && rm -rf /var/lib/apt/lists/*

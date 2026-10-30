@@ -11,7 +11,7 @@ and Microchip's **mrp**, the SNMP manager of **Net-SNMP**, and two
 independent decoders, **scapy** and **tshark**, that check every capture.
 
 It serves [otfabric/go-profinet](https://github.com/otfabric/go-profinet),
-whose interop tests (`make interop`) drive these images and write the
+whose interop tests (`make -C ../go-profinet interop`) drive these images and write the
 results the [interoperability matrix](docs/MATRIX.md) is generated from.
 
 **Docs:** [CONTAINER_CONTRACT.md](docs/CONTAINER_CONTRACT.md) (the commands and JSON documents every image exposes) · [MATRIX.md](docs/MATRIX.md) (results) · [INTEROPERABILITY.md](docs/INTEROPERABILITY.md) (what each peer can and cannot test, the discrepancies found) · [versions.yaml](versions.yaml) (pins) · [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) · go-profinet's [support, feature and interop matrix](https://github.com/otfabric/go-profinet/blob/main/docs/FEATURE-STATUS.md) (the results summarized peer by peer and feature by feature)

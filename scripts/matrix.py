@@ -53,7 +53,7 @@ def main():
              f"Generated {doc['generated']} from {len(results)} test runs. "
              "Outcomes: **pass**, **fail**, **n/a** (the peer does not implement the feature; the detail says why), "
              "**peer-deviation** (the peer deviates from the standard; the detail says how). "
-             "Reproduce with `make interop` in go-profinet (see [INTEROPERABILITY.md](INTEROPERABILITY.md)).", "",
+             "Reproduce with `make -C ../go-profinet interop` (see [INTEROPERABILITY.md](INTEROPERABILITY.md)).", "",
              "| Peer | go-profinet role | pass | fail | n/a | peer-deviation |", "|------|------------------|------|------|-----|----------------|"]
     for p in peers:
         pr = [r for r in rows if r["peer"] == p]
