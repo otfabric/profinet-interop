@@ -2,7 +2,7 @@
 
 # Interoperability matrix
 
-Generated 2026-10-29T00:15:30+00:00 from 40 test runs. Outcomes: **pass**, **fail**, **n/a** (the peer does not implement the feature; the detail says why), **peer-deviation** (the peer deviates from the standard; the detail says how). Reproduce with `make interop` in go-profinet (see [INTEROPERABILITY.md](INTEROPERABILITY.md)).
+Generated 2026-10-29T00:15:30+00:00 from 40 test runs. Outcomes: **pass**, **fail**, **n/a** (the peer does not implement the feature; the detail says why), **peer-deviation** (the peer deviates from the standard; the detail says how). Reproduce with `make -C ../go-profinet interop` (see [INTEROPERABILITY.md](INTEROPERABILITY.md)).
 
 | Peer | go-profinet role | pass | fail | n/a | peer-deviation |
 |------|------------------|------|------|-----|----------------|

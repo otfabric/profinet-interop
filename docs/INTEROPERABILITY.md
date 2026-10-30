@@ -2,8 +2,8 @@
 
 What each reference implementation can test, how go-profinet is exercised
 against it, and the discrepancies the tests found. The results themselves
-are in [MATRIX.md](MATRIX.md); reproduce them with `make interop` in
-go-profinet after `make images` here.
+are in [MATRIX.md](MATRIX.md); reproduce them with `make -C ../go-profinet interop` after `make images`
+here.
 
 ## Test topology
 

@@ -9,7 +9,7 @@
 # UPSTREAM_VERSION is the release tag, UPSTREAM_SHA its commit (what is
 # fetched). A candidate build ("make candidate-pnio-rs CANDIDATE_VERSION=<tag>
 # CANDIDATE_SHA=<commit>") overrides them: the build says so on stderr.
-ARG RUST=1.90-bookworm
+ARG RUST=1.90-bookworm@sha256:3914072ca0c3b8aad871db9169a651ccfce30cf58303e5d6f2db16d1d8a7e58f
 FROM rust:${RUST} AS build
 ARG UPSTREAM_VERSION=v0.1.0
 ARG UPSTREAM_SHA=798500c1bf3726a1bf015c43f39c6ae2a2d55b28
@@ -33,7 +33,7 @@ RUN cargo build --release --example typed_bringup \
     && install -D LICENSE-APACHE /out/licenses/pnio-rs/LICENSE-APACHE \
     && echo "${UPSTREAM_SHA}" > /out/licenses/pnio-rs/COMMIT
 
-FROM debian:bookworm-20251020-slim
+FROM debian:bookworm-20251020-slim@sha256:78d2f66e0fec9e5a39fb2c72ea5e052b548df75602b5215ed01a17171529f706
 RUN apt-get update && apt-get install -y --no-install-recommends iproute2 && rm -rf /var/lib/apt/lists/*
 COPY --from=build /out/typed_bringup /usr/local/bin/typed_bringup
 COPY --from=build /out/sample.xml /usr/share/profinet-interop/pnio-rs-sample.xml
