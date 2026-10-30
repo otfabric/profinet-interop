@@ -3293,31 +3293,31 @@
  },
  "waivers": [
   {
-   "evidence": "https://github.com/secdev/scapy/tree/3aadcf5ad25d0e0e731406c7adf98440f0d4169c",
+   "evidence": "https://github.com/secdev/scapy/blob/8e08cbf759de6709a5b4af6bea3655d293129bb4/scapy/contrib/pnio.py#L117-L118",
    "id": "scapy-no-mrp-dissector",
    "reproduced": true,
    "scope": "decoder@scapy"
   },
   {
-   "evidence": "https://github.com/secdev/scapy/tree/3aadcf5ad25d0e0e731406c7adf98440f0d4169c",
+   "evidence": "https://github.com/secdev/scapy/blob/8e08cbf759de6709a5b4af6bea3655d293129bb4/scapy/contrib/pnio_dcp.py#L486-L528",
    "id": "scapy-no-dcp-dhcp-block",
    "reproduced": true,
    "scope": "decoder@scapy"
   },
   {
-   "evidence": "https://gitlab.com/wireshark/wireshark/-/tree/v4.0.17",
+   "evidence": "https://gitlab.com/wireshark/wireshark/-/blob/882448bcf104995d64853a11b0d160783668d2fa/plugins/epan/profinet/packet-pn-dcp.c#L1277-1335",
    "id": "tshark-dhcp-option-12",
    "reproduced": true,
    "scope": "decoder@tshark"
   },
   {
-   "evidence": "https://github.com/giometti/umrp/tree/fb193eac1a2df51fe42e19d4ea36bb0157bda09f",
+   "evidence": "https://github.com/giometti/umrp/blob/fb193eac1a2df51fe42e19d4ea36bb0157bda09f/state_machine.c#L1071-L1076",
    "id": "umrp-mra-takes-manager-back",
    "reproduced": true,
    "scope": "MRA@umrp"
   },
   {
-   "evidence": "https://github.com/f0rw4rd/profinet-py/tree/ef09fb7788cfd86c2e6ee1b9bcf5165f5aac03c4",
+   "evidence": "https://github.com/f0rw4rd/profinet-py/blob/ef09fb7788cfd86c2e6ee1b9bcf5165f5aac03c4/profinet/device.py#L883-L893",
    "id": "profinet-py-im1-block-length",
    "reproduced": true,
    "scope": "controller@profinet-py"
