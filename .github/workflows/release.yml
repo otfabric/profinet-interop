@@ -83,7 +83,7 @@ jobs:
 
       - name: Assets
         run: |
-          sha256sum versions.yaml matrix/results.json > checksums.txt
+          sha256sum versions.yaml matrix/results.json matrix/interop-result-v1.json > checksums.txt
           cat checksums.txt
 
       - name: Create GitHub release
@@ -94,4 +94,5 @@ jobs:
           files: |
             versions.yaml
             matrix/results.json
+            matrix/interop-result-v1.json
             checksums.txt

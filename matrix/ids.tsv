@@ -1,0 +1,272 @@
+# Stable scenario IDs of the results (interop-result-v1). An ID never changes when a
+# display string does: change the second column, keep the third. A check without a
+# line stops scripts/matrix-to-results.py: give it one.
+# test	feature	id
+TestCodecDecoders	MRP Test, TopologyChange, LinkDown, LinkUp; PTCP DelayReq, DelayRes; IOCARSR Connect with SRInfoBlock and MCRBlockReq; MRP records (PDInterfaceMrpDataAdjust/Check/Real, PDPortMrpDataAdjust) encoded (go-profinet)	codecdecoders.mrp-test-topologychange-linkdown-linkup-ptcp-delayreq-delayres
+TestCodecDecoders	scapy decode codecs.pcap	codecdecoders.scapy-decode-codecs-pcap
+TestCodecDecoders	scapy decode codecs.pcap: MRP frames not dissected	codecdecoders.scapy-decode-codecs-pcap-mrp-frames-not-dissected
+TestCodecDecoders	tshark check codecs.pcap	codecdecoders.tshark-check-codecs-pcap
+TestDCPDHCPDecoders	DCP DHCP blocks (client ID from MAC, arbitrary client ID, control) and IP set by DHCP in Identify/Get responses, Get and Set requests encoded (go-profinet)	dcpdhcpdecoders.dcp-dhcp-blocks-client-id-from-mac-arbitrary-client-id-control
+TestDCPDHCPDecoders	DHCP options and IP BlockInfo parsed back (go-profinet)	dcpdhcpdecoders.dhcp-options-and-ip-blockinfo-parsed-back-go-profinet
+TestDCPDHCPDecoders	scapy: DCP option 3 (DHCP) blocks	dcpdhcpdecoders.scapy-dcp-option-3-dhcp-blocks
+TestDCPDHCPDecoders	scapy decode dcp-dhcp.pcap	dcpdhcpdecoders.scapy-decode-dcp-dhcp-pcap
+TestDCPDHCPDecoders	tshark: PN-DCP "Undecoded Data, 5 bytes"	dcpdhcpdecoders.tshark-pn-dcp-undecoded-data-5-bytes
+TestDCPDHCPDecoders	tshark check dcp-dhcp.pcap	dcpdhcpdecoders.tshark-check-dcp-dhcp-pcap
+TestMRPAuto/mrp/go-profinet-best	MRA: go-profinet (best priority) manages, mrp MRAs give way	mrpauto.mrp.go-profinet-best.mra-go-profinet-best-priority-manages-mrp-mras-give-way
+TestMRPAuto/mrp/go-profinet-best	MRA ring closed by go-profinet: no loop, no hole (mrp MRAs)	mrpauto.mrp.go-profinet-best.mra-ring-closed-by-go-profinet-no-loop-no-hole-mrp-mras
+TestMRPAuto/mrp/go-profinet-best	MRA ring still closed by go-profinet: no loop, no hole (mrp MRAs)	mrpauto.mrp.go-profinet-best.mra-ring-still-closed-by-go-profinet-no-loop-no-hole-mrp-mras
+TestMRPAuto/mrp/go-profinet-best	MRA: go-profinet stays the manager	mrpauto.mrp.go-profinet-best.mra-go-profinet-stays-the-manager
+TestMRPAuto/mrp/go-profinet-best	scapy decode mrp-auto-mrp.pcap	mrpauto.mrp.go-profinet-best.scapy-decode-mrp-auto-mrp-pcap
+TestMRPAuto/mrp/go-profinet-best	scapy decode mrp-auto-mrp.pcap: MRP frames not dissected	mrpauto.mrp.go-profinet-best.scapy-decode-mrp-auto-mrp-pcap-mrp-frames-not-dissected
+TestMRPAuto/mrp/go-profinet-best	tshark check mrp-auto-mrp.pcap	mrpauto.mrp.go-profinet-best.tshark-check-mrp-auto-mrp-pcap
+TestMRPAuto/mrp/peer-best	MRA: go-profinet gives way to a better mrp MRA	mrpauto.mrp.peer-best.mra-go-profinet-gives-way-to-a-better-mrp-mra
+TestMRPAuto/mrp/peer-best	MRA ring closed by mrp: no loop, no hole (go-profinet MRA as client)	mrpauto.mrp.peer-best.mra-ring-closed-by-mrp-no-loop-no-hole-go-profinet-mra-as-client
+TestMRPAuto/mrp/peer-best	MRA ring still closed by mrp: no loop, no hole (go-profinet MRA as client)	mrpauto.mrp.peer-best.mra-ring-still-closed-by-mrp-no-loop-no-hole-go-profinet-mra-as
+TestMRPAuto/mrp/peer-best	MRA: go-profinet stays a client of the better mrp MRA	mrpauto.mrp.peer-best.mra-go-profinet-stays-a-client-of-the-better-mrp-mra
+TestMRPAuto/mrp/peer-best	MRA: go-profinet (next best) manages when the mrp manager fails	mrpauto.mrp.peer-best.mra-go-profinet-next-best-manages-when-the-mrp-manager-fails
+TestMRPAuto/mrp/peer-best	MRA after the manager failed: no loop, no hole (go-profinet manages, mrp MRA as client)	mrpauto.mrp.peer-best.mra-after-the-manager-failed-no-loop-no-hole-go-profinet
+TestMRPAuto/mrp/peer-best	MRA: go-profinet gives way again when the better mrp MRA returns	mrpauto.mrp.peer-best.mra-go-profinet-gives-way-again-when-the-better-mrp-mra-returns
+TestMRPAuto/mrp/peer-best	MRA ring closed again by mrp: no loop, no hole	mrpauto.mrp.peer-best.mra-ring-closed-again-by-mrp-no-loop-no-hole
+TestMRPAuto/umrp/go-profinet-best	MRA: go-profinet (best priority) manages, umrp MRAs give way	mrpauto.umrp.go-profinet-best.mra-go-profinet-best-priority-manages-umrp-mras-give-way
+TestMRPAuto/umrp/go-profinet-best	MRA ring closed by go-profinet: no loop, no hole (umrp MRAs)	mrpauto.umrp.go-profinet-best.mra-ring-closed-by-go-profinet-no-loop-no-hole-umrp-mras
+TestMRPAuto/umrp/go-profinet-best	MRA ring still closed by go-profinet: no loop, no hole (umrp MRAs)	mrpauto.umrp.go-profinet-best.mra-ring-still-closed-by-go-profinet-no-loop-no-hole-umrp-mras
+TestMRPAuto/umrp/go-profinet-best	MRA: go-profinet stays the manager	mrpauto.umrp.go-profinet-best.mra-go-profinet-stays-the-manager
+TestMRPAuto/umrp/go-profinet-best	MRA: umrp MRA as a client keeps taking the manager role back	mrpauto.umrp.go-profinet-best.mra-umrp-mra-as-a-client-keeps-taking-the-manager-role-back
+TestMRPAuto/umrp/go-profinet-best	scapy decode mrp-auto-umrp.pcap	mrpauto.umrp.go-profinet-best.scapy-decode-mrp-auto-umrp-pcap
+TestMRPAuto/umrp/go-profinet-best	scapy decode mrp-auto-umrp.pcap: MRP frames not dissected	mrpauto.umrp.go-profinet-best.scapy-decode-mrp-auto-umrp-pcap-mrp-frames-not-dissected
+TestMRPAuto/umrp/go-profinet-best	tshark check mrp-auto-umrp.pcap	mrpauto.umrp.go-profinet-best.tshark-check-mrp-auto-umrp-pcap
+TestMRPAuto/umrp/peer-best	MRA: go-profinet gives way to a better umrp MRA	mrpauto.umrp.peer-best.mra-go-profinet-gives-way-to-a-better-umrp-mra
+TestMRPAuto/umrp/peer-best	MRA ring closed by umrp: no loop, no hole (go-profinet MRA as client)	mrpauto.umrp.peer-best.mra-ring-closed-by-umrp-no-loop-no-hole-go-profinet-mra-as
+TestMRPAuto/umrp/peer-best	MRA ring still closed by umrp: no loop, no hole (go-profinet MRA as client)	mrpauto.umrp.peer-best.mra-ring-still-closed-by-umrp-no-loop-no-hole-go-profinet-mra
+TestMRPAuto/umrp/peer-best	MRA: go-profinet stays a client of the better umrp MRA	mrpauto.umrp.peer-best.mra-go-profinet-stays-a-client-of-the-better-umrp-mra
+TestMRPAuto/umrp/peer-best	MRA: umrp MRA as a client keeps taking the manager role back	mrpauto.umrp.peer-best.mra-umrp-mra-as-a-client-keeps-taking-the-manager-role-back
+TestMRPAuto/umrp/peer-best	MRA: go-profinet (next best) manages when the umrp manager fails	mrpauto.umrp.peer-best.mra-go-profinet-next-best-manages-when-the-umrp-manager-fails
+TestMRPAuto/umrp/peer-best	MRA after the manager failed: no loop, no hole (go-profinet manages, umrp MRA as client)	mrpauto.umrp.peer-best.mra-after-the-manager-failed-no-loop-no-hole-go-profinet
+TestMRPAuto/umrp/peer-best	MRA: go-profinet gives way again when the better umrp MRA returns	mrpauto.umrp.peer-best.mra-go-profinet-gives-way-again-when-the-better-umrp-mra-returns
+TestMRPAuto/umrp/peer-best	MRA ring closed again by umrp: no loop, no hole	mrpauto.umrp.peer-best.mra-ring-closed-again-by-umrp-no-loop-no-hole
+TestMRPOtfClient/mrp	MRP ring closed: mrp MRM, go-profinet MRC	mrpotfclient.mrp.mrp-ring-closed-mrp-mrm-go-profinet-mrc
+TestMRPOtfClient/mrp	MRP go-profinet MRC: both ring ports forwarding, ring closed	mrpotfclient.mrp.mrp-go-profinet-mrc-both-ring-ports-forwarding-ring-closed
+TestMRPOtfClient/mrp	MRP closed ring: no loop, no hole (mrp MRM, go-profinet MRC)	mrpotfclient.mrp.mrp-closed-ring-no-loop-no-hole-mrp-mrm-go-profinet-mrc
+TestMRPOtfClient/mrp	MRP ring open: mrp MRM on go-profinet's link change	mrpotfclient.mrp.mrp-ring-open-mrp-mrm-on-go-profinet-s-link-change
+TestMRPOtfClient/mrp	MRP link change: go-profinet MRC reports its link down	mrpotfclient.mrp.mrp-link-change-go-profinet-mrc-reports-its-link-down
+TestMRPOtfClient/mrp	MRP TopologyChange: go-profinet MRC receives mrp's and flushes	mrpotfclient.mrp.mrp-topologychange-go-profinet-mrc-receives-mrp-s-and-flushes
+TestMRPOtfClient/mrp	MRP measured outage, cable break (mrp MRM, go-profinet MRC, 200 ms profile)	mrpotfclient.mrp.mrp-measured-outage-cable-break-mrp-mrm-go-profinet-mrc-200-ms
+TestMRPOtfClient/mrp	MRP open ring: no loop, no hole (mrp MRM, go-profinet MRC)	mrpotfclient.mrp.mrp-open-ring-no-loop-no-hole-mrp-mrm-go-profinet-mrc
+TestMRPOtfClient/mrp	MRP ring closes again (mrp MRM, go-profinet MRC)	mrpotfclient.mrp.mrp-ring-closes-again-mrp-mrm-go-profinet-mrc
+TestMRPOtfClient/mrp	MRP closed again: no loop, no hole (mrp MRM, go-profinet MRC)	mrpotfclient.mrp.mrp-closed-again-no-loop-no-hole-mrp-mrm-go-profinet-mrc
+TestMRPOtfClient/mrp	scapy decode mrp-otf-client-mrp.pcap	mrpotfclient.mrp.scapy-decode-mrp-otf-client-mrp-pcap
+TestMRPOtfClient/mrp	scapy decode mrp-otf-client-mrp.pcap: MRP frames not dissected	mrpotfclient.mrp.scapy-decode-mrp-otf-client-mrp-pcap-mrp-frames-not-dissected
+TestMRPOtfClient/mrp	tshark check mrp-otf-client-mrp.pcap	mrpotfclient.mrp.tshark-check-mrp-otf-client-mrp-pcap
+TestMRPOtfClient/umrp	MRP ring closed: umrp MRM, go-profinet MRC	mrpotfclient.umrp.mrp-ring-closed-umrp-mrm-go-profinet-mrc
+TestMRPOtfClient/umrp	MRP go-profinet MRC: both ring ports forwarding, ring closed	mrpotfclient.umrp.mrp-go-profinet-mrc-both-ring-ports-forwarding-ring-closed
+TestMRPOtfClient/umrp	MRP closed ring: no loop, no hole (umrp MRM, go-profinet MRC)	mrpotfclient.umrp.mrp-closed-ring-no-loop-no-hole-umrp-mrm-go-profinet-mrc
+TestMRPOtfClient/umrp	MRP ring open: umrp MRM on go-profinet's link change	mrpotfclient.umrp.mrp-ring-open-umrp-mrm-on-go-profinet-s-link-change
+TestMRPOtfClient/umrp	MRP link change: go-profinet MRC reports its link down	mrpotfclient.umrp.mrp-link-change-go-profinet-mrc-reports-its-link-down
+TestMRPOtfClient/umrp	MRP TopologyChange: go-profinet MRC receives umrp's and flushes	mrpotfclient.umrp.mrp-topologychange-go-profinet-mrc-receives-umrp-s-and-flushes
+TestMRPOtfClient/umrp	MRP measured outage, cable break (umrp MRM, go-profinet MRC, 200 ms profile)	mrpotfclient.umrp.mrp-measured-outage-cable-break-umrp-mrm-go-profinet-mrc-200-ms
+TestMRPOtfClient/umrp	MRP open ring: no loop, no hole (umrp MRM, go-profinet MRC)	mrpotfclient.umrp.mrp-open-ring-no-loop-no-hole-umrp-mrm-go-profinet-mrc
+TestMRPOtfClient/umrp	MRP ring closes again (umrp MRM, go-profinet MRC)	mrpotfclient.umrp.mrp-ring-closes-again-umrp-mrm-go-profinet-mrc
+TestMRPOtfClient/umrp	MRP closed again: no loop, no hole (umrp MRM, go-profinet MRC)	mrpotfclient.umrp.mrp-closed-again-no-loop-no-hole-umrp-mrm-go-profinet-mrc
+TestMRPOtfClient/umrp	scapy decode mrp-otf-client-umrp.pcap	mrpotfclient.umrp.scapy-decode-mrp-otf-client-umrp-pcap
+TestMRPOtfClient/umrp	scapy decode mrp-otf-client-umrp.pcap: MRP frames not dissected	mrpotfclient.umrp.scapy-decode-mrp-otf-client-umrp-pcap-mrp-frames-not-dissected
+TestMRPOtfClient/umrp	tshark check mrp-otf-client-umrp.pcap	mrpotfclient.umrp.tshark-check-mrp-otf-client-umrp-pcap
+TestMRPOtfManager/mrp	MRP ring closed: go-profinet MRM, mrp MRCs	mrpotfmanager.mrp.mrp-ring-closed-go-profinet-mrm-mrp-mrcs
+TestMRPOtfManager/mrp	MRP test frames: go-profinet MRM receives its tests through mrp MRCs	mrpotfmanager.mrp.mrp-test-frames-go-profinet-mrm-receives-its-tests-through-mrp
+TestMRPOtfManager/mrp	MRP closed ring: no loop, no hole (go-profinet MRM, mrp MRCs)	mrpotfmanager.mrp.mrp-closed-ring-no-loop-no-hole-go-profinet-mrm-mrp-mrcs
+TestMRPOtfManager/mrp	MRP ring open: go-profinet MRM unblocks on a cable break between mrp MRCs	mrpotfmanager.mrp.mrp-ring-open-go-profinet-mrm-unblocks-on-a-cable-break-between
+TestMRPOtfManager/mrp	MRP FDB flush: mrp MRC flushes on go-profinet's TopologyChange	mrpotfmanager.mrp.mrp-fdb-flush-mrp-mrc-flushes-on-go-profinet-s-topologychange
+TestMRPOtfManager/mrp	MRP measured outage, cable break (go-profinet MRM, mrp MRCs, 200 ms profile)	mrpotfmanager.mrp.mrp-measured-outage-cable-break-go-profinet-mrm-mrp-mrcs-200-ms
+TestMRPOtfManager/mrp	MRP open ring: no loop, no hole (go-profinet MRM, mrp MRCs)	mrpotfmanager.mrp.mrp-open-ring-no-loop-no-hole-go-profinet-mrm-mrp-mrcs
+TestMRPOtfManager/mrp	MRP ring closes again (go-profinet MRM, mrp MRCs)	mrpotfmanager.mrp.mrp-ring-closes-again-go-profinet-mrm-mrp-mrcs
+TestMRPOtfManager/mrp	MRP closed again: no loop, no hole (go-profinet MRM, mrp MRCs)	mrpotfmanager.mrp.mrp-closed-again-no-loop-no-hole-go-profinet-mrm-mrp-mrcs
+TestMRPOtfManager/mrp	scapy decode mrp-otf-manager-mrp.pcap	mrpotfmanager.mrp.scapy-decode-mrp-otf-manager-mrp-pcap
+TestMRPOtfManager/mrp	scapy decode mrp-otf-manager-mrp.pcap: MRP frames not dissected	mrpotfmanager.mrp.scapy-decode-mrp-otf-manager-mrp-pcap-mrp-frames-not-dissected
+TestMRPOtfManager/mrp	tshark check mrp-otf-manager-mrp.pcap	mrpotfmanager.mrp.tshark-check-mrp-otf-manager-mrp-pcap
+TestMRPOtfManager/umrp	MRP ring closed: go-profinet MRM, umrp MRCs	mrpotfmanager.umrp.mrp-ring-closed-go-profinet-mrm-umrp-mrcs
+TestMRPOtfManager/umrp	MRP test frames: go-profinet MRM receives its tests through umrp MRCs	mrpotfmanager.umrp.mrp-test-frames-go-profinet-mrm-receives-its-tests-through-umrp
+TestMRPOtfManager/umrp	MRP closed ring: no loop, no hole (go-profinet MRM, umrp MRCs)	mrpotfmanager.umrp.mrp-closed-ring-no-loop-no-hole-go-profinet-mrm-umrp-mrcs
+TestMRPOtfManager/umrp	MRP ring open: go-profinet MRM unblocks on a cable break between umrp MRCs	mrpotfmanager.umrp.mrp-ring-open-go-profinet-mrm-unblocks-on-a-cable-break-between
+TestMRPOtfManager/umrp	MRP FDB flush: umrp MRC flushes on go-profinet's TopologyChange	mrpotfmanager.umrp.mrp-fdb-flush-umrp-mrc-flushes-on-go-profinet-s-topologychange
+TestMRPOtfManager/umrp	MRP measured outage, cable break (go-profinet MRM, umrp MRCs, 200 ms profile)	mrpotfmanager.umrp.mrp-measured-outage-cable-break-go-profinet-mrm-umrp-mrcs-200
+TestMRPOtfManager/umrp	MRP open ring: no loop, no hole (go-profinet MRM, umrp MRCs)	mrpotfmanager.umrp.mrp-open-ring-no-loop-no-hole-go-profinet-mrm-umrp-mrcs
+TestMRPOtfManager/umrp	MRP ring closes again (go-profinet MRM, umrp MRCs)	mrpotfmanager.umrp.mrp-ring-closes-again-go-profinet-mrm-umrp-mrcs
+TestMRPOtfManager/umrp	MRP closed again: no loop, no hole (go-profinet MRM, umrp MRCs)	mrpotfmanager.umrp.mrp-closed-again-no-loop-no-hole-go-profinet-mrm-umrp-mrcs
+TestMRPOtfManager/umrp	scapy decode mrp-otf-manager-umrp.pcap	mrpotfmanager.umrp.scapy-decode-mrp-otf-manager-umrp-pcap
+TestMRPOtfManager/umrp	scapy decode mrp-otf-manager-umrp.pcap: MRP frames not dissected	mrpotfmanager.umrp.scapy-decode-mrp-otf-manager-umrp-pcap-mrp-frames-not-dissected
+TestMRPOtfManager/umrp	tshark check mrp-otf-manager-umrp.pcap	mrpotfmanager.umrp.tshark-check-mrp-otf-manager-umrp-pcap
+TestMRPRingFaults/mrp	MRP seeded cable faults, go-profinet MRM with mrp MRCs: settles, no loop, no hole	mrpringfaults.mrp.mrp-seeded-cable-faults-go-profinet-mrm-with-mrp-mrcs-settles
+TestMRPRingFaults/umrp	MRP seeded cable faults, go-profinet MRM with umrp MRCs: settles, no loop, no hole	mrpringfaults.umrp.mrp-seeded-cable-faults-go-profinet-mrm-with-umrp-mrcs-settles
+TestNetSNMPErrors	SNMP v2c Get of unknown names: noSuchObject, noSuchInstance (Net-SNMP)	netsnmperrors.snmp-v2c-get-of-unknown-names-nosuchobject-nosuchinstance-net
+TestNetSNMPErrors	SNMP v1 Get of an unknown name: noSuchName, index 2 (Net-SNMP)	netsnmperrors.snmp-v1-get-of-an-unknown-name-nosuchname-index-2-net-snmp
+TestNetSNMPErrors	SNMP v2c GetNext past the end: endOfMibView (Net-SNMP)	netsnmperrors.snmp-v2c-getnext-past-the-end-endofmibview-net-snmp
+TestNetSNMPErrors	SNMP v2c Set refused: notWritable (Net-SNMP)	netsnmperrors.snmp-v2c-set-refused-notwritable-net-snmp
+TestNetSNMPErrors	SNMP v1 Set refused: noSuchName (RFC 3584) (Net-SNMP)	netsnmperrors.snmp-v1-set-refused-nosuchname-rfc-3584-net-snmp
+TestNetSNMPErrors	SNMP Set changed nothing (Net-SNMP)	netsnmperrors.snmp-set-changed-nothing-net-snmp
+TestNetSNMPErrors	SNMP wrong community: no answer, snmpInBadCommunityNames counts it (Net-SNMP)	netsnmperrors.snmp-wrong-community-no-answer-snmpinbadcommunitynames-counts
+TestNetSNMPErrors	SNMP Get of 128-sub-identifier names: noSuchInstance, noSuchObject (Net-SNMP)	netsnmperrors.snmp-get-of-128-sub-identifier-names-nosuchinstance
+TestNetSNMPErrors	SNMP GetBulk of 10000 repetitions: a truncated answer that fits (Net-SNMP)	netsnmperrors.snmp-getbulk-of-10000-repetitions-a-truncated-answer-that-fits
+TestNetSNMPErrors	SNMP Get whose answer does not fit: tooBig (Net-SNMP)	netsnmperrors.snmp-get-whose-answer-does-not-fit-toobig-net-snmp
+TestNetSNMPFlood	SNMP flood of 3000 requests: answers bounded by the rate limit	netsnmpflood.snmp-flood-of-3000-requests-answers-bounded-by-the-rate-limit
+TestNetSNMPFlood	SNMP agent answers after the flood (Net-SNMP)	netsnmpflood.snmp-agent-answers-after-the-flood-net-snmp
+TestNetSNMPLLDP	SNMP lldpRemTable empty without neighbors (Net-SNMP)	netsnmplldp.snmp-lldpremtable-empty-without-neighbors-net-snmp
+TestNetSNMPLLDP	SNMP lldpRemTable shows a neighbor: filter 0, port 1, index 1 (Net-SNMP)	netsnmplldp.snmp-lldpremtable-shows-a-neighbor-filter-0-port-1-index-1-net
+TestNetSNMPLLDP	SNMP lldpRemTable: a second neighbor gets index 2, the first keeps 1 (Net-SNMP)	netsnmplldp.snmp-lldpremtable-a-second-neighbor-gets-index-2-the-first
+TestNetSNMPLLDP	SNMP lldpRemTimeMark as a TimeFilter: rows changed since t (Net-SNMP)	netsnmplldp.snmp-lldpremtimemark-as-a-timefilter-rows-changed-since-t-net
+TestNetSNMPLLDP	SNMP lldpRemTable: a neighbor leaves (TTL), the other keeps its index (Net-SNMP)	netsnmplldp.snmp-lldpremtable-a-neighbor-leaves-ttl-the-other-keeps-its
+TestNetSNMPLLDP	SNMP lldpRemTable: a returning neighbor gets a new index (Net-SNMP)	netsnmplldp.snmp-lldpremtable-a-returning-neighbor-gets-a-new-index-net-snmp
+TestNetSNMPMalformed	SNMP malformed datagrams counted in snmpInASNParseErrs (Net-SNMP reads it)	netsnmpmalformed.snmp-malformed-datagrams-counted-in-snmpinasnparseerrs-net-snmp
+TestNetSNMPMalformed	SNMP unknown versions (5, 3) counted in snmpInBadVersions (Net-SNMP reads it)	netsnmpmalformed.snmp-unknown-versions-5-3-counted-in-snmpinbadversions-net-snmp
+TestNetSNMPMalformed	SNMP agent answers after the hostile datagrams (Net-SNMP)	netsnmpmalformed.snmp-agent-answers-after-the-hostile-datagrams-net-snmp
+TestNetSNMPRead	SNMP Get v2c of the system group (Net-SNMP)	netsnmpread.snmp-get-v2c-of-the-system-group-net-snmp
+TestNetSNMPRead	SNMP Get v1 (Net-SNMP)	netsnmpread.snmp-get-v1-net-snmp
+TestNetSNMPRead	SNMP GetNext (Net-SNMP)	netsnmpread.snmp-getnext-net-snmp
+TestNetSNMPRead	SNMP GetBulk with non-repeaters and repetitions (Net-SNMP)	netsnmpread.snmp-getbulk-with-non-repeaters-and-repetitions-net-snmp
+TestNetSNMPRead	SNMP ifTable: one Ethernet port with the device's MAC (Net-SNMP)	netsnmpread.snmp-iftable-one-ethernet-port-with-the-device-s-mac-net-snmp
+TestNetSNMPRead	SNMP LLDP-MIB lldpLocSysName (Net-SNMP)	netsnmpread.snmp-lldp-mib-lldplocsysname-net-snmp
+TestNetSNMPRead	SNMP walks agree: GetNext and GetBulk (Net-SNMP)	netsnmpread.snmp-walks-agree-getnext-and-getbulk-net-snmp
+TestNetSNMPRead	SNMP walks agree: v1 and v2c (Net-SNMP)	netsnmpread.snmp-walks-agree-v1-and-v2c-net-snmp
+TestNetSNMPRead	scapy decode netsnmp-read.pcap	netsnmpread.scapy-decode-netsnmp-read-pcap
+TestNetSNMPRead	tshark check netsnmp-read.pcap	netsnmpread.tshark-check-netsnmp-read-pcap
+TestOtfHelloDecoders	DCP Hello sent by the device (go-profinet)	otfhellodecoders.dcp-hello-sent-by-the-device-go-profinet
+TestOtfHelloDecoders	scapy decode otf-hello.pcap	otfhellodecoders.scapy-decode-otf-hello-pcap
+TestOtfHelloDecoders	tshark check otf-hello.pcap	otfhellodecoders.tshark-check-otf-hello-pcap
+TestPnetAlarms	Process alarm received and acknowledged	pnetalarms.process-alarm-received-and-acknowledged
+TestPnetAlarms	Diagnosis alarm received and acknowledged	pnetalarms.diagnosis-alarm-received-and-acknowledged
+TestPnetAlarms	p-net confirms the AlarmAck	pnetalarms.p-net-confirms-the-alarmack
+TestPnetAlarms	AR survives the alarms	pnetalarms.ar-survives-the-alarms
+TestPnetConfigurationMismatch	Unexpected module in slot 2: p-net plugs it (no ModuleDiff), the AR runs	pnetconfigurationmismatch.unexpected-module-in-slot-2-p-net-plugs-it-no-modulediff-the-ar
+TestPnetConfigurationMismatch	Model of another DeviceID: the controller refuses the device	pnetconfigurationmismatch.model-of-another-deviceid-the-controller-refuses-the-device
+TestPnetController	DCP Identify by name, Connect, PrmEnd, ApplicationReady (RT_CLASS_1 legacy)	pnetcontroller.dcp-identify-by-name-connect-prmend-applicationready-rt-class-1
+TestPnetController	Read I&M0	pnetcontroller.read-i-m0
+TestPnetController	Parameter write before PrmEnd, read back	pnetcontroller.parameter-write-before-prmend-read-back
+TestPnetController	Write record in Data, read back	pnetcontroller.write-record-in-data-read-back
+TestPnetController	RealIdentificationData (0xF000)	pnetcontroller.realidentificationdata-0xf000
+TestPnetController	PDPortDataReal (0x802A) decoded	pnetcontroller.pdportdatareal-0x802a-decoded
+TestPnetController	PDRealData (0xF841) decoded	pnetcontroller.pdrealdata-0xf841-decoded
+TestPnetController	Read of an unknown index answers a PNIORW read error	pnetcontroller.read-of-an-unknown-index-answers-a-pniorw-read-error
+TestPnetController	Write of an invalid index is rejected with a PNIO status	pnetcontroller.write-of-an-invalid-index-is-rejected-with-a-pnio-status
+TestPnetController	ReadImplicit of I&M0 (no AR)	pnetcontroller.readimplicit-of-i-m0-no-ar
+TestPnetController	WriteMultiple of two records	pnetcontroller.writemultiple-of-two-records
+TestPnetController	Write I&M1 in the AR, read it back	pnetcontroller.write-i-m1-in-the-ar-read-it-back
+TestPnetController	Read diagnosis (0xF80C)	pnetcontroller.read-diagnosis-0xf80c
+TestPnetController	Cyclic input data (consumer)	pnetcontroller.cyclic-input-data-consumer
+TestPnetController	Cyclic output data (provider)	pnetcontroller.cyclic-output-data-provider
+TestPnetController	Echo module returns our outputs	pnetcontroller.echo-module-returns-our-outputs
+TestPnetController	p-net reports connect	pnetcontroller.p-net-reports-connect
+TestPnetController	p-net reports prmend	pnetcontroller.p-net-reports-prmend
+TestPnetController	p-net reports appready-confirmed	pnetcontroller.p-net-reports-appready-confirmed
+TestPnetController	p-net reports write	pnetcontroller.p-net-reports-write
+TestPnetController	p-net reports read	pnetcontroller.p-net-reports-read
+TestPnetController	Release ends the AR at p-net	pnetcontroller.release-ends-the-ar-at-p-net
+TestPnetController	scapy decode pnet-controller.pcap	pnetcontroller.scapy-decode-pnet-controller-pcap
+TestPnetController	tshark check pnet-controller.pcap	pnetcontroller.tshark-check-pnet-controller-pcap
+TestPnetDCP	DCP Identify all	pnetdcp.dcp-identify-all
+TestPnetDCP	DCP Get (all blocks)	pnetdcp.dcp-get-all-blocks
+TestPnetDCP	DCP Set NameOfStation (temporary)	pnetdcp.dcp-set-nameofstation-temporary
+TestPnetDCP	DCP Identify by the new name	pnetdcp.dcp-identify-by-the-new-name
+TestPnetDCP	DCP Set NameOfStation back	pnetdcp.dcp-set-nameofstation-back
+TestPnetDCP	DCP Signal	pnetdcp.dcp-signal
+TestPnetDCP	p-net flashes its LED on Signal	pnetdcp.p-net-flashes-its-led-on-signal
+TestPnetDCP	DCP Set IP (temporary)	pnetdcp.dcp-set-ip-temporary
+TestPnetDCP	DCP Get reflects the new IP	pnetdcp.dcp-get-reflects-the-new-ip
+TestPnetDCP	DCP ResetToFactory (communication)	pnetdcp.dcp-resettofactory-communication
+TestPnetDCP	Reset clears the station name	pnetdcp.reset-clears-the-station-name
+TestPnetHello	DCP Hello sent by p-net	pnethello.dcp-hello-sent-by-p-net
+TestPnetHello	Controller connects through the device's Hello, without waiting for its retry	pnethello.controller-connects-through-the-device-s-hello-without-waiting
+TestPnetHello	scapy decode pnet-hello.pcap	pnethello.scapy-decode-pnet-hello-pcap
+TestPnetHello	tshark check pnet-hello.pcap	pnethello.tshark-check-pnet-hello-pcap
+TestPnetLLDP	LLDP PNIO PortStatus TLV	pnetlldp.lldp-pnio-portstatus-tlv
+TestPnetLLDP	LLDP PNIO ChassisMAC TLV	pnetlldp.lldp-pnio-chassismac-tlv
+TestPnetLLDP	LLDP neighbor (p-net)	pnetlldp.lldp-neighbor-p-net
+TestPnetPortCheck	PDPortDataCheck accepted by p-net (written before PrmEnd)	pnetportcheck.pdportdatacheck-accepted-by-p-net-written-before-prmend
+TestPnetPortCheck	CheckPeers, the right neighbor: no remote mismatch (p-net)	pnetportcheck.checkpeers-the-right-neighbor-no-remote-mismatch-p-net
+TestPnetPortCheck	CheckPeers, another name of station: remote mismatch 0x8000 (p-net)	pnetportcheck.checkpeers-another-name-of-station-remote-mismatch-0x8000-p-net
+TestPnetPortCheck	CheckPeers decoded by p-net as written (its log)	pnetportcheck.checkpeers-decoded-by-p-net-as-written-its-log
+TestPnetReparameterize	Re-parameterization in Data (p-net)	pnetreparameterize.re-parameterization-in-data-p-net
+TestPnetReparameterize	A refused PrmBegin leaves the AR running with its parameters (p-net)	pnetreparameterize.a-refused-prmbegin-leaves-the-ar-running-with-its-parameters-p
+TestPnetReparameterize	scapy decode pnet-reparameterize.pcap	pnetreparameterize.scapy-decode-pnet-reparameterize-pcap
+TestPnetReparameterize	tshark check pnet-reparameterize.pcap	pnetreparameterize.tshark-check-pnet-reparameterize-pcap
+TestPnetSharedDevice	Two IOCARs at once: both controllers reach Running (p-net)	pnetshareddevice.two-iocars-at-once-both-controllers-reach-running-p-net
+TestPnetSharedDevice	ModuleDiff to the second controller: slot 1 locked by IO controller, slot 2 its own (p-net)	pnetshareddevice.modulediff-to-the-second-controller-slot-1-locked-by-io
+TestPnetSharedDevice	Released alarm to the second controller when the owner leaves (p-net)	pnetshareddevice.released-alarm-to-the-second-controller-when-the-owner-leaves-p
+TestPnetSharedDevice	Slot 1 taken over (PrmEnd and ApplicationReady for the plugged submodule): its input valid at the second controller (p-net)	pnetshareddevice.slot-1-taken-over-prmend-and-applicationready-for-the-plugged
+TestPnetStartupModes	Startup legacy (RTClass 1)	pnetstartupmodes.startup-legacy-rtclass-1
+TestPnetStartupModes	Startup advanced (RTClass 2)	pnetstartupmodes.startup-advanced-rtclass-2
+TestPnetStartupModes	1 ms cycle	pnetstartupmodes.1-ms-cycle
+TestPnioDCP	DCP Identify all	pniodcp.dcp-identify-all
+TestPnioDCP	DCP Get NameOfStation	pniodcp.dcp-get-nameofstation
+TestPnioDCP	DCP Set NameOfStation (temporary)	pniodcp.dcp-set-nameofstation-temporary
+TestPnioDCP	DCP Get reflects the new name	pniodcp.dcp-get-reflects-the-new-name
+TestPnioDCP	DCP Set IP (temporary)	pniodcp.dcp-set-ip-temporary
+TestPnioDCP	DCP Get IP	pniodcp.dcp-get-ip
+TestPnioDCP	DCP Signal (blink)	pniodcp.dcp-signal-blink
+TestPnioDCP	DCP ResetToFactory	pniodcp.dcp-resettofactory
+TestPnioDCP	scapy decode pnio-dcp.pcap	pniodcp.scapy-decode-pnio-dcp-pcap
+TestPnioDCP	tshark check pnio-dcp.pcap	pniodcp.tshark-check-pnio-dcp-pcap
+TestPnioRsController	GSDML-derived expected configuration; Connect, PrmEnd, ApplicationReady (advanced, RTClass 2)	pniorscontroller.gsdml-derived-expected-configuration-connect-prmend
+TestPnioRsController	Read I&M0	pniorscontroller.read-i-m0
+TestPnioRsController	Write and read back I&M1	pniorscontroller.write-and-read-back-i-m1
+TestPnioRsController	Diagnosis records (0x800C)	pniorscontroller.diagnosis-records-0x800c
+TestPnioRsController	Diagnosis record answers invalid index as pnio-rs documents	pniorscontroller.diagnosis-record-answers-invalid-index-as-pnio-rs-documents
+TestPnioRsController	I&M4 answers invalid index as pnio-rs documents	pniorscontroller.i-m4-answers-invalid-index-as-pnio-rs-documents
+TestPnioRsController	Cyclic echo of 16 REAL outputs	pniorscontroller.cyclic-echo-of-16-real-outputs
+TestPnioRsController	Cyclic echo of 32 BOOL outputs	pniorscontroller.cyclic-echo-of-32-bool-outputs
+TestPnioRsController	pnio-rs reaches Data	pniorscontroller.pnio-rs-reaches-data
+TestPnioRsController	Release ends the AR at pnio-rs	pniorscontroller.release-ends-the-ar-at-pnio-rs
+TestPnioRsController	pnio-rs rejects RT_CLASS_1 FrameIDs (0xC000..) with a Connect error, which the controller reports	pniorscontroller.pnio-rs-rejects-rt-class-1-frameids-0xc000-with-a-connect-error
+TestPnioRsController	scapy decode pniors-controller.pcap	pniorscontroller.scapy-decode-pniors-controller-pcap
+TestPnioRsController	tshark check pniors-controller.pcap	pniorscontroller.tshark-check-pniors-controller-pcap
+TestPnioRsDCP	DCP Identify by name	pniorsdcp.dcp-identify-by-name
+TestPnioRsDCP	DCP Identify all	pniorsdcp.dcp-identify-all
+TestPnioRsDCP	DCP Get/Set NameOfStation/Signal/Reset (pnio-rs)	pniorsdcp.dcp-get-set-nameofstation-signal-reset-pnio-rs
+TestPnioRsReparameterize	Re-parameterization in Data (pnio-rs)	pniorsreparameterize.re-parameterization-in-data-pnio-rs
+TestPnioRsReparameterize	A refused PrmBegin leaves the AR running (pnio-rs)	pniorsreparameterize.a-refused-prmbegin-leaves-the-ar-running-pnio-rs
+TestProfinetPyController	DCP discovery by profinet-py	profinetpycontroller.dcp-discovery-by-profinet-py
+TestProfinetPyController	Read I&M0 (IOSAR device access)	profinetpycontroller.read-i-m0-iosar-device-access
+TestProfinetPyController	Read I&M2..I&M4	profinetpycontroller.read-i-m2-i-m4
+TestProfinetPyController	Write and read a user record	profinetpycontroller.write-and-read-a-user-record
+TestProfinetPyController	ReadImplicit I&M0	profinetpycontroller.readimplicit-i-m0
+TestProfinetPyController	Invalid index answered with an error	profinetpycontroller.invalid-index-answered-with-an-error
+TestProfinetPyController	ModuleDiff read	profinetpycontroller.modulediff-read
+TestProfinetPyController	Slot discovery (RealIdentificationData)	profinetpycontroller.slot-discovery-realidentificationdata
+TestProfinetPyController	I&M1 write by profinet-py	profinetpycontroller.i-m1-write-by-profinet-py
+TestProfinetPyController	GSDML generated by go-profinet parsed by profinet-py; cyclic AR (IOCARSingle) established	profinetpycontroller.gsdml-generated-by-go-profinet-parsed-by-profinet-py-cyclic-ar
+TestProfinetPyController	Cyclic inputs at profinet-py	profinetpycontroller.cyclic-inputs-at-profinet-py
+TestProfinetPyController	Cyclic statistics without missed frames	profinetpycontroller.cyclic-statistics-without-missed-frames
+TestProfinetPyController	Cyclic outputs from profinet-py at the device	profinetpycontroller.cyclic-outputs-from-profinet-py-at-the-device
+TestProfinetPyController	IOSAR and IOCARSingle ARs from profinet-py	profinetpycontroller.iosar-and-iocarsingle-ars-from-profinet-py
+TestProfinetPyController	Diagnosis alarm sent to profinet-py and acknowledged	profinetpycontroller.diagnosis-alarm-sent-to-profinet-py-and-acknowledged
+TestProfinetPyController	scapy decode profinet-py-controller.pcap	profinetpycontroller.scapy-decode-profinet-py-controller-pcap
+TestProfinetPyController	tshark: PNIO-CM "Trailing stray characters"	profinetpycontroller.tshark-pnio-cm-trailing-stray-characters
+TestProfinetPyController	tshark check profinet-py-controller.pcap	profinetpycontroller.tshark-check-profinet-py-controller-pcap
+TestProfinetPyDCP	DCP Identify all	profinetpydcp.dcp-identify-all
+TestProfinetPyDCP	DCP Get name	profinetpydcp.dcp-get-name
+TestProfinetPyDCP	DCP Set NameOfStation	profinetpydcp.dcp-set-nameofstation
+TestProfinetPyDCP	Device applies the name	profinetpydcp.device-applies-the-name
+TestProfinetPyDCP	DCP Set IP	profinetpydcp.dcp-set-ip
+TestProfinetPyDCP	DCP Signal	profinetpydcp.dcp-signal
+TestProfinetPyDCP	DCP ResetToFactory	profinetpydcp.dcp-resettofactory
+TestProfinetPyDCP	Device reports Signal and Reset	profinetpydcp.device-reports-signal-and-reset
+TestProfinetPyFixtures/DAP_1P	GSDML fixture DAP_1P parsed by profinet-py; cyclic AR with a device of the same file	profinetpyfixtures.dap-1p.gsdml-fixture-dap-1p-parsed-by-profinet-py-cyclic-ar-with-a
+TestProfinetPyFixtures/DAP_1P	Cyclic inputs from the fixture device DAP_1P	profinetpyfixtures.dap-1p.cyclic-inputs-from-the-fixture-device-dap-1p
+TestProfinetPyFixtures/DAP_C	GSDML fixture DAP_C parsed by profinet-py; cyclic AR with a device of the same file	profinetpyfixtures.dap-c.gsdml-fixture-dap-c-parsed-by-profinet-py-cyclic-ar-with-a
+TestProfinetPyFixtures/DAP_C	Cyclic inputs from the fixture device DAP_C	profinetpyfixtures.dap-c.cyclic-inputs-from-the-fixture-device-dap-c
+TestProfinetPyReparameterize	Cyclic AR (IOCARSingle) by profinet-py	profinetpyreparameterize.cyclic-ar-iocarsingle-by-profinet-py
+TestProfinetPyReparameterize	PrmBegin in Data accepted (profinet-py)	profinetpyreparameterize.prmbegin-in-data-accepted-profinet-py
+TestProfinetPyReparameterize	Record write between PrmBegin and PrmEnd (profinet-py)	profinetpyreparameterize.record-write-between-prmbegin-and-prmend-profinet-py
+TestProfinetPyReparameterize	PrmEnd after re-parameterization (profinet-py)	profinetpyreparameterize.prmend-after-re-parameterization-profinet-py
+TestProfinetPyReparameterize	ApplicationReady after re-parameterization, answered by profinet-py	profinetpyreparameterize.applicationready-after-re-parameterization-answered-by-profinet
+TestProfinetPyReparameterize	Device AR: Data, Parameterizing, ApplicationReadyPending, Data	profinetpyreparameterize.device-ar-data-parameterizing-applicationreadypending-data
+TestProfinetPyReparameterize	Cyclic inputs after re-parameterization	profinetpyreparameterize.cyclic-inputs-after-re-parameterization
+TestProfinetPyReparameterize	scapy decode profinet-py-reparameterize.pcap	profinetpyreparameterize.scapy-decode-profinet-py-reparameterize-pcap
+TestProfinetPyReparameterize	tshark: PNIO-CM "Trailing stray characters"	profinetpyreparameterize.tshark-pnio-cm-trailing-stray-characters
+TestProfinetPyReparameterize	tshark check profinet-py-reparameterize.pcap	profinetpyreparameterize.tshark-check-profinet-py-reparameterize-pcap
+TestSNMPDecoders	SNMP walk of the device's agent captured (go-profinet)	snmpdecoders.snmp-walk-of-the-device-s-agent-captured-go-profinet
+TestSNMPDecoders	scapy decode snmp.pcap	snmpdecoders.scapy-decode-snmp-pcap
+TestSNMPDecoders	tshark check snmp.pcap	snmpdecoders.tshark-check-snmp-pcap
+TestSNMPDecoders	tshark dissects every SNMP datagram as SNMP	snmpdecoders.tshark-dissects-every-snmp-datagram-as-snmp
+TestSNMPDecoders	scapy decodes every SNMP datagram (PDU and variable bindings)	snmpdecoders.scapy-decodes-every-snmp-datagram-pdu-and-variable-bindings
+TestUDPRTDecoders	RT_CLASS_UDP frame on UDP port 34962 and RT_CLASS_UDP Connect (RTClass 4, LT 0x0800, RTA_CLASS_UDP) encoded (go-profinet)	udprtdecoders.rt-class-udp-frame-on-udp-port-34962-and-rt-class-udp-connect
+TestUDPRTDecoders	scapy dissects the UDP payload of port 34962 as PROFINET RT (scapy)	udprtdecoders.scapy-dissects-the-udp-payload-of-port-34962-as-profinet-rt
+TestUDPRTDecoders	scapy decode udp-rt.pcap	udprtdecoders.scapy-decode-udp-rt-pcap
+TestUDPRTDecoders	tshark check udp-rt.pcap	udprtdecoders.tshark-check-udp-rt-pcap

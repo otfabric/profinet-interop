@@ -1,0 +1,9 @@
+# Accepted differences of peers: go-profinet's interop tests report them as "peer-deviation";
+# results.json reports them as "known-difference", never as "pass". A peer-deviation without a line
+# here is a fail. A waiver whose scenarios ran and no longer deviate fails the run: remove the line.
+# Columns (tab-separated): id	scope (role@peer)	upstream_version	evidence_url	note	scenarios (regular expression on the whole stable ID)
+scapy-no-mrp-dissector	decoder@scapy	2.6.1	https://github.com/secdev/scapy/tree/3aadcf5ad25d0e0e731406c7adf98440f0d4169c	scapy has no MRP dissector: the frames are read, not decoded (tshark decodes them).	.*\.scapy-decode-.*-mrp-frames-not-dissected
+scapy-no-dcp-dhcp-block	decoder@scapy	2.6.1	https://github.com/secdev/scapy/tree/3aadcf5ad25d0e0e731406c7adf98440f0d4169c	scapy has no DCP DHCP block class: the first DHCP block and the blocks after it are left Raw.	dcpdhcpdecoders\.scapy-dcp-option-3-dhcp-blocks
+tshark-dhcp-option-12	decoder@tshark	4.0.17	https://gitlab.com/wireshark/wireshark/-/tree/v4.0.17	Wireshark decodes the data of DHCP options 61 and 255 only; option 12 (host name) is shown as undecoded data.	dcpdhcpdecoders\.tshark-pn-dcp-undecoded-data-5-bytes
+umrp-mra-takes-manager-back	MRA@umrp	v4.0	https://github.com/giometti/umrp/tree/fb193eac1a2df51fe42e19d4ea36bb0157bda09f	umrp's MRC test monitor ignores the tests of the manager it gave way to: the MRA keeps taking the manager role back.	mrpauto\.umrp\.(go-profinet-best|peer-best)\.mra-umrp-mra-as-a-client-keeps-taking-the-manager-role-back
+profinet-py-im1-block-length	controller@profinet-py	0.6.6	https://github.com/f0rw4rd/profinet-py/tree/ef09fb7788cfd86c2e6ee1b9bcf5165f5aac03c4	profinet-py writes I&M1 with BlockLength 58 and two padding octets; the standard block is 56 octets.	profinetpy(controller|reparameterize)\.(i-m1-write-by-profinet-py|tshark-pnio-cm-trailing-stray-characters)
