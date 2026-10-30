@@ -4,7 +4,7 @@
 
 .DEFAULT_GOAL := help
 
-.PHONY: help images image-% capabilities check-versions lint contract matrix smoke versions release-notes latest-upstream clean FORCE
+.PHONY: help images image-% capabilities check-versions lint unittests contract matrix smoke versions release-notes latest-upstream clean FORCE
 
 ADAPTERS := pnet pnio-rs profinet-py pnio-dcp scapy tshark umrp mrp netsnmp
 TAG ?= dev
@@ -27,11 +27,16 @@ lint: ## Shellcheck the entrypoints and scripts; compile the Python adapters
 	@shellcheck adapters/*/entrypoint.sh adapters/tshark/check.sh adapters/pnet/set_network_parameters adapters/pnet/set_profinet_leds scripts/*.sh
 	@python3 -m py_compile adapters/*/*.py scripts/*.py
 
+unittests: ## Unit tests of the result scripts, and the verdict of the committed matrix
+	@python3 -m unittest discover -q -s scripts -p 'test_*.py'
+	@python3 scripts/interop_result.py matrix/interop-result-v1.json
+
 contract: ## Check every image against the command-line contract (docs/CONTAINER_CONTRACT.md)
 	@scripts/check-contract.sh $(TAG)
 
-matrix: ## Regenerate docs/MATRIX.md and matrix/results.json from RESULTS=dir (go-profinet's interop results)
+matrix: ## Regenerate docs/MATRIX.md, matrix/results.json and matrix/interop-result-v1.json from RESULTS=dir (go-profinet's interop results)
 	@python3 scripts/matrix.py "$(RESULTS)" matrix/results.json docs/MATRIX.md
+	@python3 scripts/matrix-to-results.py matrix/results.json matrix/interop-result-v1.json
 
 smoke: images ## Build the images and print their versions
 	@for a in $(ADAPTERS); do docker run --rm profinet-interop-$$a:$(TAG) version; done

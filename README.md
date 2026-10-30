@@ -111,6 +111,7 @@ No image is published (see Licences). go-profinet pins a release
 adapters/<name>/      Dockerfile and the adapter script of each implementation
 docs/                 container contract, interoperability notes, matrix
 matrix/results.json   the machine-readable matrix
+matrix/interop-result-v1.json  the matrix as the organisation's interop-result-v1 (stable IDs: matrix/ids.tsv, waivers: tests/known-differences.tsv)
 scripts/              version check, latest upstream, matrix generation, release notes
 versions.yaml         every pin, and the version of this repository
 RELEASE.md            how a release is made; the notes of every version

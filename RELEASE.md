@@ -35,6 +35,24 @@ Tags are immutable. A fix is a new version.
 
 ---
 
+## v0.7.0
+
+**Date:** 2026-10-30
+
+**Previous release:** v0.6.0
+
+## Summary
+
+The matrix as the organisation's interop-result-v1.
+
+## Changes
+
+### Added
+
+- **`matrix/interop-result-v1.json`** ([interop-result-v1](schemas/interop-result-v1.schema.json)): `make matrix` writes it next to `matrix/results.json`, which keeps its shape, and the release attaches it. Stable IDs: `matrix/ids.tsv`. `peer-deviation` is `known-difference` with a waiver of `tests/known-differences.tsv`; without one it is a fail. `n/a` is `unsupported`. Only `pass` counts as passing; a run with no pass, or with a waiver that no longer reproduces, fails. Existing reports keep their shape.
+
+---
+
 ## v0.6.0
 
 **Date:** 2026-10-29

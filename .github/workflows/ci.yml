@@ -30,6 +30,8 @@ jobs:
         run: scripts/release-notes.sh > /dev/null
       - name: Shellcheck and Python
         run: make lint
+      - name: Result scripts
+        run: make unittests
       - name: No image is published
         # p-net, profinet-py, umrp and mrp are GPL: their images are built by each
         # user from upstream, never pushed by this repository.

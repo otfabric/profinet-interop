@@ -1,0 +1,3326 @@
+{
+ "contractVersion": "1.2",
+ "finishedAt": "2026-10-29T00:15:30+00:00",
+ "gitSha": "e31a032d8648e05dbb269a42e86fb6b918137ebc",
+ "host": {
+  "arch": "unrecorded",
+  "os": "unrecorded"
+ },
+ "implementations": [
+  {
+   "independent": false,
+   "name": "go-profinet",
+   "version": "unrecorded"
+  },
+  {
+   "independent": true,
+   "license": "GPL-2.0",
+   "name": "mrp",
+   "revision": "177717ee893d5ccc6e31147b1b8a720c9b798b81",
+   "version": "v1.2"
+  },
+  {
+   "independent": true,
+   "license": "Net-SNMP (BSD-style licences, see /licenses/net-snmp/copyright)",
+   "name": "netsnmp",
+   "version": "5.9.3+dfsg-2+deb12u1"
+  },
+  {
+   "independent": true,
+   "license": "GPL-3.0-only (or commercial)",
+   "name": "pnet",
+   "revision": "ea5e5540b2be55c4dfadffda39b948632c104daa",
+   "version": "ea5e5540b2be"
+  },
+  {
+   "independent": true,
+   "license": "MIT",
+   "name": "pnio-dcp",
+   "version": "1.2.0"
+  },
+  {
+   "independent": true,
+   "license": "MIT OR Apache-2.0",
+   "name": "pnio-rs",
+   "revision": "798500c1bf3726a1bf015c43f39c6ae2a2d55b28",
+   "version": "v0.1.0"
+  },
+  {
+   "independent": true,
+   "license": "GPL-3.0-only (or commercial)",
+   "name": "profinet-py",
+   "revision": "ef09fb7788cfd86c2e6ee1b9bcf5165f5aac03c4",
+   "version": "0.6.6"
+  },
+  {
+   "independent": true,
+   "license": "GPL-2.0-only",
+   "name": "scapy",
+   "version": "2.6.1"
+  },
+  {
+   "independent": true,
+   "license": "GPL-2.0-or-later",
+   "name": "tshark",
+   "version": "4.0.17"
+  },
+  {
+   "independent": true,
+   "license": "GPL-2.0",
+   "name": "umrp",
+   "revision": "fb193eac1a2df51fe42e19d4ea36bb0157bda09f",
+   "version": "v4.0"
+  }
+ ],
+ "interopVersion": "0.7.0",
+ "repository": "otfabric/profinet-interop",
+ "reproduce": "PROFINET_INTEROP_RESULTS=dir make -C ../go-profinet interop && make matrix RESULTS=dir",
+ "results": [
+  {
+   "durationMs": 0,
+   "feature": "MRP Test, TopologyChange, LinkDown, LinkUp; PTCP DelayReq, DelayRes; IOCARSR Connect with SRInfoBlock and MCRBlockReq; MRP records (PDInterfaceMrpDataAdjust/Check/Real, PDPortMrpDataAdjust) encoded (go-profinet)",
+   "id": "codecdecoders.mrp-test-topologychange-linkdown-linkup-ptcp-delayreq-delayres",
+   "outcome": "pass",
+   "roles": {
+    "peer-1": "tshark",
+    "peer-2": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "codecdecoders"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode codecs.pcap",
+   "id": "codecdecoders.scapy-decode-codecs-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "codecdecoders"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode codecs.pcap: MRP frames not dissected",
+   "id": "codecdecoders.scapy-decode-codecs-pcap-mrp-frames-not-dissected",
+   "outcome": "known-difference",
+   "reason": "decoder limit: scapy has no MRP dissector; the frames are read, not decoded (tshark decodes them)",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "codecdecoders",
+   "waiver": "scapy-no-mrp-dissector"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark check codecs.pcap",
+   "id": "codecdecoders.tshark-check-codecs-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "tshark",
+    "sut": "go-profinet"
+   },
+   "suite": "codecdecoders"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP DHCP blocks (client ID from MAC, arbitrary client ID, control) and IP set by DHCP in Identify/Get responses, Get and Set requests encoded (go-profinet)",
+   "id": "dcpdhcpdecoders.dcp-dhcp-blocks-client-id-from-mac-arbitrary-client-id-control",
+   "outcome": "pass",
+   "roles": {
+    "peer-1": "tshark",
+    "peer-2": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "dcpdhcpdecoders"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DHCP options and IP BlockInfo parsed back (go-profinet)",
+   "id": "dcpdhcpdecoders.dhcp-options-and-ip-blockinfo-parsed-back-go-profinet",
+   "outcome": "pass",
+   "roles": {
+    "peer-1": "tshark",
+    "peer-2": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "dcpdhcpdecoders"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy: DCP option 3 (DHCP) blocks",
+   "id": "dcpdhcpdecoders.scapy-dcp-option-3-dhcp-blocks",
+   "outcome": "known-difference",
+   "reason": "scapy has no DCP DHCP block class: in 4 of 7 frames the first DHCP block and the blocks after it are left Raw",
+   "roles": {
+    "peer-1": "tshark",
+    "peer-2": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "dcpdhcpdecoders",
+   "waiver": "scapy-no-dcp-dhcp-block"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode dcp-dhcp.pcap",
+   "id": "dcpdhcpdecoders.scapy-decode-dcp-dhcp-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "dcpdhcpdecoders"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark: PN-DCP \"Undecoded Data, 5 bytes\"",
+   "id": "dcpdhcpdecoders.tshark-pn-dcp-undecoded-data-5-bytes",
+   "outcome": "known-difference",
+   "reason": "Wireshark decodes the data of DHCP options 61 and 255 only; option 12 (host name), which go-profinet encodes as code, length and data like the others, is shown as undecoded",
+   "roles": {
+    "peer-1": "tshark",
+    "peer-2": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "dcpdhcpdecoders",
+   "waiver": "tshark-dhcp-option-12"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark check dcp-dhcp.pcap",
+   "id": "dcpdhcpdecoders.tshark-check-dcp-dhcp-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "tshark",
+    "sut": "go-profinet"
+   },
+   "suite": "dcpdhcpdecoders"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRA: go-profinet (best priority) manages, mrp MRAs give way",
+   "id": "mrpauto.mrp.go-profinet-best.mra-go-profinet-best-priority-manages-mrp-mras-give-way",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRA"
+   },
+   "suite": "mrpauto"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRA ring closed by go-profinet: no loop, no hole (mrp MRAs)",
+   "id": "mrpauto.mrp.go-profinet-best.mra-ring-closed-by-go-profinet-no-loop-no-hole-mrp-mras",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRA"
+   },
+   "suite": "mrpauto"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRA ring still closed by go-profinet: no loop, no hole (mrp MRAs)",
+   "id": "mrpauto.mrp.go-profinet-best.mra-ring-still-closed-by-go-profinet-no-loop-no-hole-mrp-mras",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRA"
+   },
+   "suite": "mrpauto"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRA: go-profinet stays the manager",
+   "id": "mrpauto.mrp.go-profinet-best.mra-go-profinet-stays-the-manager",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRA"
+   },
+   "suite": "mrpauto"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode mrp-auto-mrp.pcap",
+   "id": "mrpauto.mrp.go-profinet-best.scapy-decode-mrp-auto-mrp-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "mrpauto"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode mrp-auto-mrp.pcap: MRP frames not dissected",
+   "id": "mrpauto.mrp.go-profinet-best.scapy-decode-mrp-auto-mrp-pcap-mrp-frames-not-dissected",
+   "outcome": "known-difference",
+   "reason": "decoder limit: scapy has no MRP dissector; the frames are read, not decoded (tshark decodes them)",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "mrpauto",
+   "waiver": "scapy-no-mrp-dissector"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark check mrp-auto-mrp.pcap",
+   "id": "mrpauto.mrp.go-profinet-best.tshark-check-mrp-auto-mrp-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "tshark",
+    "sut": "go-profinet"
+   },
+   "suite": "mrpauto"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRA: go-profinet gives way to a better mrp MRA",
+   "id": "mrpauto.mrp.peer-best.mra-go-profinet-gives-way-to-a-better-mrp-mra",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRA"
+   },
+   "suite": "mrpauto"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRA ring closed by mrp: no loop, no hole (go-profinet MRA as client)",
+   "id": "mrpauto.mrp.peer-best.mra-ring-closed-by-mrp-no-loop-no-hole-go-profinet-mra-as-client",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRA"
+   },
+   "suite": "mrpauto"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRA ring still closed by mrp: no loop, no hole (go-profinet MRA as client)",
+   "id": "mrpauto.mrp.peer-best.mra-ring-still-closed-by-mrp-no-loop-no-hole-go-profinet-mra-as",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRA"
+   },
+   "suite": "mrpauto"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRA: go-profinet stays a client of the better mrp MRA",
+   "id": "mrpauto.mrp.peer-best.mra-go-profinet-stays-a-client-of-the-better-mrp-mra",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRA"
+   },
+   "suite": "mrpauto"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRA: go-profinet (next best) manages when the mrp manager fails",
+   "id": "mrpauto.mrp.peer-best.mra-go-profinet-next-best-manages-when-the-mrp-manager-fails",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRA"
+   },
+   "suite": "mrpauto"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRA after the manager failed: no loop, no hole (go-profinet manages, mrp MRA as client)",
+   "id": "mrpauto.mrp.peer-best.mra-after-the-manager-failed-no-loop-no-hole-go-profinet",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRA"
+   },
+   "suite": "mrpauto"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRA: go-profinet gives way again when the better mrp MRA returns",
+   "id": "mrpauto.mrp.peer-best.mra-go-profinet-gives-way-again-when-the-better-mrp-mra-returns",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRA"
+   },
+   "suite": "mrpauto"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRA ring closed again by mrp: no loop, no hole",
+   "id": "mrpauto.mrp.peer-best.mra-ring-closed-again-by-mrp-no-loop-no-hole",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRA"
+   },
+   "suite": "mrpauto"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRA: go-profinet (best priority) manages, umrp MRAs give way",
+   "id": "mrpauto.umrp.go-profinet-best.mra-go-profinet-best-priority-manages-umrp-mras-give-way",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRA"
+   },
+   "suite": "mrpauto"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRA ring closed by go-profinet: no loop, no hole (umrp MRAs)",
+   "id": "mrpauto.umrp.go-profinet-best.mra-ring-closed-by-go-profinet-no-loop-no-hole-umrp-mras",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRA"
+   },
+   "suite": "mrpauto"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRA ring still closed by go-profinet: no loop, no hole (umrp MRAs)",
+   "id": "mrpauto.umrp.go-profinet-best.mra-ring-still-closed-by-go-profinet-no-loop-no-hole-umrp-mras",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRA"
+   },
+   "suite": "mrpauto"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRA: go-profinet stays the manager",
+   "id": "mrpauto.umrp.go-profinet-best.mra-go-profinet-stays-the-manager",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRA"
+   },
+   "suite": "mrpauto"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRA: umrp MRA as a client keeps taking the manager role back",
+   "id": "mrpauto.umrp.go-profinet-best.mra-umrp-mra-as-a-client-keeps-taking-the-manager-role-back",
+   "outcome": "known-difference",
+   "reason": "18 role changes on n2 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_test) and reclaims the role after TSTNRmax intervals; seen with a umrp manager too",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRA"
+   },
+   "suite": "mrpauto",
+   "waiver": "umrp-mra-takes-manager-back"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode mrp-auto-umrp.pcap",
+   "id": "mrpauto.umrp.go-profinet-best.scapy-decode-mrp-auto-umrp-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "mrpauto"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode mrp-auto-umrp.pcap: MRP frames not dissected",
+   "id": "mrpauto.umrp.go-profinet-best.scapy-decode-mrp-auto-umrp-pcap-mrp-frames-not-dissected",
+   "outcome": "known-difference",
+   "reason": "decoder limit: scapy has no MRP dissector; the frames are read, not decoded (tshark decodes them)",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "mrpauto",
+   "waiver": "scapy-no-mrp-dissector"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark check mrp-auto-umrp.pcap",
+   "id": "mrpauto.umrp.go-profinet-best.tshark-check-mrp-auto-umrp-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "tshark",
+    "sut": "go-profinet"
+   },
+   "suite": "mrpauto"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRA: go-profinet gives way to a better umrp MRA",
+   "id": "mrpauto.umrp.peer-best.mra-go-profinet-gives-way-to-a-better-umrp-mra",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRA"
+   },
+   "suite": "mrpauto"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRA ring closed by umrp: no loop, no hole (go-profinet MRA as client)",
+   "id": "mrpauto.umrp.peer-best.mra-ring-closed-by-umrp-no-loop-no-hole-go-profinet-mra-as",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRA"
+   },
+   "suite": "mrpauto"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRA ring still closed by umrp: no loop, no hole (go-profinet MRA as client)",
+   "id": "mrpauto.umrp.peer-best.mra-ring-still-closed-by-umrp-no-loop-no-hole-go-profinet-mra",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRA"
+   },
+   "suite": "mrpauto"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRA: go-profinet stays a client of the better umrp MRA",
+   "id": "mrpauto.umrp.peer-best.mra-go-profinet-stays-a-client-of-the-better-umrp-mra",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRA"
+   },
+   "suite": "mrpauto"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRA: umrp MRA as a client keeps taking the manager role back",
+   "id": "mrpauto.umrp.peer-best.mra-umrp-mra-as-a-client-keeps-taking-the-manager-role-back",
+   "outcome": "known-difference",
+   "reason": "20 role changes on n3 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_test) and reclaims the role after TSTNRmax intervals; seen with a umrp manager too",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRA"
+   },
+   "suite": "mrpauto",
+   "waiver": "umrp-mra-takes-manager-back"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRA: go-profinet (next best) manages when the umrp manager fails",
+   "id": "mrpauto.umrp.peer-best.mra-go-profinet-next-best-manages-when-the-umrp-manager-fails",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRA"
+   },
+   "suite": "mrpauto"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRA after the manager failed: no loop, no hole (go-profinet manages, umrp MRA as client)",
+   "id": "mrpauto.umrp.peer-best.mra-after-the-manager-failed-no-loop-no-hole-go-profinet",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRA"
+   },
+   "suite": "mrpauto"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRA: go-profinet gives way again when the better umrp MRA returns",
+   "id": "mrpauto.umrp.peer-best.mra-go-profinet-gives-way-again-when-the-better-umrp-mra-returns",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRA"
+   },
+   "suite": "mrpauto"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRA ring closed again by umrp: no loop, no hole",
+   "id": "mrpauto.umrp.peer-best.mra-ring-closed-again-by-umrp-no-loop-no-hole",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRA"
+   },
+   "suite": "mrpauto"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP ring closed: mrp MRM, go-profinet MRC",
+   "id": "mrpotfclient.mrp.mrp-ring-closed-mrp-mrm-go-profinet-mrc",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP client"
+   },
+   "suite": "mrpotfclient"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP go-profinet MRC: both ring ports forwarding, ring closed",
+   "id": "mrpotfclient.mrp.mrp-go-profinet-mrc-both-ring-ports-forwarding-ring-closed",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP client"
+   },
+   "suite": "mrpotfclient"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP closed ring: no loop, no hole (mrp MRM, go-profinet MRC)",
+   "id": "mrpotfclient.mrp.mrp-closed-ring-no-loop-no-hole-mrp-mrm-go-profinet-mrc",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP client"
+   },
+   "suite": "mrpotfclient"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP ring open: mrp MRM on go-profinet's link change",
+   "id": "mrpotfclient.mrp.mrp-ring-open-mrp-mrm-on-go-profinet-s-link-change",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP client"
+   },
+   "suite": "mrpotfclient"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP link change: go-profinet MRC reports its link down",
+   "id": "mrpotfclient.mrp.mrp-link-change-go-profinet-mrc-reports-its-link-down",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP client"
+   },
+   "suite": "mrpotfclient"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP TopologyChange: go-profinet MRC receives mrp's and flushes",
+   "id": "mrpotfclient.mrp.mrp-topologychange-go-profinet-mrc-receives-mrp-s-and-flushes",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP client"
+   },
+   "suite": "mrpotfclient"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP measured outage, cable break (mrp MRM, go-profinet MRC, 200 ms profile)",
+   "id": "mrpotfclient.mrp.mrp-measured-outage-cable-break-mrp-mrm-go-profinet-mrc-200-ms",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP client"
+   },
+   "suite": "mrpotfclient"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP open ring: no loop, no hole (mrp MRM, go-profinet MRC)",
+   "id": "mrpotfclient.mrp.mrp-open-ring-no-loop-no-hole-mrp-mrm-go-profinet-mrc",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP client"
+   },
+   "suite": "mrpotfclient"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP ring closes again (mrp MRM, go-profinet MRC)",
+   "id": "mrpotfclient.mrp.mrp-ring-closes-again-mrp-mrm-go-profinet-mrc",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP client"
+   },
+   "suite": "mrpotfclient"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP closed again: no loop, no hole (mrp MRM, go-profinet MRC)",
+   "id": "mrpotfclient.mrp.mrp-closed-again-no-loop-no-hole-mrp-mrm-go-profinet-mrc",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP client"
+   },
+   "suite": "mrpotfclient"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode mrp-otf-client-mrp.pcap",
+   "id": "mrpotfclient.mrp.scapy-decode-mrp-otf-client-mrp-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "mrpotfclient"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode mrp-otf-client-mrp.pcap: MRP frames not dissected",
+   "id": "mrpotfclient.mrp.scapy-decode-mrp-otf-client-mrp-pcap-mrp-frames-not-dissected",
+   "outcome": "known-difference",
+   "reason": "decoder limit: scapy has no MRP dissector; the frames are read, not decoded (tshark decodes them)",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "mrpotfclient",
+   "waiver": "scapy-no-mrp-dissector"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark check mrp-otf-client-mrp.pcap",
+   "id": "mrpotfclient.mrp.tshark-check-mrp-otf-client-mrp-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "tshark",
+    "sut": "go-profinet"
+   },
+   "suite": "mrpotfclient"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP ring closed: umrp MRM, go-profinet MRC",
+   "id": "mrpotfclient.umrp.mrp-ring-closed-umrp-mrm-go-profinet-mrc",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP client"
+   },
+   "suite": "mrpotfclient"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP go-profinet MRC: both ring ports forwarding, ring closed",
+   "id": "mrpotfclient.umrp.mrp-go-profinet-mrc-both-ring-ports-forwarding-ring-closed",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP client"
+   },
+   "suite": "mrpotfclient"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP closed ring: no loop, no hole (umrp MRM, go-profinet MRC)",
+   "id": "mrpotfclient.umrp.mrp-closed-ring-no-loop-no-hole-umrp-mrm-go-profinet-mrc",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP client"
+   },
+   "suite": "mrpotfclient"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP ring open: umrp MRM on go-profinet's link change",
+   "id": "mrpotfclient.umrp.mrp-ring-open-umrp-mrm-on-go-profinet-s-link-change",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP client"
+   },
+   "suite": "mrpotfclient"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP link change: go-profinet MRC reports its link down",
+   "id": "mrpotfclient.umrp.mrp-link-change-go-profinet-mrc-reports-its-link-down",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP client"
+   },
+   "suite": "mrpotfclient"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP TopologyChange: go-profinet MRC receives umrp's and flushes",
+   "id": "mrpotfclient.umrp.mrp-topologychange-go-profinet-mrc-receives-umrp-s-and-flushes",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP client"
+   },
+   "suite": "mrpotfclient"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP measured outage, cable break (umrp MRM, go-profinet MRC, 200 ms profile)",
+   "id": "mrpotfclient.umrp.mrp-measured-outage-cable-break-umrp-mrm-go-profinet-mrc-200-ms",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP client"
+   },
+   "suite": "mrpotfclient"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP open ring: no loop, no hole (umrp MRM, go-profinet MRC)",
+   "id": "mrpotfclient.umrp.mrp-open-ring-no-loop-no-hole-umrp-mrm-go-profinet-mrc",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP client"
+   },
+   "suite": "mrpotfclient"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP ring closes again (umrp MRM, go-profinet MRC)",
+   "id": "mrpotfclient.umrp.mrp-ring-closes-again-umrp-mrm-go-profinet-mrc",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP client"
+   },
+   "suite": "mrpotfclient"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP closed again: no loop, no hole (umrp MRM, go-profinet MRC)",
+   "id": "mrpotfclient.umrp.mrp-closed-again-no-loop-no-hole-umrp-mrm-go-profinet-mrc",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP client"
+   },
+   "suite": "mrpotfclient"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode mrp-otf-client-umrp.pcap",
+   "id": "mrpotfclient.umrp.scapy-decode-mrp-otf-client-umrp-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "mrpotfclient"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode mrp-otf-client-umrp.pcap: MRP frames not dissected",
+   "id": "mrpotfclient.umrp.scapy-decode-mrp-otf-client-umrp-pcap-mrp-frames-not-dissected",
+   "outcome": "known-difference",
+   "reason": "decoder limit: scapy has no MRP dissector; the frames are read, not decoded (tshark decodes them)",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "mrpotfclient",
+   "waiver": "scapy-no-mrp-dissector"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark check mrp-otf-client-umrp.pcap",
+   "id": "mrpotfclient.umrp.tshark-check-mrp-otf-client-umrp-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "tshark",
+    "sut": "go-profinet"
+   },
+   "suite": "mrpotfclient"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP ring closed: go-profinet MRM, mrp MRCs",
+   "id": "mrpotfmanager.mrp.mrp-ring-closed-go-profinet-mrm-mrp-mrcs",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP manager"
+   },
+   "suite": "mrpotfmanager"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP test frames: go-profinet MRM receives its tests through mrp MRCs",
+   "id": "mrpotfmanager.mrp.mrp-test-frames-go-profinet-mrm-receives-its-tests-through-mrp",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP manager"
+   },
+   "suite": "mrpotfmanager"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP closed ring: no loop, no hole (go-profinet MRM, mrp MRCs)",
+   "id": "mrpotfmanager.mrp.mrp-closed-ring-no-loop-no-hole-go-profinet-mrm-mrp-mrcs",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP manager"
+   },
+   "suite": "mrpotfmanager"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP ring open: go-profinet MRM unblocks on a cable break between mrp MRCs",
+   "id": "mrpotfmanager.mrp.mrp-ring-open-go-profinet-mrm-unblocks-on-a-cable-break-between",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP manager"
+   },
+   "suite": "mrpotfmanager"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP FDB flush: mrp MRC flushes on go-profinet's TopologyChange",
+   "id": "mrpotfmanager.mrp.mrp-fdb-flush-mrp-mrc-flushes-on-go-profinet-s-topologychange",
+   "outcome": "unsupported",
+   "reason": "the kernel flushes; the adapter cannot observe it",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP manager"
+   },
+   "suite": "mrpotfmanager"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP measured outage, cable break (go-profinet MRM, mrp MRCs, 200 ms profile)",
+   "id": "mrpotfmanager.mrp.mrp-measured-outage-cable-break-go-profinet-mrm-mrp-mrcs-200-ms",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP manager"
+   },
+   "suite": "mrpotfmanager"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP open ring: no loop, no hole (go-profinet MRM, mrp MRCs)",
+   "id": "mrpotfmanager.mrp.mrp-open-ring-no-loop-no-hole-go-profinet-mrm-mrp-mrcs",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP manager"
+   },
+   "suite": "mrpotfmanager"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP ring closes again (go-profinet MRM, mrp MRCs)",
+   "id": "mrpotfmanager.mrp.mrp-ring-closes-again-go-profinet-mrm-mrp-mrcs",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP manager"
+   },
+   "suite": "mrpotfmanager"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP closed again: no loop, no hole (go-profinet MRM, mrp MRCs)",
+   "id": "mrpotfmanager.mrp.mrp-closed-again-no-loop-no-hole-go-profinet-mrm-mrp-mrcs",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP manager"
+   },
+   "suite": "mrpotfmanager"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode mrp-otf-manager-mrp.pcap",
+   "id": "mrpotfmanager.mrp.scapy-decode-mrp-otf-manager-mrp-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "mrpotfmanager"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode mrp-otf-manager-mrp.pcap: MRP frames not dissected",
+   "id": "mrpotfmanager.mrp.scapy-decode-mrp-otf-manager-mrp-pcap-mrp-frames-not-dissected",
+   "outcome": "known-difference",
+   "reason": "decoder limit: scapy has no MRP dissector; the frames are read, not decoded (tshark decodes them)",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "mrpotfmanager",
+   "waiver": "scapy-no-mrp-dissector"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark check mrp-otf-manager-mrp.pcap",
+   "id": "mrpotfmanager.mrp.tshark-check-mrp-otf-manager-mrp-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "tshark",
+    "sut": "go-profinet"
+   },
+   "suite": "mrpotfmanager"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP ring closed: go-profinet MRM, umrp MRCs",
+   "id": "mrpotfmanager.umrp.mrp-ring-closed-go-profinet-mrm-umrp-mrcs",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP manager"
+   },
+   "suite": "mrpotfmanager"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP test frames: go-profinet MRM receives its tests through umrp MRCs",
+   "id": "mrpotfmanager.umrp.mrp-test-frames-go-profinet-mrm-receives-its-tests-through-umrp",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP manager"
+   },
+   "suite": "mrpotfmanager"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP closed ring: no loop, no hole (go-profinet MRM, umrp MRCs)",
+   "id": "mrpotfmanager.umrp.mrp-closed-ring-no-loop-no-hole-go-profinet-mrm-umrp-mrcs",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP manager"
+   },
+   "suite": "mrpotfmanager"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP ring open: go-profinet MRM unblocks on a cable break between umrp MRCs",
+   "id": "mrpotfmanager.umrp.mrp-ring-open-go-profinet-mrm-unblocks-on-a-cable-break-between",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP manager"
+   },
+   "suite": "mrpotfmanager"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP FDB flush: umrp MRC flushes on go-profinet's TopologyChange",
+   "id": "mrpotfmanager.umrp.mrp-fdb-flush-umrp-mrc-flushes-on-go-profinet-s-topologychange",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP manager"
+   },
+   "suite": "mrpotfmanager"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP measured outage, cable break (go-profinet MRM, umrp MRCs, 200 ms profile)",
+   "id": "mrpotfmanager.umrp.mrp-measured-outage-cable-break-go-profinet-mrm-umrp-mrcs-200",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP manager"
+   },
+   "suite": "mrpotfmanager"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP open ring: no loop, no hole (go-profinet MRM, umrp MRCs)",
+   "id": "mrpotfmanager.umrp.mrp-open-ring-no-loop-no-hole-go-profinet-mrm-umrp-mrcs",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP manager"
+   },
+   "suite": "mrpotfmanager"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP ring closes again (go-profinet MRM, umrp MRCs)",
+   "id": "mrpotfmanager.umrp.mrp-ring-closes-again-go-profinet-mrm-umrp-mrcs",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP manager"
+   },
+   "suite": "mrpotfmanager"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP closed again: no loop, no hole (go-profinet MRM, umrp MRCs)",
+   "id": "mrpotfmanager.umrp.mrp-closed-again-no-loop-no-hole-go-profinet-mrm-umrp-mrcs",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP manager"
+   },
+   "suite": "mrpotfmanager"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode mrp-otf-manager-umrp.pcap",
+   "id": "mrpotfmanager.umrp.scapy-decode-mrp-otf-manager-umrp-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "mrpotfmanager"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode mrp-otf-manager-umrp.pcap: MRP frames not dissected",
+   "id": "mrpotfmanager.umrp.scapy-decode-mrp-otf-manager-umrp-pcap-mrp-frames-not-dissected",
+   "outcome": "known-difference",
+   "reason": "decoder limit: scapy has no MRP dissector; the frames are read, not decoded (tshark decodes them)",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "mrpotfmanager",
+   "waiver": "scapy-no-mrp-dissector"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark check mrp-otf-manager-umrp.pcap",
+   "id": "mrpotfmanager.umrp.tshark-check-mrp-otf-manager-umrp-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "tshark",
+    "sut": "go-profinet"
+   },
+   "suite": "mrpotfmanager"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP seeded cable faults, go-profinet MRM with mrp MRCs: settles, no loop, no hole",
+   "id": "mrpringfaults.mrp.mrp-seeded-cable-faults-go-profinet-mrm-with-mrp-mrcs-settles",
+   "outcome": "pass",
+   "roles": {
+    "peer": "mrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP manager"
+   },
+   "suite": "mrpringfaults"
+  },
+  {
+   "durationMs": 0,
+   "feature": "MRP seeded cable faults, go-profinet MRM with umrp MRCs: settles, no loop, no hole",
+   "id": "mrpringfaults.umrp.mrp-seeded-cable-faults-go-profinet-mrm-with-umrp-mrcs-settles",
+   "outcome": "pass",
+   "roles": {
+    "peer": "umrp",
+    "sut": "go-profinet",
+    "sut-role": "MRP manager"
+   },
+   "suite": "mrpringfaults"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP v2c Get of unknown names: noSuchObject, noSuchInstance (Net-SNMP)",
+   "id": "netsnmperrors.snmp-v2c-get-of-unknown-names-nosuchobject-nosuchinstance-net",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmperrors"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP v1 Get of an unknown name: noSuchName, index 2 (Net-SNMP)",
+   "id": "netsnmperrors.snmp-v1-get-of-an-unknown-name-nosuchname-index-2-net-snmp",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmperrors"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP v2c GetNext past the end: endOfMibView (Net-SNMP)",
+   "id": "netsnmperrors.snmp-v2c-getnext-past-the-end-endofmibview-net-snmp",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmperrors"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP v2c Set refused: notWritable (Net-SNMP)",
+   "id": "netsnmperrors.snmp-v2c-set-refused-notwritable-net-snmp",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmperrors"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP v1 Set refused: noSuchName (RFC 3584) (Net-SNMP)",
+   "id": "netsnmperrors.snmp-v1-set-refused-nosuchname-rfc-3584-net-snmp",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmperrors"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP Set changed nothing (Net-SNMP)",
+   "id": "netsnmperrors.snmp-set-changed-nothing-net-snmp",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmperrors"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP wrong community: no answer, snmpInBadCommunityNames counts it (Net-SNMP)",
+   "id": "netsnmperrors.snmp-wrong-community-no-answer-snmpinbadcommunitynames-counts",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmperrors"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP Get of 128-sub-identifier names: noSuchInstance, noSuchObject (Net-SNMP)",
+   "id": "netsnmperrors.snmp-get-of-128-sub-identifier-names-nosuchinstance",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmperrors"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP GetBulk of 10000 repetitions: a truncated answer that fits (Net-SNMP)",
+   "id": "netsnmperrors.snmp-getbulk-of-10000-repetitions-a-truncated-answer-that-fits",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmperrors"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP Get whose answer does not fit: tooBig (Net-SNMP)",
+   "id": "netsnmperrors.snmp-get-whose-answer-does-not-fit-toobig-net-snmp",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmperrors"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP flood of 3000 requests: answers bounded by the rate limit",
+   "id": "netsnmpflood.snmp-flood-of-3000-requests-answers-bounded-by-the-rate-limit",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmpflood"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP agent answers after the flood (Net-SNMP)",
+   "id": "netsnmpflood.snmp-agent-answers-after-the-flood-net-snmp",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmpflood"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP lldpRemTable empty without neighbors (Net-SNMP)",
+   "id": "netsnmplldp.snmp-lldpremtable-empty-without-neighbors-net-snmp",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmplldp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP lldpRemTable shows a neighbor: filter 0, port 1, index 1 (Net-SNMP)",
+   "id": "netsnmplldp.snmp-lldpremtable-shows-a-neighbor-filter-0-port-1-index-1-net",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmplldp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP lldpRemTable: a second neighbor gets index 2, the first keeps 1 (Net-SNMP)",
+   "id": "netsnmplldp.snmp-lldpremtable-a-second-neighbor-gets-index-2-the-first",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmplldp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP lldpRemTimeMark as a TimeFilter: rows changed since t (Net-SNMP)",
+   "id": "netsnmplldp.snmp-lldpremtimemark-as-a-timefilter-rows-changed-since-t-net",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmplldp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP lldpRemTable: a neighbor leaves (TTL), the other keeps its index (Net-SNMP)",
+   "id": "netsnmplldp.snmp-lldpremtable-a-neighbor-leaves-ttl-the-other-keeps-its",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmplldp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP lldpRemTable: a returning neighbor gets a new index (Net-SNMP)",
+   "id": "netsnmplldp.snmp-lldpremtable-a-returning-neighbor-gets-a-new-index-net-snmp",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmplldp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP malformed datagrams counted in snmpInASNParseErrs (Net-SNMP reads it)",
+   "id": "netsnmpmalformed.snmp-malformed-datagrams-counted-in-snmpinasnparseerrs-net-snmp",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmpmalformed"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP unknown versions (5, 3) counted in snmpInBadVersions (Net-SNMP reads it)",
+   "id": "netsnmpmalformed.snmp-unknown-versions-5-3-counted-in-snmpinbadversions-net-snmp",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmpmalformed"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP agent answers after the hostile datagrams (Net-SNMP)",
+   "id": "netsnmpmalformed.snmp-agent-answers-after-the-hostile-datagrams-net-snmp",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmpmalformed"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP Get v2c of the system group (Net-SNMP)",
+   "id": "netsnmpread.snmp-get-v2c-of-the-system-group-net-snmp",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmpread"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP Get v1 (Net-SNMP)",
+   "id": "netsnmpread.snmp-get-v1-net-snmp",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmpread"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP GetNext (Net-SNMP)",
+   "id": "netsnmpread.snmp-getnext-net-snmp",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmpread"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP GetBulk with non-repeaters and repetitions (Net-SNMP)",
+   "id": "netsnmpread.snmp-getbulk-with-non-repeaters-and-repetitions-net-snmp",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmpread"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP ifTable: one Ethernet port with the device's MAC (Net-SNMP)",
+   "id": "netsnmpread.snmp-iftable-one-ethernet-port-with-the-device-s-mac-net-snmp",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmpread"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP LLDP-MIB lldpLocSysName (Net-SNMP)",
+   "id": "netsnmpread.snmp-lldp-mib-lldplocsysname-net-snmp",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmpread"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP walks agree: GetNext and GetBulk (Net-SNMP)",
+   "id": "netsnmpread.snmp-walks-agree-getnext-and-getbulk-net-snmp",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmpread"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP walks agree: v1 and v2c (Net-SNMP)",
+   "id": "netsnmpread.snmp-walks-agree-v1-and-v2c-net-snmp",
+   "outcome": "pass",
+   "roles": {
+    "peer": "netsnmp",
+    "sut": "go-profinet",
+    "sut-role": "SNMP agent of the IO-Device"
+   },
+   "suite": "netsnmpread"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode netsnmp-read.pcap",
+   "id": "netsnmpread.scapy-decode-netsnmp-read-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "netsnmpread"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark check netsnmp-read.pcap",
+   "id": "netsnmpread.tshark-check-netsnmp-read-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "tshark",
+    "sut": "go-profinet"
+   },
+   "suite": "netsnmpread"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP Hello sent by the device (go-profinet)",
+   "id": "otfhellodecoders.dcp-hello-sent-by-the-device-go-profinet",
+   "outcome": "pass",
+   "roles": {
+    "peer-1": "tshark",
+    "peer-2": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "otfhellodecoders"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode otf-hello.pcap",
+   "id": "otfhellodecoders.scapy-decode-otf-hello-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "otfhellodecoders"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark check otf-hello.pcap",
+   "id": "otfhellodecoders.tshark-check-otf-hello-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "tshark",
+    "sut": "go-profinet"
+   },
+   "suite": "otfhellodecoders"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Process alarm received and acknowledged",
+   "id": "pnetalarms.process-alarm-received-and-acknowledged",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetalarms"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Diagnosis alarm received and acknowledged",
+   "id": "pnetalarms.diagnosis-alarm-received-and-acknowledged",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetalarms"
+  },
+  {
+   "durationMs": 0,
+   "feature": "p-net confirms the AlarmAck",
+   "id": "pnetalarms.p-net-confirms-the-alarmack",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetalarms"
+  },
+  {
+   "durationMs": 0,
+   "feature": "AR survives the alarms",
+   "id": "pnetalarms.ar-survives-the-alarms",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetalarms"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Unexpected module in slot 2: p-net plugs it (no ModuleDiff), the AR runs",
+   "id": "pnetconfigurationmismatch.unexpected-module-in-slot-2-p-net-plugs-it-no-modulediff-the-ar",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetconfigurationmismatch"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Model of another DeviceID: the controller refuses the device",
+   "id": "pnetconfigurationmismatch.model-of-another-deviceid-the-controller-refuses-the-device",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetconfigurationmismatch"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP Identify by name, Connect, PrmEnd, ApplicationReady (RT_CLASS_1 legacy)",
+   "id": "pnetcontroller.dcp-identify-by-name-connect-prmend-applicationready-rt-class-1",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetcontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Read I&M0",
+   "id": "pnetcontroller.read-i-m0",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetcontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Parameter write before PrmEnd, read back",
+   "id": "pnetcontroller.parameter-write-before-prmend-read-back",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetcontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Write record in Data, read back",
+   "id": "pnetcontroller.write-record-in-data-read-back",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetcontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "RealIdentificationData (0xF000)",
+   "id": "pnetcontroller.realidentificationdata-0xf000",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetcontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "PDPortDataReal (0x802A) decoded",
+   "id": "pnetcontroller.pdportdatareal-0x802a-decoded",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetcontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "PDRealData (0xF841) decoded",
+   "id": "pnetcontroller.pdrealdata-0xf841-decoded",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetcontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Read of an unknown index answers a PNIORW read error",
+   "id": "pnetcontroller.read-of-an-unknown-index-answers-a-pniorw-read-error",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetcontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Write of an invalid index is rejected with a PNIO status",
+   "id": "pnetcontroller.write-of-an-invalid-index-is-rejected-with-a-pnio-status",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetcontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "ReadImplicit of I&M0 (no AR)",
+   "id": "pnetcontroller.readimplicit-of-i-m0-no-ar",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetcontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "WriteMultiple of two records",
+   "id": "pnetcontroller.writemultiple-of-two-records",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetcontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Write I&M1 in the AR, read it back",
+   "id": "pnetcontroller.write-i-m1-in-the-ar-read-it-back",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetcontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Read diagnosis (0xF80C)",
+   "id": "pnetcontroller.read-diagnosis-0xf80c",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetcontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Cyclic input data (consumer)",
+   "id": "pnetcontroller.cyclic-input-data-consumer",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetcontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Cyclic output data (provider)",
+   "id": "pnetcontroller.cyclic-output-data-provider",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetcontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Echo module returns our outputs",
+   "id": "pnetcontroller.echo-module-returns-our-outputs",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetcontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "p-net reports connect",
+   "id": "pnetcontroller.p-net-reports-connect",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetcontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "p-net reports prmend",
+   "id": "pnetcontroller.p-net-reports-prmend",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetcontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "p-net reports appready-confirmed",
+   "id": "pnetcontroller.p-net-reports-appready-confirmed",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetcontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "p-net reports write",
+   "id": "pnetcontroller.p-net-reports-write",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetcontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "p-net reports read",
+   "id": "pnetcontroller.p-net-reports-read",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetcontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Release ends the AR at p-net",
+   "id": "pnetcontroller.release-ends-the-ar-at-p-net",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetcontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode pnet-controller.pcap",
+   "id": "pnetcontroller.scapy-decode-pnet-controller-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "pnetcontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark check pnet-controller.pcap",
+   "id": "pnetcontroller.tshark-check-pnet-controller-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "tshark",
+    "sut": "go-profinet"
+   },
+   "suite": "pnetcontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP Identify all",
+   "id": "pnetdcp.dcp-identify-all",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetdcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP Get (all blocks)",
+   "id": "pnetdcp.dcp-get-all-blocks",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetdcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP Set NameOfStation (temporary)",
+   "id": "pnetdcp.dcp-set-nameofstation-temporary",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetdcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP Identify by the new name",
+   "id": "pnetdcp.dcp-identify-by-the-new-name",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetdcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP Set NameOfStation back",
+   "id": "pnetdcp.dcp-set-nameofstation-back",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetdcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP Signal",
+   "id": "pnetdcp.dcp-signal",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetdcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "p-net flashes its LED on Signal",
+   "id": "pnetdcp.p-net-flashes-its-led-on-signal",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetdcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP Set IP (temporary)",
+   "id": "pnetdcp.dcp-set-ip-temporary",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetdcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP Get reflects the new IP",
+   "id": "pnetdcp.dcp-get-reflects-the-new-ip",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetdcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP ResetToFactory (communication)",
+   "id": "pnetdcp.dcp-resettofactory-communication",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetdcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Reset clears the station name",
+   "id": "pnetdcp.reset-clears-the-station-name",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetdcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP Hello sent by p-net",
+   "id": "pnethello.dcp-hello-sent-by-p-net",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnethello"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Controller connects through the device's Hello, without waiting for its retry",
+   "id": "pnethello.controller-connects-through-the-device-s-hello-without-waiting",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnethello"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode pnet-hello.pcap",
+   "id": "pnethello.scapy-decode-pnet-hello-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "pnethello"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark check pnet-hello.pcap",
+   "id": "pnethello.tshark-check-pnet-hello-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "tshark",
+    "sut": "go-profinet"
+   },
+   "suite": "pnethello"
+  },
+  {
+   "durationMs": 0,
+   "feature": "LLDP PNIO PortStatus TLV",
+   "id": "pnetlldp.lldp-pnio-portstatus-tlv",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetlldp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "LLDP PNIO ChassisMAC TLV",
+   "id": "pnetlldp.lldp-pnio-chassismac-tlv",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetlldp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "LLDP neighbor (p-net)",
+   "id": "pnetlldp.lldp-neighbor-p-net",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetlldp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "PDPortDataCheck accepted by p-net (written before PrmEnd)",
+   "id": "pnetportcheck.pdportdatacheck-accepted-by-p-net-written-before-prmend",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetportcheck"
+  },
+  {
+   "durationMs": 0,
+   "feature": "CheckPeers, the right neighbor: no remote mismatch (p-net)",
+   "id": "pnetportcheck.checkpeers-the-right-neighbor-no-remote-mismatch-p-net",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetportcheck"
+  },
+  {
+   "durationMs": 0,
+   "feature": "CheckPeers, another name of station: remote mismatch 0x8000 (p-net)",
+   "id": "pnetportcheck.checkpeers-another-name-of-station-remote-mismatch-0x8000-p-net",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetportcheck"
+  },
+  {
+   "durationMs": 0,
+   "feature": "CheckPeers decoded by p-net as written (its log)",
+   "id": "pnetportcheck.checkpeers-decoded-by-p-net-as-written-its-log",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetportcheck"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Re-parameterization in Data (p-net)",
+   "id": "pnetreparameterize.re-parameterization-in-data-p-net",
+   "outcome": "unsupported",
+   "reason": "p-net refuses PrmBegin: every DControl but PrmEnd is answered DD 81 14 08 (pf_cmrpc.c checks ControlCommand == PrmEnd); controller: pnet-dut: re-parameterize: PrmBegin: pnio: IODControlReq(PrmBegin): DD 81 14 08 (control: faulty IODControlReq, code 8)",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetreparameterize"
+  },
+  {
+   "durationMs": 0,
+   "feature": "A refused PrmBegin leaves the AR running with its parameters (p-net)",
+   "id": "pnetreparameterize.a-refused-prmbegin-leaves-the-ar-running-with-its-parameters-p",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetreparameterize"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode pnet-reparameterize.pcap",
+   "id": "pnetreparameterize.scapy-decode-pnet-reparameterize-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "pnetreparameterize"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark check pnet-reparameterize.pcap",
+   "id": "pnetreparameterize.tshark-check-pnet-reparameterize-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "tshark",
+    "sut": "go-profinet"
+   },
+   "suite": "pnetreparameterize"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Two IOCARs at once: both controllers reach Running (p-net)",
+   "id": "pnetshareddevice.two-iocars-at-once-both-controllers-reach-running-p-net",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetshareddevice"
+  },
+  {
+   "durationMs": 0,
+   "feature": "ModuleDiff to the second controller: slot 1 locked by IO controller, slot 2 its own (p-net)",
+   "id": "pnetshareddevice.modulediff-to-the-second-controller-slot-1-locked-by-io",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetshareddevice"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Released alarm to the second controller when the owner leaves (p-net)",
+   "id": "pnetshareddevice.released-alarm-to-the-second-controller-when-the-owner-leaves-p",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetshareddevice"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Slot 1 taken over (PrmEnd and ApplicationReady for the plugged submodule): its input valid at the second controller (p-net)",
+   "id": "pnetshareddevice.slot-1-taken-over-prmend-and-applicationready-for-the-plugged",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetshareddevice"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Startup legacy (RTClass 1)",
+   "id": "pnetstartupmodes.startup-legacy-rtclass-1",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetstartupmodes"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Startup advanced (RTClass 2)",
+   "id": "pnetstartupmodes.startup-advanced-rtclass-2",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetstartupmodes"
+  },
+  {
+   "durationMs": 0,
+   "feature": "1 ms cycle",
+   "id": "pnetstartupmodes.1-ms-cycle",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetstartupmodes"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP Identify all",
+   "id": "pniodcp.dcp-identify-all",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnio-dcp",
+    "sut": "go-profinet",
+    "sut-role": "DCP responder"
+   },
+   "suite": "pniodcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP Get NameOfStation",
+   "id": "pniodcp.dcp-get-nameofstation",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnio-dcp",
+    "sut": "go-profinet",
+    "sut-role": "DCP responder"
+   },
+   "suite": "pniodcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP Set NameOfStation (temporary)",
+   "id": "pniodcp.dcp-set-nameofstation-temporary",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnio-dcp",
+    "sut": "go-profinet",
+    "sut-role": "DCP responder"
+   },
+   "suite": "pniodcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP Get reflects the new name",
+   "id": "pniodcp.dcp-get-reflects-the-new-name",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnio-dcp",
+    "sut": "go-profinet",
+    "sut-role": "DCP responder"
+   },
+   "suite": "pniodcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP Set IP (temporary)",
+   "id": "pniodcp.dcp-set-ip-temporary",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnio-dcp",
+    "sut": "go-profinet",
+    "sut-role": "DCP responder"
+   },
+   "suite": "pniodcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP Get IP",
+   "id": "pniodcp.dcp-get-ip",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnio-dcp",
+    "sut": "go-profinet",
+    "sut-role": "DCP responder"
+   },
+   "suite": "pniodcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP Signal (blink)",
+   "id": "pniodcp.dcp-signal-blink",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnio-dcp",
+    "sut": "go-profinet",
+    "sut-role": "DCP responder"
+   },
+   "suite": "pniodcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP ResetToFactory",
+   "id": "pniodcp.dcp-resettofactory",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnio-dcp",
+    "sut": "go-profinet",
+    "sut-role": "DCP responder"
+   },
+   "suite": "pniodcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode pnio-dcp.pcap",
+   "id": "pniodcp.scapy-decode-pnio-dcp-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "pniodcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark check pnio-dcp.pcap",
+   "id": "pniodcp.tshark-check-pnio-dcp-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "tshark",
+    "sut": "go-profinet"
+   },
+   "suite": "pniodcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "GSDML-derived expected configuration; Connect, PrmEnd, ApplicationReady (advanced, RTClass 2)",
+   "id": "pniorscontroller.gsdml-derived-expected-configuration-connect-prmend",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnio-rs",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pniorscontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Read I&M0",
+   "id": "pniorscontroller.read-i-m0",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnio-rs",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pniorscontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Write and read back I&M1",
+   "id": "pniorscontroller.write-and-read-back-i-m1",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnio-rs",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pniorscontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Diagnosis records (0x800C)",
+   "id": "pniorscontroller.diagnosis-records-0x800c",
+   "outcome": "unsupported",
+   "reason": "pnio-rs answers every diagnosis index with invalid index (documented limitation)",
+   "roles": {
+    "peer": "pnio-rs",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pniorscontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Diagnosis record answers invalid index as pnio-rs documents",
+   "id": "pniorscontroller.diagnosis-record-answers-invalid-index-as-pnio-rs-documents",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnio-rs",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pniorscontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "I&M4 answers invalid index as pnio-rs documents",
+   "id": "pniorscontroller.i-m4-answers-invalid-index-as-pnio-rs-documents",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnio-rs",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pniorscontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Cyclic echo of 16 REAL outputs",
+   "id": "pniorscontroller.cyclic-echo-of-16-real-outputs",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnio-rs",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pniorscontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Cyclic echo of 32 BOOL outputs",
+   "id": "pniorscontroller.cyclic-echo-of-32-bool-outputs",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnio-rs",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pniorscontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "pnio-rs reaches Data",
+   "id": "pniorscontroller.pnio-rs-reaches-data",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnio-rs",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pniorscontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Release ends the AR at pnio-rs",
+   "id": "pniorscontroller.release-ends-the-ar-at-pnio-rs",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnio-rs",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pniorscontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "pnio-rs rejects RT_CLASS_1 FrameIDs (0xC000..) with a Connect error, which the controller reports",
+   "id": "pniorscontroller.pnio-rs-rejects-rt-class-1-frameids-0xc000-with-a-connect-error",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnio-rs",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pniorscontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode pniors-controller.pcap",
+   "id": "pniorscontroller.scapy-decode-pniors-controller-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "pniorscontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark check pniors-controller.pcap",
+   "id": "pniorscontroller.tshark-check-pniors-controller-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "tshark",
+    "sut": "go-profinet"
+   },
+   "suite": "pniorscontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP Identify by name",
+   "id": "pniorsdcp.dcp-identify-by-name",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnio-rs",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pniorsdcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP Identify all",
+   "id": "pniorsdcp.dcp-identify-all",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnio-rs",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pniorsdcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP Get/Set NameOfStation/Signal/Reset (pnio-rs)",
+   "id": "pniorsdcp.dcp-get-set-nameofstation-signal-reset-pnio-rs",
+   "outcome": "unsupported",
+   "reason": "pnio-rs v0.1.0 does not implement them",
+   "roles": {
+    "peer": "pnio-rs",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pniorsdcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Re-parameterization in Data (pnio-rs)",
+   "id": "pniorsreparameterize.re-parameterization-in-data-pnio-rs",
+   "outcome": "unsupported",
+   "reason": "pnio-rs refuses PrmBegin in Data: controller: pnio-dut: re-parameterize: PrmBegin: pnio: IODControlReq(PrmBegin): DD 81 3D 03 (control: CMDEV, code 3)",
+   "roles": {
+    "peer": "pnio-rs",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pniorsreparameterize"
+  },
+  {
+   "durationMs": 0,
+   "feature": "A refused PrmBegin leaves the AR running (pnio-rs)",
+   "id": "pniorsreparameterize.a-refused-prmbegin-leaves-the-ar-running-pnio-rs",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnio-rs",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pniorsreparameterize"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP discovery by profinet-py",
+   "id": "profinetpycontroller.dcp-discovery-by-profinet-py",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpycontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Read I&M0 (IOSAR device access)",
+   "id": "profinetpycontroller.read-i-m0-iosar-device-access",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpycontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Read I&M2..I&M4",
+   "id": "profinetpycontroller.read-i-m2-i-m4",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpycontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Write and read a user record",
+   "id": "profinetpycontroller.write-and-read-a-user-record",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpycontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "ReadImplicit I&M0",
+   "id": "profinetpycontroller.readimplicit-i-m0",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpycontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Invalid index answered with an error",
+   "id": "profinetpycontroller.invalid-index-answered-with-an-error",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpycontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "ModuleDiff read",
+   "id": "profinetpycontroller.modulediff-read",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpycontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Slot discovery (RealIdentificationData)",
+   "id": "profinetpycontroller.slot-discovery-realidentificationdata",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpycontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "I&M1 write by profinet-py",
+   "id": "profinetpycontroller.i-m1-write-by-profinet-py",
+   "outcome": "known-difference",
+   "reason": "profinet-py writes BlockLength 58 with 2 padding octets; p-net, pnio-rs and go-profinet use 56; go-profinet answers DF 80 B8 00",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpycontroller",
+   "waiver": "profinet-py-im1-block-length"
+  },
+  {
+   "durationMs": 0,
+   "feature": "GSDML generated by go-profinet parsed by profinet-py; cyclic AR (IOCARSingle) established",
+   "id": "profinetpycontroller.gsdml-generated-by-go-profinet-parsed-by-profinet-py-cyclic-ar",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpycontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Cyclic inputs at profinet-py",
+   "id": "profinetpycontroller.cyclic-inputs-at-profinet-py",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpycontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Cyclic statistics without missed frames",
+   "id": "profinetpycontroller.cyclic-statistics-without-missed-frames",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpycontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Cyclic outputs from profinet-py at the device",
+   "id": "profinetpycontroller.cyclic-outputs-from-profinet-py-at-the-device",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpycontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "IOSAR and IOCARSingle ARs from profinet-py",
+   "id": "profinetpycontroller.iosar-and-iocarsingle-ars-from-profinet-py",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpycontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Diagnosis alarm sent to profinet-py and acknowledged",
+   "id": "profinetpycontroller.diagnosis-alarm-sent-to-profinet-py-and-acknowledged",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpycontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode profinet-py-controller.pcap",
+   "id": "profinetpycontroller.scapy-decode-profinet-py-controller-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "profinetpycontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark: PNIO-CM \"Trailing stray characters\"",
+   "id": "profinetpycontroller.tshark-pnio-cm-trailing-stray-characters",
+   "outcome": "known-difference",
+   "reason": "profinet-py writes I&M1 with BlockLength 58 and two padding octets; the standard block is 56 octets (tshark flags the extra octets of its Write request)",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpycontroller",
+   "waiver": "profinet-py-im1-block-length"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark check profinet-py-controller.pcap",
+   "id": "profinetpycontroller.tshark-check-profinet-py-controller-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "tshark",
+    "sut": "go-profinet"
+   },
+   "suite": "profinetpycontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP Identify all",
+   "id": "profinetpydcp.dcp-identify-all",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "DCP responder"
+   },
+   "suite": "profinetpydcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP Get name",
+   "id": "profinetpydcp.dcp-get-name",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "DCP responder"
+   },
+   "suite": "profinetpydcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP Set NameOfStation",
+   "id": "profinetpydcp.dcp-set-nameofstation",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "DCP responder"
+   },
+   "suite": "profinetpydcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Device applies the name",
+   "id": "profinetpydcp.device-applies-the-name",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "DCP responder"
+   },
+   "suite": "profinetpydcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP Set IP",
+   "id": "profinetpydcp.dcp-set-ip",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "DCP responder"
+   },
+   "suite": "profinetpydcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP Signal",
+   "id": "profinetpydcp.dcp-signal",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "DCP responder"
+   },
+   "suite": "profinetpydcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "DCP ResetToFactory",
+   "id": "profinetpydcp.dcp-resettofactory",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "DCP responder"
+   },
+   "suite": "profinetpydcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Device reports Signal and Reset",
+   "id": "profinetpydcp.device-reports-signal-and-reset",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "DCP responder"
+   },
+   "suite": "profinetpydcp"
+  },
+  {
+   "durationMs": 0,
+   "feature": "GSDML fixture DAP_1P parsed by profinet-py; cyclic AR with a device of the same file",
+   "id": "profinetpyfixtures.dap-1p.gsdml-fixture-dap-1p-parsed-by-profinet-py-cyclic-ar-with-a",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyfixtures"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Cyclic inputs from the fixture device DAP_1P",
+   "id": "profinetpyfixtures.dap-1p.cyclic-inputs-from-the-fixture-device-dap-1p",
+   "outcome": "unsupported",
+   "reason": "profinet-py builds its configuration from FixedInSlots only and ignores UsedInSlots: it connected with the DAP alone ([map[in:0 out:0 slot:0 subslot:1] map[in:0 out:0 slot:0 subslot:32768] map[in:0 out:0 slot:0 subslot:32769]])",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyfixtures"
+  },
+  {
+   "durationMs": 0,
+   "feature": "GSDML fixture DAP_C parsed by profinet-py; cyclic AR with a device of the same file",
+   "id": "profinetpyfixtures.dap-c.gsdml-fixture-dap-c-parsed-by-profinet-py-cyclic-ar-with-a",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyfixtures"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Cyclic inputs from the fixture device DAP_C",
+   "id": "profinetpyfixtures.dap-c.cyclic-inputs-from-the-fixture-device-dap-c",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyfixtures"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Cyclic AR (IOCARSingle) by profinet-py",
+   "id": "profinetpyreparameterize.cyclic-ar-iocarsingle-by-profinet-py",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyreparameterize"
+  },
+  {
+   "durationMs": 0,
+   "feature": "PrmBegin in Data accepted (profinet-py)",
+   "id": "profinetpyreparameterize.prmbegin-in-data-accepted-profinet-py",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyreparameterize"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Record write between PrmBegin and PrmEnd (profinet-py)",
+   "id": "profinetpyreparameterize.record-write-between-prmbegin-and-prmend-profinet-py",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyreparameterize"
+  },
+  {
+   "durationMs": 0,
+   "feature": "PrmEnd after re-parameterization (profinet-py)",
+   "id": "profinetpyreparameterize.prmend-after-re-parameterization-profinet-py",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyreparameterize"
+  },
+  {
+   "durationMs": 0,
+   "feature": "ApplicationReady after re-parameterization, answered by profinet-py",
+   "id": "profinetpyreparameterize.applicationready-after-re-parameterization-answered-by-profinet",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyreparameterize"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Device AR: Data, Parameterizing, ApplicationReadyPending, Data",
+   "id": "profinetpyreparameterize.device-ar-data-parameterizing-applicationreadypending-data",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyreparameterize"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Cyclic inputs after re-parameterization",
+   "id": "profinetpyreparameterize.cyclic-inputs-after-re-parameterization",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyreparameterize"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode profinet-py-reparameterize.pcap",
+   "id": "profinetpyreparameterize.scapy-decode-profinet-py-reparameterize-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "profinetpyreparameterize"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark: PNIO-CM \"Trailing stray characters\"",
+   "id": "profinetpyreparameterize.tshark-pnio-cm-trailing-stray-characters",
+   "outcome": "known-difference",
+   "reason": "profinet-py writes I&M1 with BlockLength 58 and two padding octets (its scenario's write-im1 step)",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyreparameterize",
+   "waiver": "profinet-py-im1-block-length"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark check profinet-py-reparameterize.pcap",
+   "id": "profinetpyreparameterize.tshark-check-profinet-py-reparameterize-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "tshark",
+    "sut": "go-profinet"
+   },
+   "suite": "profinetpyreparameterize"
+  },
+  {
+   "durationMs": 0,
+   "feature": "SNMP walk of the device's agent captured (go-profinet)",
+   "id": "snmpdecoders.snmp-walk-of-the-device-s-agent-captured-go-profinet",
+   "outcome": "pass",
+   "roles": {
+    "peer-1": "tshark",
+    "peer-2": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "snmpdecoders"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode snmp.pcap",
+   "id": "snmpdecoders.scapy-decode-snmp-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "snmpdecoders"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark check snmp.pcap",
+   "id": "snmpdecoders.tshark-check-snmp-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "tshark",
+    "sut": "go-profinet"
+   },
+   "suite": "snmpdecoders"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark dissects every SNMP datagram as SNMP",
+   "id": "snmpdecoders.tshark-dissects-every-snmp-datagram-as-snmp",
+   "outcome": "pass",
+   "roles": {
+    "peer-1": "tshark",
+    "peer-2": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "snmpdecoders"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decodes every SNMP datagram (PDU and variable bindings)",
+   "id": "snmpdecoders.scapy-decodes-every-snmp-datagram-pdu-and-variable-bindings",
+   "outcome": "pass",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "snmpdecoders"
+  },
+  {
+   "durationMs": 0,
+   "feature": "RT_CLASS_UDP frame on UDP port 34962 and RT_CLASS_UDP Connect (RTClass 4, LT 0x0800, RTA_CLASS_UDP) encoded (go-profinet)",
+   "id": "udprtdecoders.rt-class-udp-frame-on-udp-port-34962-and-rt-class-udp-connect",
+   "outcome": "pass",
+   "roles": {
+    "peer-1": "tshark",
+    "peer-2": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "udprtdecoders"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy dissects the UDP payload of port 34962 as PROFINET RT (scapy)",
+   "id": "udprtdecoders.scapy-dissects-the-udp-payload-of-port-34962-as-profinet-rt",
+   "outcome": "pass",
+   "roles": {
+    "peer-1": "tshark",
+    "peer-2": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "udprtdecoders"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode udp-rt.pcap",
+   "id": "udprtdecoders.scapy-decode-udp-rt-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "udprtdecoders"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark check udp-rt.pcap",
+   "id": "udprtdecoders.tshark-check-udp-rt-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "tshark",
+    "sut": "go-profinet"
+   },
+   "suite": "udprtdecoders"
+  }
+ ],
+ "schemaVersion": "1.0",
+ "startedAt": "2026-10-29T00:15:30+00:00",
+ "summary": {
+  "fail": 0,
+  "infra-error": 0,
+  "known-difference": 14,
+  "not-tested": 0,
+  "pass": 248,
+  "unsupported": 6
+ },
+ "waivers": [
+  {
+   "evidence": "https://github.com/secdev/scapy/tree/3aadcf5ad25d0e0e731406c7adf98440f0d4169c",
+   "id": "scapy-no-mrp-dissector",
+   "reproduced": true,
+   "scope": "decoder@scapy"
+  },
+  {
+   "evidence": "https://github.com/secdev/scapy/tree/3aadcf5ad25d0e0e731406c7adf98440f0d4169c",
+   "id": "scapy-no-dcp-dhcp-block",
+   "reproduced": true,
+   "scope": "decoder@scapy"
+  },
+  {
+   "evidence": "https://gitlab.com/wireshark/wireshark/-/tree/v4.0.17",
+   "id": "tshark-dhcp-option-12",
+   "reproduced": true,
+   "scope": "decoder@tshark"
+  },
+  {
+   "evidence": "https://github.com/giometti/umrp/tree/fb193eac1a2df51fe42e19d4ea36bb0157bda09f",
+   "id": "umrp-mra-takes-manager-back",
+   "reproduced": true,
+   "scope": "MRA@umrp"
+  },
+  {
+   "evidence": "https://github.com/f0rw4rd/profinet-py/tree/ef09fb7788cfd86c2e6ee1b9bcf5165f5aac03c4",
+   "id": "profinet-py-im1-block-length",
+   "reproduced": true,
+   "scope": "controller@profinet-py"
+  }
+ ]
+}
