@@ -71,7 +71,8 @@ def main():
         return 0
     if len(sys.argv) == 2 and sys.argv[1] == "print-capabilities":
         json.dump({"schemaVersion": "1.0", "adapter": "scapy", "implementation": "scapy", "version": scapy.VERSION,
-                   "license": "GPL-2.0-only", "roles": ["decoder"]}, sys.stdout)
+                   "license": "GPL-2.0-only", "roles": ["decoder"],
+                   "upstream": {"name": "scapy", "version": scapy.VERSION, "independentEngine": True}}, sys.stdout)
         print()
         return 0
     if len(sys.argv) != 3 or sys.argv[1] != "decode":

@@ -5,3 +5,7 @@ __pycache__/
 /release/
 *.test
 coverage.out
+
+# Self-test documents (scripts/interop.sh)
+/reports/*
+!/reports/.gitkeep

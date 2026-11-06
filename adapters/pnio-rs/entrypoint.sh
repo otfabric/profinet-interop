@@ -23,7 +23,8 @@ print-capabilities)
  "identity":{"vendorId":"0xFFFF","deviceId":"0x0001","gsdml":"print-gsdml"},
  "features":{"dcpIdentify":true,"dcpIdentifyFilters":["all","name"],"dcpGet":false,"dcpSetName":false,"dcpSetIP":"same-suite-only","dcpSignal":false,"dcpReset":false,
    "lldp":false,"connect":true,"frameIdRange":"0x8000-0xBBFF","moduleDiff":false,"readWrite":true,"writeMultiple":true,"readImplicit":true,
-   "im0to3":true,"im4":false,"diagnosisRecords":false,"alarms":"low-priority diagnosis only","processAlarms":false,"multipleAR":false,"epm":false,"rpcFragmentation":false}}
+   "im0to3":true,"im4":false,"diagnosisRecords":false,"alarms":"low-priority diagnosis only","processAlarms":false,"multipleAR":false,"epm":false,"rpcFragmentation":false},
+ "upstream":{"name":"pnio-rs","version":"v0.1.0","revision":"798500c1bf3726a1bf015c43f39c6ae2a2d55b28","independentEngine":true}}
 JSON
 	;;
 device)

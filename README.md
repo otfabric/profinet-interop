@@ -59,6 +59,30 @@ docker run -d --name pnet --network pn --ip 10.77.0.10 --cap-add NET_RAW --cap-a
 docker run --rm --network pn --ip 10.77.0.4 --cap-add NET_RAW --cap-add NET_ADMIN profinet-interop-pnio-dcp:dev dcp identify-all
 ```
 
+## OT Fabric's own stack
+
+`ghcr.io/otfabric/profinet-interop-otfabric` is go-profinet behind the same
+contract (adapter `otfabric`: IO-Device, IO-Controller, DCP tool), so you
+can test your stack against ours the way we test ours against yours. It is
+the only image this repository publishes. Despite the name it shares with
+the reference images, it is not an independent implementation and not part
+of a release, so its tags are go-profinet versions: see
+[own/go-profinet/README.md](own/go-profinet/README.md).
+
+## Cross-stack self-test
+
+```bash
+make images
+make interop                       # pnio-dcp against pnio-rs
+GATE=otfabric scripts/interop.sh otfabric pnio-dcp profinet-py pnio-rs   # with ADAPTER_IMAGE_otfabric=<image>
+```
+
+runs DCP and a cyclic AR between every pair of the given adapters (with
+`GATE=<adapter>`, only the pairs that involve it), each pair on its own Docker
+bridge network (`tests/cases.tsv`), and writes
+`reports/results.json` (interop-result-v1). It is small on purpose:
+go-profinet's interop suite is the behavioural test.
+
 ## Upstream candidates
 
 A weekly workflow (`.github/workflows/candidate.yml`, also on demand)
@@ -68,8 +92,8 @@ reported and flagged), pnio-rs with its newest GitHub release, profinet-py,
 pnio-dcp and scapy with PyPI, tshark and netsnmp with the Debian bookworm package. Where
 a pin is behind, it builds the adapter on the latest upstream and checks it
 with the smoke test, its capability document and the contract against the
-other adapters at their pins (there is no cross-stack self-test here;
-go-profinet's interop suite is the behavioural test). The decision table
+other adapters at their pins (go-profinet's interop suite is the
+behavioural test). The decision table
 goes to the Job Summary and to one issue that stays open while any pin is
 behind. Pins are never moved automatically and no image is pushed.
 
@@ -102,7 +126,7 @@ Tags `vX.Y.Z` are released by `.github/workflows/release.yml` from the
 notes in [RELEASE.md](RELEASE.md): it checks that the tag, `versions.yaml`
 and the notes agree, builds and contract-checks every image on amd64 and
 arm64, and publishes the notes with `versions.yaml` and the matrix results.
-No image is published (see Licences). go-profinet pins a release
+No image is published (see Licences); the own image is published apart from a release. go-profinet pins a release
 (`INTEROP_REF`).
 
 ## Project structure
@@ -112,7 +136,9 @@ adapters/<name>/      Dockerfile and the adapter script of each implementation
 docs/                 container contract, interoperability notes, matrix
 matrix/results.json   the machine-readable matrix
 matrix/interop-result-v1.json  the matrix as the organisation's interop-result-v1 (stable IDs: matrix/ids.tsv, waivers: tests/known-differences.tsv)
-scripts/              version check, latest upstream, matrix generation, release notes
+own/go-profinet/      OT Fabric's own stack behind the contract (published by hand, not released)
+scripts/              version check, latest upstream, matrix generation, release notes, smoke and cross-stack self-test
+tests/                cases of the self-test, known differences
 versions.yaml         every pin, and the version of this repository
 RELEASE.md            how a release is made; the notes of every version
 ```

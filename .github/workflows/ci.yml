@@ -32,6 +32,15 @@ jobs:
         run: make lint
       - name: Result scripts
         run: make unittests
+      - name: No reference to a library under test
+        # REQUIREMENTS.md R1: the adapters and the self-test must not know any
+        # consumer (own/ is the one exception). The matrix scripts turn
+        # go-profinet's results into the matrix and are not checked.
+        run: |
+          if grep -rInE 'otfabric/go-|go-profinet|profinetctl|otfnode' adapters tests/cases.tsv \
+              scripts/lib.sh scripts/smoke.sh scripts/interop.sh scripts/interop.py scripts/test_interop.py scripts/check-contract.sh; then
+            echo "::error::consumer-specific reference found"; exit 1
+          fi
       - name: No image is published
         # p-net, profinet-py, umrp and mrp are GPL: their images are built by each
         # user from upstream, never pushed by this repository.

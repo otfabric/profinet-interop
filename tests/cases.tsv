@@ -1,0 +1,8 @@
+# Cases of scripts/interop.sh: each runs for every pair of the given adapters with the two roles.
+# Columns (tab-separated): id	client role	server role	feature	title
+dcp.identify	dcp-tool	device	dcpIdentify	DCP Identify All finds the device by NameOfStation and MAC
+dcp.get-name	dcp-tool	device	dcpGet	DCP Get NameOfStation
+dcp.set-name	dcp-tool	device	dcpSetName	DCP Set NameOfStation (temporary), read back with DCP Get
+ar.connect	controller	device	connect	Connect, PrmEnd, ApplicationReady from the device's GSDML
+ar.cyclic	controller	device	cyclic	Cyclic data of every input submodule at the controller
+ar.im0	controller	device	im0	Record read of I&M0

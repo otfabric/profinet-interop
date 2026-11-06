@@ -11,7 +11,7 @@
 // bridge's dynamic entries. umrp itself sends, receives and forwards every
 // MRP frame on raw sockets, which see a frame before the bridge does; the
 // table also keeps the bridge from forwarding MRP frames. Part of the profinet-interop umrp adapter
-// (GPL-2.0, like umrp); it is never linked into go-profinet.
+// (GPL-2.0, like umrp); it is never linked into a consumer.
 
 #include <stdio.h>
 #include <stdlib.h>

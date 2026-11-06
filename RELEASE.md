@@ -12,9 +12,11 @@
    (`.github/workflows/release.yml`) checks that the tag, `versions.yaml`
    and the notes agree, builds every image on amd64 and arm64 and checks it
    against the contract, then publishes the GitHub release with
-   `versions.yaml`, the matrix results and their checksums. **No image is
-   published**: p-net, profinet-py, umrp, mrp, Scapy and tshark are GPL, and every
-   user builds the images from upstream (`make images`).
+   `versions.yaml`, the matrix results and their checksums. **No reference
+   image is published**: p-net, profinet-py, umrp, mrp, Scapy and tshark are GPL, and every
+   user builds the images from upstream (`make images`). OT Fabric's own image,
+   `profinet-interop-otfabric`, is not part of a release: the **Own stack
+   (go-profinet)** workflow publishes it by hand (own/go-profinet/README.md).
 4. go-profinet pins the tag (`INTEROP_REF` in its Makefile and Interop
    workflow).
 
@@ -32,6 +34,31 @@ Tags are immutable. A fix is a new version.
 | Contract changed incompatibly | major |
 | New adapter, operation, capability or matrix feature | minor |
 | Upstream pin, base image, matrix regeneration or bug fix with unchanged contract | patch |
+
+---
+
+## v0.8.0
+
+**Date:** 2026-11-06
+**Previous release:** v0.7.1
+
+## Summary
+
+OT Fabric's own stack behind the contract, and a small cross-stack self-test
+(otfabric/engineering ADR-0012).
+
+## Changes
+
+### Added
+
+- **`own/go-profinet/`**: `ghcr.io/otfabric/profinet-interop-otfabric`, go-profinet behind the container contract (adapter `otfabric`: IO-Device, IO-Controller, DCP tool), so that other PROFINET stacks can test against ours. Not an independent implementation (`upstream.independentEngine: false`) and not part of a release: the manual **Own stack (go-profinet)** workflow builds it from the latest go-profinet release, tests it on amd64 and arm64 with the scripts of the latest harness release against references built from that release, and publishes `:<go-profinet version>` and `:latest` from `main`. It is the only image this repository publishes.
+- **Cross-stack self-test**, `scripts/interop.sh <adapter>...` (`make interop`): DCP Identify, Get and Set NameOfStation of every DCP tool against every IO-Device, and Connect, cyclic data and I&M0 of every IO-Controller against every IO-Device, each pair on its own Docker bridge network (`tests/cases.tsv`), with `reports/results.json` as interop-result-v1; `GATE=<adapter>` runs only the pairs that involve it. Drivers for otfabric, pnio-dcp, profinet-py, pnio-rs and pnet (DCP only). MRP, decoders and SNMP stay with go-profinet's interop suite, the behavioural test.
+- `scripts/lib.sh` (`image_of`: `ADAPTER_IMAGE_<adapter>` overrides an image), `scripts/smoke.sh <adapter>...`, `scripts/retry.sh`; `scripts/check-contract.sh [TAG] [adapter...]`.
+
+### Changed
+
+- **Contract 1.3**: the capability document has an `upstream` object (`name`, `version`, optional `revision`, `independentEngine`); every adapter declares it, `make contract` checks it. A compatible addition.
+- `matrix-to-results.py` records the otfabric image as `independent: false`.
 
 ---
 

@@ -26,7 +26,8 @@ capabilities() {
    "parameterRecords":[123,124],"orderId":"12345 Abcdefghijk"},
  "features":{"dcpIdentify":true,"dcpGet":true,"dcpSetName":true,"dcpSetIP":true,"dcpSignal":true,"dcpReset":true,"lldp":true,
    "connect":true,"rtClass1Legacy":true,"rtClass2Advanced":true,"moduleDiff":true,"readWrite":true,"writeMultiple":true,"readImplicit":true,
-   "im0to4":true,"diagnosisRecords":true,"alarms":true,"processAlarms":true,"iosar":false,"multipleIOCAR":false,"epm":true}}
+   "im0to4":true,"diagnosisRecords":true,"alarms":true,"processAlarms":true,"iosar":false,"multipleIOCAR":false,"epm":true},
+ "upstream":{"name":"p-net","version":"ea5e5540b2be55c4dfadffda39b948632c104daa","revision":"ea5e5540b2be55c4dfadffda39b948632c104daa","independentEngine":true}}
 JSON
 }
 

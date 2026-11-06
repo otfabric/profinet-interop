@@ -40,5 +40,15 @@ for f in adapters/*/Dockerfile; do
 $refs
 EOF
 done
+# own/: the *_DIGEST build arguments of OT Fabric's own image.
+for f in own/*/Dockerfile; do
+	digests=$(sed -nE 's/^ARG [A-Z]+_DIGEST=(sha256:[0-9a-f]{64})$/\1/p' "$f")
+	while read -r digest; do
+		[ -n "$digest" ] || continue
+		grep -q "$digest" versions.yaml || { echo "$f: $digest is not in versions.yaml"; fail=1; }
+	done <<EOF
+$digests
+EOF
+done
 [ "$fail" = 0 ] && echo "versions.yaml agrees with the Dockerfiles"
 exit "$fail"

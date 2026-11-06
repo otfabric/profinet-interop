@@ -47,7 +47,8 @@ print-capabilities)
 	cat <<'JSON'
 {"schemaVersion":"1.0","adapter":"umrp","implementation":"umrp","version":"v4.0","license":"GPL-2.0","roles":["mrp-node"],
  "features":{"mrm":true,"mrc":true,"mra":true,"interconnection":false,"recoveryProfiles":["200","500"],"kernelMRP":false,
-   "ifdriver":"nftables set of blocked ports on a Linux bridge (this adapter's ifdriver_bridge.c)"}}
+   "ifdriver":"nftables set of blocked ports on a Linux bridge (this adapter's ifdriver_bridge.c)"},
+ "upstream":{"name":"umrp","version":"v4.0","revision":"fb193eac1a2df51fe42e19d4ea36bb0157bda09f","independentEngine":true}}
 JSON
 	;;
 status)

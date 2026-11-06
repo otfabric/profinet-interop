@@ -19,8 +19,8 @@ This repository follows **otfabric/engineering policy 1.2**, profile **interoper
 ## Hard rules
 
 1. Nothing floats: upstreams by commit, version or hash, base images by digest. `make check-versions` must pass.
-2. No image is pushed: GPL stacks are built by each user. CI fails on a target that pushes.
-3. Results come from go-profinet's interop runs; `n/a` and `peer-deviation` are never counted as passes.
+2. No reference image is pushed: GPL stacks are built by each user. CI fails on a target that pushes. The one exception is `own/go-profinet/` (`profinet-interop-otfabric`, OT Fabric's own stack, MIT), published only by the manual `own-go-profinet.yml` workflow; nothing else in the repository knows it (REQUIREMENTS.md R1).
+3. Results come from go-profinet's interop runs (the matrix) and `scripts/interop.sh` (the cross-stack self-test, `reports/`); `n/a` and `peer-deviation` are never counted as passes.
 4. Contract changes bump `contract_version` and reach every adapter and docs/CONTAINER_CONTRACT.md in the same change.
 5. Licences: every component in THIRD_PARTY_NOTICES.md, licence files under `/licenses/` in each image.
 6. The release tag equals `interop_version`.
@@ -32,6 +32,8 @@ This repository follows **otfabric/engineering policy 1.2**, profile **interoper
 | anything | `make check-versions lint` |
 | an adapter | `make image-<adapter> contract` |
 | all images | `make images smoke` |
+| the self-test | `make interop` (after `make images`) |
+| own/go-profinet | `make -f own/go-profinet/Makefile image smoke interop` |
 | results | `make matrix RESULTS=<dir>` |
 | a release | `make release-notes` |
 

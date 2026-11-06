@@ -29,7 +29,7 @@ check)
 	printf '{"schemaVersion":"1.0","adapter":"tshark","version":"%s","frames":%s,"byProtocol":%s,"malformed":%s,"expert":%s}\n' \
 		"$(tshark --version 2>/dev/null | head -1 | awk '{print $3}')" "$total" "$protos" "$malformed" "$expert"
 	;;
-print-capabilities) printf '{"schemaVersion":"1.0","adapter":"tshark","implementation":"Wireshark tshark","license":"GPL-2.0-or-later","roles":["decoder"]}\n' ;;
+print-capabilities) printf '{"schemaVersion":"1.0","adapter":"tshark","implementation":"Wireshark tshark","license":"GPL-2.0-or-later","roles":["decoder"],"upstream":{"name":"Wireshark tshark","version":"%s","independentEngine":true}}\n' "$(tshark --version 2>/dev/null | head -1 | awk '{print $3}')" ;;
 *)
 	echo "unknown command ${1:-}: profinet-interop check FILE.pcap | print-capabilities | version" >&2
 	exit 2
