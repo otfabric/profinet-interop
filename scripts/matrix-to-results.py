@@ -26,6 +26,7 @@ OUTCOME = {"pass": "pass", "fail": "fail", "n/a": "unsupported", "peer-deviation
 # The peer of a matrix row -> the implementations of versions.yaml it names.
 PEERS = {"p-net": ["pnet"], "Net-SNMP": ["netsnmp"], "tshark/scapy": ["tshark", "scapy"]}
 SUT = "go-profinet"
+OWN = {"otfabric"}
 
 
 def table(path):
@@ -61,7 +62,8 @@ def pins(path=ROOT / "versions.yaml"):
 
 def implementation(name, versions):
     pin = versions.get(name, {})
-    i = {"name": name, "version": pin.get("version") or pin.get("revision", "unrecorded")[:12], "independent": True}
+    # OT Fabric's own image (own/, versions.yaml own_implementations) is not independent.
+    i = {"name": name, "version": pin.get("version") or pin.get("revision", "unrecorded")[:12], "independent": name not in OWN}
     for key in ("revision", "license"):
         if key in pin:
             i[key] = pin[key]

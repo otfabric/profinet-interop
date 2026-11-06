@@ -1,8 +1,8 @@
 # Third-party notices
 
 This repository contains no code of the implementations below (one file
-written for umrp is GPL-2.0: see the end). No image is
-published: every user builds them (`make images`); the last column says
+written for umrp is GPL-2.0: see the end). No reference image is
+published (the one published image, OT Fabric's own, is below): every user builds them (`make images`); the last column says
 whether the licences would allow it. Its images
 obtain them at build time from their upstream, by pinned commit or by
 version and hash (see [versions.yaml](versions.yaml)), and keep their
@@ -21,6 +21,22 @@ licence files under `/licenses/` in the image.
 | microchip-ung/mrp `177717ee893d5ccc6e31147b1b8a720c9b798b81` (after v1.2) | GPL-2.0 | https://github.com/microchip-ung/mrp | no: build it locally (`make image-mrp`) |
 | microchip-ung/cfm `7a50f4adcccf2d2e910816ea6d78446fea8fe7d8` (libcfm_netlink, linked by umrp and mrp) | GPL-2.0 | https://github.com/microchip-ung/cfm | no |
 | Debian, Python and Rust base images | their respective licences | Docker Hub | — |
+
+## Image `profinet-interop-otfabric`
+
+OT Fabric's own stack (`own/go-profinet/`), the one image this repository
+publishes. It contains no third-party PROFINET code.
+
+| Component | Version | Licence | Source |
+|-----------|---------|---------|--------|
+| go-profinet | latest release when built | MIT | https://github.com/otfabric/go-profinet |
+| Go standard library | the Go toolchain of the build (`golang:1.27.2-trixie`) | BSD-3-Clause | https://go.dev |
+| iproute2 | Debian trixie package | GPL-2.0 | Debian trixie |
+| Debian trixie base image | its respective licences | Docker Hub | — |
+
+Every Go module's licence is under `/licenses/` in the image
+(`/licenses/BUNDLED-MODULES.txt` lists them); iproute2's under
+`/usr/share/doc/iproute2/`.
 
 The p-net build patches two lines of the p-net sources inside the image
 (the Ethernet speed check of Connect, `-Werror`); the patched source is not

@@ -82,7 +82,8 @@ def main(argv):
     if argv[:1] == ["print-capabilities"]:
         json.dump({"schemaVersion": "1.0", "adapter": "netsnmp", "implementation": "Net-SNMP", "version": version(),
                    "license": "Net-SNMP (BSD-style)", "roles": ["snmp-manager"],
-                   "features": {"versions": ["1", "2c"], "operations": sorted(TOOLS), "mibs": False}}, sys.stdout)
+                   "features": {"versions": ["1", "2c"], "operations": sorted(TOOLS), "mibs": False},
+                   "upstream": {"name": "Net-SNMP", "version": version(), "independentEngine": True}}, sys.stdout)
         print()
         return 0
     if len(argv) < 2 or argv[0] != "snmp" or argv[1] not in TOOLS:

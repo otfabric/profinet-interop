@@ -55,7 +55,8 @@ def main():
     if a.cmd == "print-capabilities":
         json.dump({"schemaVersion": "1.0", "adapter": "pnio-dcp", "implementation": "pnio-dcp", "version": VERSION, "license": "MIT",
                    "roles": ["dcp-tool"], "features": {"dcpIdentify": True, "dcpGet": True, "dcpSetName": True, "dcpSetIP": True,
-                                                       "dcpSignal": True, "dcpReset": True}}, sys.stdout)
+                                                       "dcpSignal": True, "dcpReset": True},
+                   "upstream": {"name": "pnio-dcp", "version": VERSION, "independentEngine": True}}, sys.stdout)
         print()
         return 0
     import pnio_dcp

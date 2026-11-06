@@ -1,6 +1,11 @@
 # Container contract
 
-Version: **1.2** (`contract_version` in [versions.yaml](../versions.yaml))
+Version: **1.3** (`contract_version` in [versions.yaml](../versions.yaml))
+
+Version 1.3 adds the `upstream` object of the capability document: the
+stack behind the adapter and whether its protocol engine is independent
+(`upstream.independentEngine`), and the adapter `otfabric` (OT Fabric's own
+stack, `own/go-profinet/`).
 
 Every adapter image runs one reference implementation of PROFINET IO and
 exposes it through the same entrypoint, `profinet-interop`, with the commands
@@ -14,7 +19,7 @@ bumps the major version; an addition bumps the minor one. Documents carry
 
 | Item | Value |
 |------|-------|
-| Image | `profinet-interop-<adapter>` (local builds: `:dev`); see [versions.yaml](../versions.yaml) for which images may be published |
+| Image | `profinet-interop-<adapter>` (local builds: `:dev`); see [versions.yaml](../versions.yaml) for which images may be published. The one published image is `ghcr.io/otfabric/profinet-interop-otfabric` (adapter `otfabric`, OT Fabric's own stack: [own/go-profinet/README.md](../own/go-profinet/README.md)) |
 | Entrypoint | `/usr/local/bin/profinet-interop` |
 | Capabilities | the container needs `CAP_NET_RAW` and `CAP_NET_ADMIN` (raw Ethernet sockets; DCP Set IP changes the interface address) |
 | Interface | `eth0`, attached to a Docker bridge network with a static IPv4 address (MRP ring nodes: no Docker network, ring ports moved in by the consumer: see `node`) |
@@ -198,6 +203,34 @@ the expert infos of severity warning or error.
 `features` says what the implementation supports, so that a consumer can
 tell a failing test from a feature the peer does not have. The feature
 names follow the tables of [MATRIX.md](MATRIX.md).
+
+`upstream` (1.3): `name` and `version` of the stack, optionally its
+`revision`, and `independentEngine`: false for an image whose stack is not
+independent of the systems tested against it (OT Fabric's own,
+`profinet-interop-otfabric`). `results.json` of `scripts/interop.sh`
+records it as `independent`; an image of an earlier contract counts as
+independent.
+
+```json
+"upstream":{"name":"pnio-rs","version":"v0.1.0","revision":"798500c1…","independentEngine":true}
+```
+
+### `otfabric` (OT Fabric's own stack)
+
+go-profinet behind the contract, with the roles `device`, `controller` and
+`dcp-tool`. Its commands are those of go-profinet's interop node; every one
+takes `--iface IF` (default `eth0`) and prints one JSON object per line.
+
+| Command | Flags (selection) | Prints |
+|---------|-------------------|--------|
+| `device` | `--station NAME` (default `otf-device`), `--model FILE` (model JSON or GSDML; default: a built-in device with slots 1–3), `--gsdml-out FILE` (writes the device's GSDML first), `--alarm-after D`, `--hello 0\|1\|2`, `--snmp COMMUNITY` | events `start` (`station`, `mac`, `ip`), `ar` (`type`, `from`, `to`), `write`, `output`, `name`, `ip`, `signal`, `reset`, `alarm-ack`, `diagnosis-sent`, `stop` |
+| `controller` | `--station NAME`, `--model FILE`, `--advanced`, `--rr N`, `--duration D`, `--timeout D`, `--im0`, `--diag`, `--read`/`--write`/`--param`/`--implicit`/`--wm`/`--reparam S:SS:INDEX[:HEX]`, `--output S:SS:0:HEX` | events `state`, `alarm`, then one `report` (`running`, `im0`, `records`, `inputs`, `stats`, `error`) |
+| `dcp` | `--mac M` or `--station NAME`, `--wait D`, `--permanent`; operation `identify`, `get`, `set-name NAME`, `set-ip IP/PREFIX`, `signal`, `reset` (flags before the operation) | one `dcp` object (`devices`, `identity`, `error`) |
+| `lldp` | `--wait D` | one `lldp` object (`neighbors`) |
+
+A failing step is reported in the document (exit 0); a command that cannot
+start exits 1 with an `error` event. go-profinet's MRP ring node is not
+behind `node` in this image.
 
 ## Exit codes
 

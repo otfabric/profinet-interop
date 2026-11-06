@@ -215,7 +215,8 @@ def main():
           "license": "GPL-3.0-only", "roles": ["controller", "dcp-tool"],
           "features": {"dcpIdentify": True, "dcpGet": True, "dcpSetName": True, "dcpSetIP": True, "dcpSignal": True, "dcpReset": True,
                        "connect": True, "iosar": True, "readWrite": True, "readImplicit": True, "im0to4": True, "diagnosisRecords": True,
-                       "moduleDiff": True, "rtClass1Legacy": True, "alarms": True, "lldp": False, "gsdml": True}})
+                       "moduleDiff": True, "rtClass1Legacy": True, "alarms": True, "lldp": False, "gsdml": True},
+          "upstream": {"name": "profinet-py", "version": VERSION, "independentEngine": True}})
     return 0
 
 
