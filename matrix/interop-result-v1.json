@@ -1,7 +1,7 @@
 {
- "contractVersion": "1.2",
- "finishedAt": "2026-10-29T00:15:30+00:00",
- "gitSha": "e31a032d8648e05dbb269a42e86fb6b918137ebc",
+ "contractVersion": "1.3",
+ "finishedAt": "2026-11-12T22:06:02+00:00",
+ "gitSha": "8291e7c2dbe33bd3f84ef09cd4f21a1cad9c5cd9",
  "host": {
   "arch": "unrecorded",
   "os": "unrecorded"
@@ -72,7 +72,7 @@
    "version": "v4.0"
   }
  ],
- "interopVersion": "0.7.0",
+ "interopVersion": "0.8.0",
  "repository": "otfabric/profinet-interop",
  "reproduce": "PROFINET_INTEROP_RESULTS=dir make -C ../go-profinet interop && make matrix RESULTS=dir",
  "results": [
@@ -429,7 +429,7 @@
    "feature": "MRA: umrp MRA as a client keeps taking the manager role back",
    "id": "mrpauto.umrp.go-profinet-best.mra-umrp-mra-as-a-client-keeps-taking-the-manager-role-back",
    "outcome": "known-difference",
-   "reason": "18 role changes on n2 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_test) and reclaims the role after TSTNRmax intervals; seen with a umrp manager too",
+   "reason": "20 role changes on n2 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_test) and reclaims the role after TSTNRmax intervals; seen with a umrp manager too",
    "roles": {
     "peer": "umrp",
     "sut": "go-profinet",
@@ -526,7 +526,7 @@
    "feature": "MRA: umrp MRA as a client keeps taking the manager role back",
    "id": "mrpauto.umrp.peer-best.mra-umrp-mra-as-a-client-keeps-taking-the-manager-role-back",
    "outcome": "known-difference",
-   "reason": "20 role changes on n3 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_test) and reclaims the role after TSTNRmax intervals; seen with a umrp manager too",
+   "reason": "12 role changes on n3 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_test) and reclaims the role after TSTNRmax intervals; seen with a umrp manager too",
    "roles": {
     "peer": "umrp",
     "sut": "go-profinet",
@@ -3282,7 +3282,7 @@
   }
  ],
  "schemaVersion": "1.0",
- "startedAt": "2026-10-29T00:15:30+00:00",
+ "startedAt": "2026-11-12T22:06:02+00:00",
  "summary": {
   "fail": 0,
   "infra-error": 0,
