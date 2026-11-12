@@ -46,8 +46,8 @@ interop: ## Cross-stack self-test of INTEROP_ADAPTERS on Layer 2 (tests/cases.ts
 print-adapters: ## Print the adapters
 	@echo $(ADAPTERS)
 
-matrix: ## Regenerate docs/MATRIX.md, matrix/results.json and matrix/interop-result-v1.json from RESULTS=dir (go-profinet's interop results)
-	@python3 scripts/matrix.py "$(RESULTS)" matrix/results.json docs/MATRIX.md
+matrix: ## Regenerate docs/MATRIX.md, matrix/results.json and matrix/interop-result-v1.json from RESULTS=dir (go-profinet's interop results; SOURCE="go-profinet vX against profinet-interop vY" is recorded)
+	@python3 scripts/matrix.py "$(RESULTS)" matrix/results.json docs/MATRIX.md "$(SOURCE)"
 	@python3 scripts/matrix-to-results.py matrix/results.json matrix/interop-result-v1.json
 
 smoke: images ## Build the images and print their versions
