@@ -52,7 +52,8 @@ profinet-interop snmp OP --host IP [flags] OID... # SNMP manager roles (netsnmp)
 
 An unknown command or flag exits with status 2. `make contract` checks every
 image against this: `version` prints one line, `print-capabilities` a
-capability document of schema version 1.0 with the adapter's name and roles,
+capability document with the adapter's name that is valid against
+[schemas/capabilities.schema.json](../schemas/capabilities.schema.json),
 and an unknown command exits 2.
 
 ### `device`
@@ -203,6 +204,19 @@ the expert infos of severity warning or error.
 `features` says what the implementation supports, so that a consumer can
 tell a failing test from a feature the peer does not have. The feature
 names follow the tables of [MATRIX.md](MATRIX.md).
+
+[schemas/capabilities.schema.json](../schemas/capabilities.schema.json)
+describes the document: the fields `schemaVersion`, `adapter`,
+`implementation`, `license`, `roles` and `upstream` are required; a role is
+one of `device`, `controller`, `dcp-tool`, `decoder`, `mrp-node` and
+`snmp-manager`; and `features` holds only the feature names the schema
+lists, each with its type. A feature is `true` or `false`; `dcpSetIP` and
+`alarms` may instead be a string that says how far the support goes, and
+`frameIdRange`, `requires`, `ifdriver` (strings) and `dcpIdentifyFilters`,
+`recoveryProfiles`, `versions`, `operations` (lists of strings) carry a
+value. `scripts/check-capabilities.py` checks a document against it. A new
+feature or role goes into the schema in the same change as the adapter that
+declares it.
 
 `upstream` (1.3): `name` and `version` of the stack, optionally its
 `revision`, and `independentEngine`: false for an image whose stack is not

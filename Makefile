@@ -37,7 +37,7 @@ unittests: ## Unit tests of the result scripts, and the verdict of the committed
 	@python3 -m unittest discover -q -s scripts -p 'test_*.py'
 	@python3 scripts/interop_result.py matrix/interop-result-v1.json
 
-contract: ## Check every image against the command-line contract (docs/CONTAINER_CONTRACT.md)
+contract: ## Check every image against the command-line contract (docs/CONTAINER_CONTRACT.md) and its capability document against schemas/capabilities.schema.json (needs jsonschema)
 	@scripts/check-contract.sh $(TAG) $(ADAPTERS)
 
 interop: ## Cross-stack self-test of INTEROP_ADAPTERS on Layer 2 (tests/cases.tsv; reports/results.json)
@@ -46,8 +46,8 @@ interop: ## Cross-stack self-test of INTEROP_ADAPTERS on Layer 2 (tests/cases.ts
 print-adapters: ## Print the adapters
 	@echo $(ADAPTERS)
 
-matrix: ## Regenerate docs/MATRIX.md, matrix/results.json and matrix/interop-result-v1.json from RESULTS=dir (go-profinet's interop results; SOURCE="go-profinet vX against profinet-interop vY" is recorded)
-	@python3 scripts/matrix.py "$(RESULTS)" matrix/results.json docs/MATRIX.md "$(SOURCE)"
+matrix: ## Regenerate docs/MATRIX.md, matrix/results.json and matrix/interop-result-v1.json from RESULTS=dir (go-profinet's interop results; SOURCE="go-profinet vX against profinet-interop vY" is recorded, and SUT_VERSION=vX [SUT_REVISION=<commit>], the go-profinet that ran, is required)
+	@python3 scripts/matrix.py "$(RESULTS)" matrix/results.json docs/MATRIX.md "$(SOURCE)" "$(SUT_VERSION)" $(if $(SUT_REVISION),"$(SUT_REVISION)")
 	@python3 scripts/matrix-to-results.py matrix/results.json matrix/interop-result-v1.json
 
 smoke: images ## Build the images and print their versions
@@ -59,9 +59,10 @@ versions: ## Print the version of every built image
 # ── Upstream candidates ───────────────────────────────────────────────────────
 # Builds one adapter on another upstream than its pin and checks it with the
 # smoke test (version), its capability document and the contract, against
-# the other adapters at their pins (built first: make images). The
-# cross-stack self-test (make interop) is small: go-profinet's interop suite
-# is the behavioural test. Every adapter Dockerfile takes its upstream as the
+# the other adapters at their pins (built first: make images), and an
+# adapter of INTEROP_ADAPTERS also with the cross-stack self-test (make
+# interop), which is small: go-profinet's interop suite is the behavioural
+# test. Every adapter Dockerfile takes its upstream as the
 # build argument UPSTREAM_VERSION (a release: pnio-rs, profinet-py,
 # pnio-dcp, scapy) and/or UPSTREAM_SHA (a commit: pnet, pnio-rs). At the pin
 # the release build and its hash checks apply unchanged; any other value
@@ -96,6 +97,7 @@ candidate-%: FORCE ## Build one adapter on CANDIDATE_VERSION / CANDIDATE_SHA [/ 
 	@echo "Smoke:"; for a in $(ADAPTERS); do docker run --rm profinet-interop-$$a:candidate version || exit 1; done
 	@echo "Capabilities of the candidate:"; docker run --rm profinet-interop-$*:candidate print-capabilities
 	@echo "Contract:"; scripts/check-contract.sh candidate
+	@case " $(INTEROP_ADAPTERS) " in *" $* "*) echo "Cross-stack self-test:"; TAG=candidate scripts/interop.sh $(INTEROP_ADAPTERS) ;; esac
 
 FORCE:
 

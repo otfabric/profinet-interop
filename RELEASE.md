@@ -7,7 +7,7 @@
    no notes for the version `versions.yaml` names.
 2. CI is green on the commit to release; when the matrix changed, it is
    regenerated from go-profinet's Interop workflow (`make matrix
-   RESULTS=dir`).
+   RESULTS=dir SUT_VERSION=<go-profinet version>`).
 3. Tag `vX.Y.Z` and push the tag. The release workflow
    (`.github/workflows/release.yml`) checks that the tag, `versions.yaml`
    and the notes agree, builds every image on amd64 and arm64 and checks it
@@ -34,6 +34,56 @@ Tags are immutable. A fix is a new version.
 | Contract changed incompatibly | major |
 | New adapter, operation, capability or matrix feature | minor |
 | Upstream pin, base image, matrix regeneration or bug fix with unchanged contract | patch |
+
+---
+
+## v0.9.0
+
+**Date:** 2026-11-15
+**Previous release:** v0.8.0
+
+## Summary
+
+A schema for the capability document, the system under test in the matrix
+results, and the cross-stack self-test and a base-image check in CI. Contract
+1.3 and every adapter are unchanged.
+
+## Changes
+
+### Added
+
+- **`schemas/capabilities.schema.json`**: the capability document of
+  `print-capabilities` (docs/CONTAINER_CONTRACT.md) as JSON Schema 2020-12:
+  the required fields, the six roles, every feature name with its type, and
+  `upstream`. `scripts/check-capabilities.py ADAPTER [FILE]` checks a
+  document against it; `make contract` now uses it for every image (and needs
+  the `jsonschema` package), and the **Own stack (go-profinet)** workflow
+  checks the otfabric image with it. Every adapter's document is valid.
+- `make matrix` takes `SUT_VERSION=<go-profinet version>` (required) and
+  `SUT_REVISION=<commit>`; `matrix/results.json` records them as `sut`.
+
+### Changed
+
+- `matrix/interop-result-v1.json` names the go-profinet that produced the
+  matrix (v0.8.1, commit 8822e05) instead of `unrecorded`; the results and
+  the verdict are unchanged (248 pass, 6 unsupported, 14 known-difference).
+  `matrix-to-results.py` stops when `results.json` has no `sut`.
+- CI runs the cross-stack self-test (`make interop`) on amd64 and arm64 after
+  the contract and checks `reports/results.json` with `interop_result.py`; the
+  documents are uploaded. The candidate check runs it too for an adapter of
+  `INTEROP_ADAPTERS` (pnio-dcp, pnio-rs).
+- The upstream probe (`candidate.yml`) runs daily instead of weekly, and
+  compares every pinned base image with the digest its tag points to now
+  (otfabric/.github `upstream-images` and `upstream-report` v3.8.0, issue
+  "Upstream base images: digests behind their tags").
+- The workflows install `jsonschema==4.26.0` instead of the newest jsonschema.
+- `own/go-profinet` builds against go-profinet v0.10.0 (go.mod), and its
+  `OnAlarm` handler no longer blocks once 64 alarms are pending with no
+  `--wait-alarms` reader: go-profinet calls it before the alarm is
+  acknowledged and requires it not to block. The image is published by hand,
+  outside this release.
+- SECURITY.md names the one published image, OT Fabric's own, and the
+  advisories that apply to it.
 
 ---
 

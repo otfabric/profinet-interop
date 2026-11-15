@@ -7,7 +7,8 @@
 //
 // The roles are those of go-profinet's interop node, interop/otfnode of
 // the go-profinet release the image is built from, copied here unchanged
-// apart from this command dispatch (contract.go):
+// apart from this command dispatch (contract.go) and notify, which wakes
+// the controller's wait for alarms without blocking:
 //
 //	profinet-interop print-capabilities | version
 //	profinet-interop controller --station NAME --model FILE [flags]
@@ -191,6 +192,18 @@ func parseAddr(s string, parts int) (slot, subslot uint16, index pnio.Index, dat
 	return
 }
 
+// notify wakes the wait for alarms of runController without blocking: OnAlarm
+// runs on the AR's alarm goroutine before the alarm is acknowledged and must
+// not block (controller.DeviceConfig). The alarms are recorded apart, and the
+// wait lasts until --duration in any case, so a wakeup that does not fit in ch
+// changes nothing.
+func notify(ch chan<- struct{}) {
+	select {
+	case ch <- struct{}{}:
+	default:
+	}
+}
+
 func runController(args []string) error {
 	fs := flag.NewFlagSet("controller", flag.ExitOnError)
 	iface := fs.String("i", "eth0", "interface")
@@ -272,7 +285,7 @@ func runController(args []string) error {
 			alarmMu.Lock()
 			gotAlarms = append(gotAlarms, e)
 			alarmMu.Unlock()
-			alarmCh <- struct{}{}
+			notify(alarmCh)
 		},
 	}
 	if *assignIP != "" {

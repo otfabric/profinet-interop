@@ -17,18 +17,52 @@ run-name: "Candidate upstream probe by @${{ github.actor }}"
 # PyPI release. tshark and netsnmp are Debian bookworm packages: reported, not built as
 # a candidate (a rebuild installs the current package).
 #
-# There is no cross-stack self-test in this repository: a candidate is checked
-# like a release image (smoke, capabilities, contract); go-profinet's interop
-# suite is the behavioural test once the pin moves.
+# A candidate is checked like a release image (smoke, capabilities, contract)
+# and, for an adapter of the cross-stack self-test (INTEROP_ADAPTERS of the
+# Makefile: pnio-dcp, pnio-rs), with that self-test against the other
+# references at their pins; go-profinet's interop suite is the behavioural
+# test once the pin moves.
+#
+# The job "images" compares the digest of every pinned base image with the
+# one its tag points to now (otfabric/.github upstream-images); "images-report"
+# writes that table to the Job Summary and keeps the issue "Upstream base
+# images: digests behind their tags".
 on:
   schedule:
-    - cron: "41 6 * * 1"
+    - cron: "41 6 * * *"
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
+  images:
+    name: Base images
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: otfabric/.github/actions/upstream-images@v3.8.0
+
+  images-report:
+    name: Base image table
+    runs-on: ubuntu-latest
+    needs: images
+    if: always()
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: otfabric/.github/actions/upstream-report@v3.8.0
+        with:
+          needs: ${{ toJSON(needs) }}
+          title: "Upstream base images: digests behind their tags"
+          notes: >-
+            Every Dockerfile (adapters/ and own/) pins its base images by digest, and versions.yaml
+            lists them (base_images); scripts/check-versions.sh checks that they agree. To move one,
+            change the digest in both and run make images contract.
+
   candidate:
     name: ${{ matrix.adapter }}
     runs-on: ubuntu-24.04
@@ -40,6 +74,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      # The contract checks the capability document against its schema.
+      - run: pip install jsonschema==4.26.0
 
       - name: Resolve the pin against upstream
         id: resolve
@@ -161,7 +201,8 @@ jobs:
             echo "- **Update? = yes** means the pin is not the latest upstream. **flagged** notes say why the latest"
             echo "  is not taken at face value (p-net trees after the pin are not GPL-complete)."
             echo "- **Candidate check** builds the adapter on that upstream and runs the smoke test, its capability"
-            echo "  document and the contract against the pinned other adapters. \`success\`: the pin can move"
+            echo "  document and the contract against the pinned other adapters, and for pnio-dcp and pnio-rs the"
+            echo "  cross-stack self-test. \`success\`: the pin can move"
             echo "  (then run go-profinet's interop suite); \`failure\`: read the uploaded log before bumping."
             echo "- Bump deliberately, after reading the upstream changelog, and record the change in"
             echo "  \`RELEASE.md\`."
@@ -180,7 +221,7 @@ jobs:
           ISSUE_NUMBER: ${{ steps.issue.outputs.number }}
         run: |
           {
-            echo "The weekly probe found upstreams newer than the pins of this repository."
+            echo "The daily probe found upstreams newer than the pins of this repository."
             echo
             cat table.md
             echo
@@ -189,7 +230,8 @@ jobs:
             echo "- **Update? = yes**: the pin is not the latest upstream (the newest GPL release tag for p-net,"
             echo "  the newest release for the others, the bookworm package for tshark and netsnmp)."
             echo "- **Candidate check** is the smoke test, the capability document and the contract of the adapter"
-            echo "  built on the latest upstream, against the other adapters at their pins. \`success\`: the pin can"
+            echo "  built on the latest upstream, against the other adapters at their pins, and for pnio-dcp and"
+            echo "  pnio-rs the cross-stack self-test. \`success\`: the pin can"
             echo "  move. \`failure\`: read the candidate log in the [workflow run](${RUN_URL}) first."
             echo
             echo "## To update"
@@ -204,7 +246,7 @@ jobs:
             echo "\`adapters/<adapter>/Dockerfile\` and \`versions.yaml\`; \`scripts/check-versions.sh\` checks that they"
             echo "agree. For tshark and netsnmp only \`versions.yaml\` changes. Record the change in \`RELEASE.md\`."
             echo
-            echo "_Last checked by [this workflow run](${RUN_URL}). This issue is updated by the weekly"
+            echo "_Last checked by [this workflow run](${RUN_URL}). This issue is updated by the daily"
             echo "probe and closed automatically once every pin is the latest upstream._"
           } > body.md
           if [ -n "${ISSUE_NUMBER}" ]; then
