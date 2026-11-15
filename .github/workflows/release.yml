@@ -117,6 +117,11 @@ jobs:
             runner: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      # The contract checks every capability document against its schema.
+      - run: pip install jsonschema==4.26.0
       - name: Build every adapter image
         run: make -j3 --output-sync=target images
       - name: Contract

@@ -6,7 +6,8 @@
 
 matrix/results.json stays what scripts/matrix.py writes: the rows of
 go-profinet's interop results, which carry no host, duration or time of their
-own. The host is therefore "unrecorded", durationMs 0, and startedAt and
+own, and the version and commit of the go-profinet that ran ("sut"), which
+names the system under test; a matrix without its version is refused. The host is therefore "unrecorded", durationMs 0, and startedAt and
 finishedAt are the time the matrix was generated. Outcomes: n/a (the peer does not implement the feature)
 becomes unsupported; peer-deviation becomes known-difference with its waiver
 from tests/known-differences.tsv, or fail when it has none. IDs come from
@@ -70,7 +71,19 @@ def implementation(name, versions):
     return i
 
 
-def convert(rows, generated, reproduce, ids, waivers, versions):
+def system_under_test(sut):
+    """The implementation entry of go-profinet, from the "sut" of matrix/results.json."""
+    if not isinstance(sut, dict) or not str(sut.get("version", "")).strip():
+        raise SystemExit("matrix/results.json names no version of the go-profinet that ran (\"sut\"): "
+                         "regenerate it with make matrix RESULTS=dir SOURCE=... SUT_VERSION=<version> [SUT_REVISION=<commit>]")
+    i = {"name": SUT, "version": str(sut["version"]).strip(), "independent": False}
+    if str(sut.get("revision", "")).strip():
+        i["revision"] = str(sut["revision"]).strip()
+    return i
+
+
+def convert(rows, generated, reproduce, ids, waivers, versions, sut):
+    sut_implementation = system_under_test(sut)
     results, peers, deviating, ran = [], {}, set(), set()
     for row in rows:
         key = (row["test"], row["feature"])
@@ -97,7 +110,7 @@ def convert(rows, generated, reproduce, ids, waivers, versions):
                 res["outcome"] = "fail"
                 res["reason"] = "peer-deviation without a line in tests/known-differences.tsv: " + res["reason"]
         results.append(res)
-    implementations = [{"name": SUT, "version": "unrecorded", "independent": False}]
+    implementations = [sut_implementation]
     implementations += [implementation(name, versions) for name in sorted(peers)]
     return {"schemaVersion": "1.0", "repository": "otfabric/profinet-interop",
             "interopVersion": interop_result.version_field(str(ROOT), "interop_version"),
@@ -114,8 +127,8 @@ def main(argv):
         print(__doc__, file=sys.stderr)
         return 2
     matrix = json.loads(Path(argv[0]).read_text())
-    reproduce = "PROFINET_INTEROP_RESULTS=dir make -C ../go-profinet interop && make matrix RESULTS=dir"
-    doc = convert(matrix["rows"], matrix["generated"], reproduce, load_ids(), load_waivers(), pins())
+    reproduce = "PROFINET_INTEROP_RESULTS=dir make -C ../go-profinet interop && make matrix RESULTS=dir SUT_VERSION=<version>"
+    doc = convert(matrix["rows"], matrix["generated"], reproduce, load_ids(), load_waivers(), pins(), matrix.get("sut"))
     interop_result.write(argv[1], doc)
     bad = interop_result.schema_errors(doc) + interop_result.problems(doc)
     print("%s: %s" % (argv[1], ", ".join("%d %s" % (doc["summary"][o], o) for o in interop_result.OUTCOMES)))

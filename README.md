@@ -81,21 +81,28 @@ runs DCP and a cyclic AR between every pair of the given adapters (with
 `GATE=<adapter>`, only the pairs that involve it), each pair on its own Docker
 bridge network (`tests/cases.tsv`), and writes
 `reports/results.json` (interop-result-v1). It is small on purpose:
-go-profinet's interop suite is the behavioural test.
+go-profinet's interop suite is the behavioural test. CI (`ci.yml`, on a pull
+request that is not documentation only and on its schedule) runs `make
+interop` on amd64 and arm64 and fails on a fail, an infra-error or no pass
+at all.
 
 ## Upstream candidates
 
-A weekly workflow (`.github/workflows/candidate.yml`, also on demand)
+A daily workflow (`.github/workflows/candidate.yml`, also on demand)
 compares every pin with the latest upstream: p-net with its newest GPL
 release tag (later p-net trees are evaluation snapshots without ports:
 reported and flagged), pnio-rs with its newest GitHub release, profinet-py,
 pnio-dcp and scapy with PyPI, tshark and netsnmp with the Debian bookworm package. Where
 a pin is behind, it builds the adapter on the latest upstream and checks it
 with the smoke test, its capability document and the contract against the
-other adapters at their pins (go-profinet's interop suite is the
+other adapters at their pins, and pnio-dcp and pnio-rs also with the
+cross-stack self-test (go-profinet's interop suite is the
 behavioural test). The decision table
 goes to the Job Summary and to one issue that stays open while any pin is
-behind. Pins are never moved automatically and no image is pushed.
+behind. The same workflow compares the digest of every pinned base image
+with the one its tag points to now (`upstream-images` of otfabric/.github),
+with its own issue, "Upstream base images: digests behind their tags".
+Pins are never moved automatically and no image is pushed.
 
 ```bash
 make latest-upstream                                   # the decision table
@@ -136,6 +143,7 @@ adapters/<name>/      Dockerfile and the adapter script of each implementation
 docs/                 container contract, interoperability notes, matrix
 matrix/results.json   the machine-readable matrix
 matrix/interop-result-v1.json  the matrix as the organisation's interop-result-v1 (stable IDs: matrix/ids.tsv, waivers: tests/known-differences.tsv)
+schemas/              interop-result-v1, and the capability document (capabilities.schema.json)
 own/go-profinet/      OT Fabric's own stack behind the contract (published by hand, not released)
 scripts/              version check, latest upstream, matrix generation, release notes, smoke and cross-stack self-test
 tests/                cases of the self-test, known differences
@@ -151,6 +159,6 @@ RELEASE.md            how a release is made; the notes of every version
 | Push to a branch | none | nothing; dispatch `ci.yml` to test a branch without a pull request |
 | Push to `main` | `policy.yml` | the light checks; the merged commit was tested as the pull request's merge commit |
 | Schedule | `candidate.yml`, `ci.yml` | the scheduled runs, on `main` |
-| Release | `release.yml` | the release workflow tests the release commit again |
+| Release | `release.yml` | on a tag push or a manual run on `main`: refuses a tag that `versions.yaml` (`interop_version`) and RELEASE.md do not name, runs `scripts/check-versions.sh`, shellcheck and `py_compile` (`make lint`), then builds every image on amd64 and arm64 and checks it against the contract (`make contract`). No unit tests and no cross-stack self-test; no image is pushed |
 
 Documentation means an added or modified `*.md` file outside `.github/`, `testdata/` and `vendor/`, other than `AGENTS.md` and `CLAUDE.md`. A deleted or renamed document, or any other file, runs everything. `OT Fabric Required Checks` fails unless every job that applies succeeded; its summary lists them.

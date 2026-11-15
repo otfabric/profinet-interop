@@ -2,6 +2,11 @@
   "schemaVersion": "1.0",
   "generated": "2026-11-12T22:06:02+00:00",
   "source": "go-profinet 8822e05 (v0.8.0 with the profinet-interop v0.8.0 pin, released as v0.8.1) against profinet-interop v0.8.0: its Interop and Kernel MRP workflows of 2026-11-12",
+  "sut": {
+    "name": "go-profinet",
+    "version": "v0.8.1",
+    "revision": "8822e05cae1e11513e6cf42bde9f4d4ef49f73f8"
+  },
   "rows": [
     {
       "feature": "MRP Test, TopologyChange, LinkDown, LinkUp; PTCP DelayReq, DelayRes; IOCARSR Connect with SRInfoBlock and MCRBlockReq; MRP records (PDInterfaceMrpDataAdjust/Check/Real, PDPortMrpDataAdjust) encoded (go-profinet)",

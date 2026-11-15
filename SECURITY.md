@@ -9,4 +9,4 @@ Report vulnerabilities privately through GitHub's security advisories of this re
 - Test tools: use them only on isolated test networks, never on a plant network. The pinned p-net tree is the last complete public GPLv3 snapshot and predates the v1.0.2 fixes of CVE-2025-32396..32405 (versions.yaml).
 - They need `NET_RAW` and `NET_ADMIN` (raw Ethernet sockets), and the MRP ring set-up needs a privileged container in the host's PID and network namespaces ([docs/CONTAINER_CONTRACT.md](docs/CONTAINER_CONTRACT.md)).
 - Upstreams are pinned by commit, version or hash and base images by digest; `scripts/check-versions.sh` keeps [versions.yaml](versions.yaml) in step with the Dockerfiles.
-- No image is published: every user builds them (`make images`).
+- No reference image is published: every user builds them (`make images`). The one published image is OT Fabric's own, `ghcr.io/otfabric/profinet-interop-otfabric` ([own/go-profinet/README.md](own/go-profinet/README.md)); the [go-profinet advisories](https://github.com/otfabric/go-profinet/security/advisories) apply to it.

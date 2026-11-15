@@ -52,9 +52,13 @@ and `docker run --rm <image> version` prints the version.
 | Roles | `device`, `controller`, `dcp-tool` |
 
 The sources are go-profinet's interop node (`interop/otfnode` of the
-go-profinet release, copied unchanged) and `contract.go`, the contract's
-commands (`version`, `print-capabilities`, exit 2 for an unknown command,
-`--iface`).
+go-profinet release, copied unchanged apart from `notify`) and `contract.go`,
+the contract's commands (`version`, `print-capabilities`, exit 2 for an
+unknown command, `--iface`). `notify` wakes the controller's wait for alarms
+without blocking, as go-profinet requires of an `OnAlarm` callback: the
+callback runs before the alarm is acknowledged, and with the default
+`--wait-alarms 0` nothing reads the 64 wakeups the channel holds.
+`notify_test.go` checks it.
 
 ## Why it is apart from the other adapters
 

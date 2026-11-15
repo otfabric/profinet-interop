@@ -2,10 +2,13 @@
 """Builds the interoperability matrix from the result files go-profinet's
 interop tests write (PROFINET_INTEROP_RESULTS=dir make interop).
 
-usage: matrix.py RESULTS_DIR OUT.json OUT.md [SOURCE]
+usage: matrix.py RESULTS_DIR OUT.json OUT.md SOURCE SUT_VERSION [SUT_REVISION]
 
 SOURCE names what the results come from (for example "go-profinet v0.8.1
 against profinet-interop v0.8.0"); MATRIX.md and results.json record it.
+SUT_VERSION (required) and SUT_REVISION are the version and commit of the
+go-profinet that ran; results.json records them as "sut", the system under
+test of matrix/interop-result-v1.json.
 """
 import datetime
 import glob
@@ -27,8 +30,13 @@ def go_role(role):
 
 
 def main():
-    src, out_json, out_md = sys.argv[1:4]
-    source = sys.argv[4] if len(sys.argv) > 4 else ""
+    if len(sys.argv) not in (6, 7) or not sys.argv[5].strip():
+        sys.exit("usage: matrix.py RESULTS_DIR OUT.json OUT.md SOURCE SUT_VERSION [SUT_REVISION]\n"
+                 "SUT_VERSION, the version of the go-profinet that ran, is required")
+    src, out_json, out_md, source, sut_version = sys.argv[1:6]
+    sut = {"name": "go-profinet", "version": sut_version.strip()}
+    if len(sys.argv) == 7 and sys.argv[6].strip():
+        sut["revision"] = sys.argv[6].strip()
     results = []
     for f in sorted(glob.glob(os.path.join(src, "*.json"))):
         with open(f) as fh:
@@ -50,6 +58,7 @@ def main():
     doc = {"schemaVersion": "1.0", "generated": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")}
     if source:
         doc["source"] = source
+    doc["sut"] = sut
     doc["rows"] = rows
     with open(out_json, "w") as fh:
         json.dump(doc, fh, indent=2)

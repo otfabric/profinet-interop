@@ -23,6 +23,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      # The unit tests check documents against the schemas in schemas/.
+      - run: pip install jsonschema==4.26.0
       - name: versions.yaml matches the Dockerfiles
         run: scripts/check-versions.sh
       - name: RELEASE.md has the notes of the version versions.yaml names
@@ -37,7 +42,8 @@ jobs:
         # go-profinet's results into the matrix and are not checked.
         run: |
           if grep -rInE 'otfabric/go-|go-profinet|profinetctl|otfnode' adapters tests/cases.tsv \
-              scripts/lib.sh scripts/smoke.sh scripts/interop.sh scripts/interop.py scripts/test_interop.py scripts/check-contract.sh; then
+              scripts/lib.sh scripts/smoke.sh scripts/interop.sh scripts/interop.py scripts/test_interop.py scripts/check-contract.sh \
+              scripts/check-capabilities.py; then
             echo "::error::consumer-specific reference found"; exit 1
           fi
       - name: No image is published
@@ -63,9 +69,29 @@ jobs:
             runner: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      # The contract checks every capability document against its schema.
+      - run: pip install jsonschema==4.26.0
       - name: Build every adapter image
         run: make -j3 --output-sync=target images
       - name: Contract
         run: make contract | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Capabilities
         run: make capabilities | tee -a "$GITHUB_STEP_SUMMARY"
+      # The references against each other (INTEROP_ADAPTERS of the Makefile):
+      # fails on a fail, an infra-error or no pass at all (interop_result.py).
+      - name: Cross-stack self-test, document schema
+        run: |
+          set -o pipefail
+          make interop 2>&1 | tee reports/interop.log
+          python3 scripts/interop_result.py reports/results.json
+          grep -E '^\[interop\]' reports/interop.log | tee -a "$GITHUB_STEP_SUMMARY" || true
+      - name: Upload documents
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: selftest-documents-${{ matrix.arch }}
+          path: reports/
+          if-no-files-found: ignore

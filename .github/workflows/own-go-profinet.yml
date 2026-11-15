@@ -96,7 +96,7 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
-      - run: pip install jsonschema
+      - run: pip install jsonschema==4.26.0
 
       - name: Build from go-profinet ${{ needs.version.outputs.upstream }}
         run: |
@@ -115,6 +115,9 @@ jobs:
             docker run --rm "${ADAPTER_IMAGE_otfabric}" print-capabilities | jq -r '"- upstream \(.upstream.name) \(.upstream.version), commit `\(.upstream.revision)`, independent engine: \(.upstream.independentEngine)"'
           } | tee -a "$GITHUB_STEP_SUMMARY"
           [ "${reported}" = "${UPSTREAM}" ] || { echo "::error::the image reports go-profinet ${reported}, want ${UPSTREAM}"; exit 1; }
+
+      - name: The capability document matches schemas/capabilities.schema.json
+        run: docker run --rm "${ADAPTER_IMAGE_otfabric}" print-capabilities | python3 scripts/check-capabilities.py otfabric
 
       # The self-tests are those of the harness release whose reference images
       # they run against: main's scripts may already check what only the next

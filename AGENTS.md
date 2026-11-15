@@ -34,7 +34,7 @@ This repository follows **otfabric/engineering policy 1.6**, profile **interoper
 | all images | `make images smoke` |
 | the self-test | `make interop` (after `make images`) |
 | own/go-profinet | `make -f own/go-profinet/Makefile image smoke interop` |
-| results | `make matrix RESULTS=<dir>` |
+| results | `make matrix RESULTS=<dir> SUT_VERSION=<go-profinet version>` |
 | a release | `make release-notes` |
 
 ## Git and releases
