@@ -15,8 +15,8 @@
 # FIX_REPO, applied as a patch: an MRA that gave way to a better manager
 # (now an MRC) ran the MRM state machine when the kernel reported a ring
 # port's MRP_Test frames lost or back, which from CHK_RO blocked its
-# secondary port for good (a hole in the ring; seen in go-profinet's
-# TestMRPAuto). Proposed upstream: https://github.com/microchip-ung/mrp/pull/4;
+# secondary port for good (a hole in the ring, in a ring of MRAs).
+# Proposed upstream: https://github.com/microchip-ung/mrp/pull/4;
 # drop the fix when upstream has it (the patch then no longer
 # applies). A candidate build ("make candidate-mrp
 # CANDIDATE_SHA=<commit>") overrides UPSTREAM_SHA: the build says so on
