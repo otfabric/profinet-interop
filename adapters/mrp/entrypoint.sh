@@ -77,11 +77,11 @@ start_server() {
 
 case "$cmd" in
 version)
-	echo "mrp $(cat /licenses/mrp/COMMIT) (kernel bridge MRP)"
+	echo "mrp $(cat /licenses/mrp/COMMIT) with the fix $(cat /licenses/mrp/FIX_COMMIT) (kernel bridge MRP)"
 	;;
 print-capabilities)
 	cat <<'JSON'
-{"schemaVersion":"1.0","adapter":"mrp","implementation":"microchip-ung/mrp","version":"v1.2+","license":"GPL-2.0","roles":["mrp-node"],
+{"schemaVersion":"1.0","adapter":"mrp","implementation":"microchip-ung/mrp","version":"v1.2+fix","license":"GPL-2.0","roles":["mrp-node"],
  "features":{"mrm":true,"mrc":true,"mra":true,"interconnection":false,"recoveryProfiles":["200","500"],"kernelMRP":true,
    "requires":"a host kernel with CONFIG_BRIDGE_MRP and without CONFIG_NET_SWITCHDEV"},
  "upstream":{"name":"microchip-ung/mrp","version":"v1.2","revision":"177717ee893d5ccc6e31147b1b8a720c9b798b81","independentEngine":true}}
