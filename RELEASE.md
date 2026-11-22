@@ -37,6 +37,36 @@ Tags are immutable. A fix is a new version.
 
 ---
 
+## v0.9.1
+
+**Date:** 2026-11-22
+**Previous release:** v0.9.0
+
+## Summary
+
+The `mrp` image (microchip-ung/mrp) is built with one fix. The fix is
+proposed upstream in https://github.com/microchip-ung/mrp/pull/4. Contract
+1.3 and every other adapter are unchanged.
+
+## Changes
+
+### Fixed
+
+- **`mrp`**: an MRA that gave way to a better manager could stay an MRC
+  with its secondary port blocked, which leaves a hole in the ring.
+  - The cause is in `mrp_port_ring_open` in `state_machine.c`. When the
+    kernel reported one ring port's MRP_Test frames lost or back, the node
+    ran the MRM state machine even in the MRC role. From `CHK_RO`, that
+    blocked the port while the MRC state stayed `PT_IDLE`.
+  - go-profinet's TestMRPAuto failed on it intermittently.
+  - The image now applies commit `ee224a1` of
+    https://github.com/boeboe/mrp on top of the upstream pin `177717e`. The
+    patch is in the image at `/licenses/mrp/fix.patch`.
+  - `version` and `print-capabilities` name the fix.
+  - The fix is to be dropped when upstream has it.
+
+---
+
 ## v0.9.0
 
 **Date:** 2026-11-15

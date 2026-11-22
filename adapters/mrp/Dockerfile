@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 # mrp (microchip-ung/mrp, GPL-2.0): Microchip's MRP daemon (MRM, MRC, MRA)
 # for the Linux bridge's MRP support, with libcfm of microchip-ung/cfm
-# (GPL-2.0), built unmodified. The kernel does the ring work (test frames,
+# (GPL-2.0), with one fix (FIX_SHA, below). The kernel does the ring work (test frames,
 # port states, MRP forwarding): it needs a host kernel with
 # CONFIG_BRIDGE_MRP and, for a software bridge, without
 # CONFIG_NET_SWITCHDEV (with switchdev built in, the kernel refuses an MRP
@@ -11,13 +11,22 @@
 # two ring ports, driven by mrp_server.
 #
 # UPSTREAM_SHA is the mrp commit (master after v1.2: CMake 4 fixes),
-# CFM_SHA the cfm commit. A candidate build ("make candidate-mrp
+# CFM_SHA the cfm commit. FIX_SHA is one commit on top of UPSTREAM_SHA in
+# FIX_REPO, applied as a patch: an MRA that gave way to a better manager
+# (now an MRC) ran the MRM state machine when the kernel reported a ring
+# port's MRP_Test frames lost or back, which from CHK_RO blocked its
+# secondary port for good (a hole in the ring, in a ring of MRAs).
+# Proposed upstream: https://github.com/microchip-ung/mrp/pull/4;
+# drop the fix when upstream has it (the patch then no longer
+# applies). A candidate build ("make candidate-mrp
 # CANDIDATE_SHA=<commit>") overrides UPSTREAM_SHA: the build says so on
 # stderr. Built locally, never published.
 FROM debian:bookworm-20251020-slim@sha256:78d2f66e0fec9e5a39fb2c72ea5e052b548df75602b5215ed01a17171529f706 AS build
 ARG UPSTREAM_VERSION=v1.2
 ARG UPSTREAM_SHA=177717ee893d5ccc6e31147b1b8a720c9b798b81
 ARG CFM_SHA=7a50f4adcccf2d2e910816ea6d78446fea8fe7d8
+ARG FIX_REPO=https://github.com/boeboe/mrp.git
+ARG FIX_SHA=ee224a15af9c715fab2103c6089c371c219d7ad1
 RUN apt-get update && apt-get install -y --no-install-recommends \
         ca-certificates git cmake make gcc libc6-dev pkg-config \
         libnl-3-dev libnl-genl-3-dev libev-dev libmnl-dev \
@@ -38,13 +47,17 @@ RUN git init cfm && cd cfm \
     && install -D cfm_netlink.h /usr/local/include/cfm_netlink.h
 RUN git init mrp && cd mrp \
     && git remote add origin https://github.com/microchip-ung/mrp.git \
-    && git fetch --depth 1 origin "${UPSTREAM_SHA}" && git checkout -q FETCH_HEAD
+    && git fetch --depth 1 origin "${UPSTREAM_SHA}" && git checkout -q FETCH_HEAD \
+    && git remote add fix "${FIX_REPO}" && git fetch --depth 2 fix "${FIX_SHA}" \
+    && git diff "${FIX_SHA}~1" "${FIX_SHA}" > /tmp/fix.patch && git apply /tmp/fix.patch \
+    && mkdir -p /out/licenses/mrp && cp /tmp/fix.patch /out/licenses/mrp/fix.patch
 WORKDIR /src/mrp
 RUN cmake -B build -S . && make -C build \
     && install -D build/mrp_server /out/mrp_server && install -D build/mrp /out/mrp \
     && install -D LICENSE /out/licenses/mrp/LICENSE \
     && install -D /src/cfm/LICENSE /out/licenses/cfm/LICENSE \
     && echo "${UPSTREAM_SHA}" > /out/licenses/mrp/COMMIT \
+    && echo "${FIX_SHA}" > /out/licenses/mrp/FIX_COMMIT \
     && echo "${CFM_SHA}" > /out/licenses/cfm/COMMIT
 
 FROM debian:bookworm-20251020-slim@sha256:78d2f66e0fec9e5a39fb2c72ea5e052b548df75602b5215ed01a17171529f706

@@ -18,7 +18,7 @@ licence files under `/licenses/` in the image.
 | tshark (Wireshark) 4.0.17 | GPL-2.0-or-later | Debian bookworm | no |
 | Net-SNMP 5.9.3 (Debian bookworm package `snmp` 5.9.3+dfsg-2+deb12u1) | Net-SNMP's BSD-style licences (CMU/UCD, Networks Associates, Sun, Sparta, Cisco, Fabasoft, ...: `/licenses/net-snmp/copyright`) | Debian bookworm | yes (none is published) |
 | umrp v4.0 `fb193eac1a2df51fe42e19d4ea36bb0157bda09f` (Rodolfo Giometti; a fork of microchip-ung/mrp) | GPL-2.0 | https://github.com/giometti/umrp | no: build it locally (`make image-umrp`) |
-| microchip-ung/mrp `177717ee893d5ccc6e31147b1b8a720c9b798b81` (after v1.2) | GPL-2.0 | https://github.com/microchip-ung/mrp | no: build it locally (`make image-mrp`) |
+| microchip-ung/mrp `177717ee893d5ccc6e31147b1b8a720c9b798b81` (after v1.2), with the fix `ee224a15af9c715fab2103c6089c371c219d7ad1` of boeboe/mrp (the patch is in the image: `/licenses/mrp/fix.patch`) | GPL-2.0 | https://github.com/microchip-ung/mrp, https://github.com/boeboe/mrp | no: build it locally (`make image-mrp`) |
 | microchip-ung/cfm `7a50f4adcccf2d2e910816ea6d78446fea8fe7d8` (libcfm_netlink, linked by umrp and mrp) | GPL-2.0 | https://github.com/microchip-ung/cfm | no |
 | Debian, Python and Rust base images | their respective licences | Docker Hub | — |
 
