@@ -14,7 +14,7 @@ licence files under `/licenses/` in the image.
 | pnio-rs v0.1.0 `798500c1bf3726a1bf015c43f39c6ae2a2d55b28` | MIT OR Apache-2.0 | https://github.com/core-engineering/pnio-rs | yes (none is published) |
 | profinet-py 0.6.6 | GPL-3.0-only, or a commercial licence | PyPI | no |
 | pnio-dcp 1.2.0 | MIT, © 2020-2023 Codewerk GmbH | PyPI (sha256 pinned) | yes (none is published) |
-| scapy 2.6.1 | GPL-2.0-only | PyPI | no |
+| scapy 2.8.0 | GPL-2.0-only | PyPI | no |
 | tshark (Wireshark) 4.0.17 | GPL-2.0-or-later | Debian bookworm | no |
 | Net-SNMP 5.9.3 (Debian bookworm package `snmp` 5.9.3+dfsg-2+deb12u1) | Net-SNMP's BSD-style licences (CMU/UCD, Networks Associates, Sun, Sparta, Cisco, Fabasoft, ...: `/licenses/net-snmp/copyright`) | Debian bookworm | yes (none is published) |
 | umrp v4.0 `fb193eac1a2df51fe42e19d4ea36bb0157bda09f` (Rodolfo Giometti; a fork of microchip-ung/mrp) | GPL-2.0 | https://github.com/giometti/umrp | no: build it locally (`make image-umrp`) |

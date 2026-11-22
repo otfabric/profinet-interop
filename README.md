@@ -24,7 +24,7 @@ results the [interoperability matrix](docs/MATRIX.md) is generated from.
 | `pnio-rs` | [pnio-rs](https://github.com/core-engineering/pnio-rs) | v0.1.0 | MIT OR Apache-2.0 | IO-Device (Rust) | IO-Controller, DCP requester |
 | `profinet-py` | [profinet-py](https://github.com/f0rw4rd/profinet-py) | 0.6.6 | GPL-3.0-only or commercial | IO-Controller, DCP tool (Python) | IO-Device, DCP responder |
 | `pnio-dcp` | [pnio-dcp](https://gitlab.com/pyshacks/pnio_dcp) | 1.2.0 | MIT | DCP tool (Python) | DCP responder |
-| `scapy` | [scapy](https://scapy.net) contrib pnio | 2.6.1 | GPL-2.0-only | decoder | every capture |
+| `scapy` | [scapy](https://scapy.net) contrib pnio | 2.8.0 | GPL-2.0-only | decoder | every capture |
 | `tshark` | Wireshark tshark | 4.0.17 (Debian) | GPL-2.0-or-later | decoder | every capture |
 | `netsnmp` | [Net-SNMP](https://www.net-snmp.org) command-line manager | 5.9.3 (Debian) | BSD-style | SNMP manager (C) | SNMP agent of the IO-Device |
 | `umrp` | [umrp](https://github.com/giometti/umrp) with this repository's bridge ifdriver | v4.0 | GPL-2.0 | MRP ring node, MRM, MRC or MRA (C, user space); any Linux kernel | MRP manager, client and automatic manager in a ring |

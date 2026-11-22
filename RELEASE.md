@@ -37,6 +37,35 @@ Tags are immutable. A fix is a new version.
 
 ---
 
+## v0.9.2
+
+**Date:** 2026-11-22
+**Previous release:** v0.9.1
+
+## Summary
+
+Pins moved to the latest upstream: scapy 2.8.0, and new digests for the
+`debian:trixie-slim` and `golang:1.27.2-trixie` base images of the
+`profinet-interop-otfabric` image. Contract 1.3 is unchanged.
+
+## Changes
+
+### Changed
+
+- **`scapy`**: 2.6.1 → 2.8.0 (PyPI).
+  - The PROFINET contrib layers it uses are the same: `pnio.py` is
+    unchanged, and `pnio_dcp.py` only drops a `compat.orb` call.
+  - Both known differences still hold: no MRP dissector, and no DCP DHCP
+    block class.
+  - Their evidence links in `tests/known-differences.tsv` now point at
+    2.8.0 (`e2e35c0`).
+- **Base images of `own/go-profinet`**: `debian:trixie-slim` →
+  `sha256:a72b4433de1c…` and `golang:1.27.2-trixie` →
+  `sha256:476679348749…`. These are the same tags at new digests, and
+  `versions.yaml` `base_images` matches.
+
+---
+
 ## v0.9.1
 
 **Date:** 2026-11-22
