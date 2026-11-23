@@ -37,6 +37,61 @@ Tags are immutable. A fix is a new version.
 
 ---
 
+## v0.12.1
+
+**Date:** 2026-11-23
+**Previous release:** v0.12.0
+
+## Summary
+
+The matrix is regenerated from go-profinet's run with the three checks
+`TestPnetAPI` gained after v0.12.0's matrix was made. Their stable IDs
+are already in v0.12.0. The run has 267 pass, 0 fail, 6 n/a and 15 peer
+deviations. Nothing else changed: no image, adapter, stable ID or
+contract change (contract 1.4).
+
+## Changes
+
+### Changed
+
+- **Matrix** (docs/MATRIX.md, matrix/results.json,
+  matrix/interop-result-v1.json): regenerated from the Interop and Kernel
+  MRP workflows of go-profinet run 45278328978 (2026-11-23).
+  - **Revision.** The run tested PR #115 at 97f3d34. That commit is
+    v0.22.1 plus `TestPnetAPI` and otfnode's `API@` record addresses. The
+    matrix records `sut` v0.22.1-4-g97f3d34.
+  - **Harness.** `interopVersion` 0.12.0 and `gitSha` 5df5a27 name the
+    profinet-interop that produced the results. This release changes only
+    the matrix, so its images are those of v0.12.0.
+  - **Merging the two workflows:** as in v0.11.1 and v0.12.0. The MRP
+    scenarios of `mrp` come from the Kernel MRP job, and the Interop job's
+    n/a placeholders for them were dropped.
+- **Comparison with v0.12.0's matrix (285 rows, now 288).** Rows were
+  compared by stable ID.
+  - **Removed rows:** none.
+  - **Outcome changes:** none.
+  - **Added (3, all pass):**
+    - `pnetapi.inputs-of-the-submodule-in-api-0x4e01-iops-good-changing`:
+      the IO module's input in API 0x4E01 (slot 1, subslot 1). Its IOPS is
+      good and its data changed while the AR ran (40 distinct values; p-net's
+      sample application counts it up).
+    - `pnetapi.tshark-fields-records-123-and-124-in-api-0x4e01-slot-1-subslot-1`:
+      tshark decodes API 0x4E01, slot 1, subslot 1 in every request and
+      response of the records written and read.
+    - `pnetapi.tshark-fields-connect-request-names-apis-0-and-0x4e01`:
+      the Connect request names APIs 0 and 0x4E01.
+
+### Added
+
+Nothing.
+
+### Breaking
+
+None. The result files keep schema 1.0 and contract 1.4. Consumers that
+read the matrix see three more pass rows and the new `sut`.
+
+---
+
 ## v0.12.0
 
 **Date:** 2026-11-23

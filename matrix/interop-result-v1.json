@@ -1,7 +1,7 @@
 {
  "contractVersion": "1.4",
- "finishedAt": "2026-11-23T21:48:31+00:00",
- "gitSha": "d8182c029172ae9c81ec32c709b1e83fe5e43d83",
+ "finishedAt": "2026-11-23T22:35:33+00:00",
+ "gitSha": "5df5a278fa6cd2065183f061627ae02b7a169735",
  "host": {
   "arch": "unrecorded",
   "os": "unrecorded"
@@ -10,8 +10,8 @@
   {
    "independent": false,
    "name": "go-profinet",
-   "revision": "1d2b17de8df144d650e6b90cb565c5f0a9c0e40f",
-   "version": "v0.22.2-0.20261123213324-1d2b17de8df1"
+   "revision": "97f3d34e7ee1a17fd1b281da1dc815577644c758",
+   "version": "v0.22.1-4-g97f3d34"
   },
   {
    "independent": true,
@@ -454,7 +454,7 @@
    "feature": "MRA: umrp MRA as a client keeps taking the manager role back",
    "id": "mrpauto.umrp.go-profinet-best.mra-umrp-mra-as-a-client-keeps-taking-the-manager-role-back",
    "outcome": "known-difference",
-   "reason": "20 role changes on n2 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_test) and reclaims the role after TSTNRmax intervals; seen with a umrp manager too",
+   "reason": "18 role changes on n2 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_test) and reclaims the role after TSTNRmax intervals; seen with a umrp manager too",
    "roles": {
     "peer": "umrp",
     "sut": "go-profinet",
@@ -551,7 +551,7 @@
    "feature": "MRA: umrp MRA as a client keeps taking the manager role back",
    "id": "mrpauto.umrp.peer-best.mra-umrp-mra-as-a-client-keeps-taking-the-manager-role-back",
    "outcome": "known-difference",
-   "reason": "14 role changes on n3 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_test) and reclaims the role after TSTNRmax intervals; seen with a umrp manager too",
+   "reason": "16 role changes on n3 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_test) and reclaims the role after TSTNRmax intervals; seen with a umrp manager too",
    "roles": {
     "peer": "umrp",
     "sut": "go-profinet",
@@ -1731,6 +1731,18 @@
   },
   {
    "durationMs": 0,
+   "feature": "Inputs of the submodule in API 0x4E01 (slot 1, subslot 1): IOPS good, one octet, changing while the AR runs",
+   "id": "pnetapi.inputs-of-the-submodule-in-api-0x4e01-iops-good-changing",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetapi"
+  },
+  {
+   "durationMs": 0,
    "feature": "Echo module (API 0) returns our outputs next to a submodule of API 0x4E01",
    "id": "pnetapi.echo-module-api-0-returns-our-outputs",
    "outcome": "pass",
@@ -1772,6 +1784,30 @@
    "roles": {
     "peer": "tshark",
     "sut": "go-profinet"
+   },
+   "suite": "pnetapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark fields: records 123 and 124 written and read in API 0x00004e01, slot 1, subslot 1",
+   "id": "pnetapi.tshark-fields-records-123-and-124-in-api-0x4e01-slot-1-subslot-1",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark fields: the Connect request names APIs 0x00000000 and 0x00004e01",
+   "id": "pnetapi.tshark-fields-connect-request-names-apis-0-and-0x4e01",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
    },
    "suite": "pnetapi"
   },
@@ -3487,13 +3523,13 @@
   }
  ],
  "schemaVersion": "1.0",
- "startedAt": "2026-11-23T21:48:31+00:00",
+ "startedAt": "2026-11-23T22:35:33+00:00",
  "summary": {
   "fail": 0,
   "infra-error": 0,
   "known-difference": 15,
   "not-tested": 0,
-  "pass": 264,
+  "pass": 267,
   "unsupported": 6
  },
  "waivers": [
