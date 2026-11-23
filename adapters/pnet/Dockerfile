@@ -12,7 +12,9 @@
 #  * the Ethernet speed check of Connect is skipped, because veth reports
 #    10 Gbit/s, for which p-net has no MAU type (it would refuse Connect);
 #  * -Werror is removed so that a current GCC builds it.
-# Nothing of p-net's behaviour on the wire is changed. The image variant
+# Nothing of the p-net stack's behaviour on the wire is changed. The stack
+# is built with two APIs (PNET_MAX_API=2), and one patch of the sample
+# application, below, passes each slot's API to its I/O calls. The image variant
 # built with --build-arg ACCEPT_IOSAR=1 also accepts the device access AR
 # (ARType 0x0006), which profinet-py uses for acyclic access.
 #
@@ -51,8 +53,18 @@ RUN grep -q 'return (pf_pdport_is_a_fast_port_in_use (net)) ? 0 : -1;' src/devic
     && if [ "${ACCEPT_IOSAR}" = 1 ]; then \
          sed -i 's/if (ar_type == PF_ART_IOCAR_SINGLE)/if ((ar_type == PF_ART_IOCAR_SINGLE) || (ar_type == PF_ART_IOSAR))/' src/device/pf_cmdev.c; \
        fi
+# The sample application passes API 0 to every I/O call (its initial IOPS
+# and IOCS, and its cyclic data), whatever API the controller plugged the
+# module in, so an AR with a submodule of another API never gets to
+# ApplicationReady (pnet_application_ready refuses: no IOPS set for that
+# subslot). It now passes the API each slot was plugged in, as
+# app_exp_module_ind received it. The stack is not changed; the build fails
+# if the sample's code no longer matches.
+RUN f=samples/pn_dev/sampleapp_common.c \
+    && perl -0pi -e 's/(APP_GSDML_API|app->main_api\.api_id),(\s*)(p_)?subslot->slot_nbr,/app_slot_api[$3subslot->slot_nbr],$2$3subslot->slot_nbr,/g; s/(   ret = pnet_plug_module \(net, api, slot, module_ident\);\n)/$1   if (ret == 0)\n   {\n      app_slot_api[slot] = api; \/* profinet-interop: the API of the slot *\/\n   }\n/; s/(#include "sampleapp_common.h"\n)/$1\n\/* profinet-interop: the API each slot was plugged in. *\/\nstatic uint32_t app_slot_api[PNET_MAX_SLOTS];\n/' "$f" \
+    && test "$(grep -c 'app_slot_api\[' "$f")" = 7
 RUN cmake -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF \
-        -DPNET_MAX_AR=2 -DPNET_MAX_SLOTS=8 -DPNET_MAX_SUBSLOTS=4 -DPNET_MAX_PHYSICAL_PORTS=1 \
+        -DPNET_MAX_AR=2 -DPNET_MAX_API=2 -DPNET_MAX_SLOTS=8 -DPNET_MAX_SUBSLOTS=4 -DPNET_MAX_PHYSICAL_PORTS=1 \
         -DLOG_LEVEL=${LOG_LEVEL} -DPNET_LOG=ON -DPF_CPM_LOG=ON -DPF_PPM_LOG=ON -DPF_DCP_LOG=ON -DPF_RPC_LOG=ON -DPF_ALARM_LOG=ON -DPF_LLDP_LOG=ON \
     && cmake --build build --target pn_dev -j"$(nproc)" \
     && install -D build/pn_dev /out/pn_dev \

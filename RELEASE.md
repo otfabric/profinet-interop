@@ -37,6 +37,49 @@ Tags are immutable. A fix is a new version.
 
 ---
 
+## v0.12.0
+
+**Date:** 2026-11-23
+**Previous release:** v0.11.1
+
+## Summary
+
+The p-net image serves a second API, so go-profinet can be tested against
+an independent device with a submodule in API 0x4E01. That makes records,
+APIData, RealIdentificationData and cyclic data in a non-zero API part of
+the matrix. The contract is unchanged (1.4).
+
+## Changes
+
+### Added
+
+- **Stable IDs** (matrix/ids.tsv): 14 for go-profinet's `TestPnetAPI`
+  (suite `pnetapi`).
+- **Waiver** (tests/known-differences.tsv):
+  `pnet-read-unknown-api-no-status`. p-net answers a Read in an API it
+  does not have with an RPC response without NDR data, so no PNIOStatus
+  (`pf_cmrpc_rm_read_ind`, ea5e554).
+
+### Changed
+
+- **p-net image** (adapters/pnet/Dockerfile):
+  - built with `PNET_MAX_API=2` (the default is 1);
+  - one patch of the sample application: its I/O calls pass the API each
+    slot was plugged in instead of API 0. Without it, an AR with a
+    submodule of another API never reaches ApplicationReady.
+
+  The stack is unchanged. The build fails if the sample's code no longer
+  matches the patch. The API-0 scenarios are unaffected: go-profinet's
+  `TestPnetController` passes against the new image.
+- **Matrix**: regenerated from go-profinet's run with `TestPnetAPI` (see
+  below).
+
+### Breaking
+
+None. The image's behaviour in API 0 is unchanged; the contract is 1.4.
+
+---
+
 ## v0.11.1
 
 **Date:** 2026-11-23

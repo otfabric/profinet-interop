@@ -61,6 +61,27 @@ records, process and diagnosis alarms (its button 2), Release.
   and NACKed the alarm until p-net aborted the AR).
 - Does not process DCE/RPC ACK packets ("Unknown packet_type 7"); go-profinet
   marks its PNIO calls idempotent, as controllers do, and sends none.
+- **Serves a second API** when built with `PNET_MAX_API=2` (since v0.12.0;
+  the default is 1). Its Connect creates every API the controller expects
+  (`pf_cmdev.c`), and its Read and Write check that the request's API is
+  one of them. go-profinet's `TestPnetAPI` connects with the IO module in
+  API 0x4E01 and the rest in API 0. In that test, records are written and
+  read in API 0x4E01, APIData and RealIdentificationData list both APIs,
+  and cyclic data runs on both.
+  - **Patched sample application.** The sample application passes API 0
+    to every I/O call, whatever API the module was plugged in. With a
+    submodule of another API, its initial IOPS fail and
+    `pnet_application_ready` refuses. The image patches the sample to pass
+    each slot's API (Dockerfile). The stack is not changed.
+  - **Records looked up by slot only.** The sample application keys its
+    records by slot and subslot, not by API. The stack checks only that
+    the API exists, so a Read in API 0 of a subslot plugged in API 0x4E01
+    is answered with that subslot's data.
+  - **Empty response to an unknown API** (`pnet-read-unknown-api-no-status`).
+    A Read in an API p-net does not have is answered with an RPC response
+    without NDR data and no PNIOStatus, which tshark reports as malformed.
+    `pf_cmrpc_rm_read_ind` sets invalid area/API (0xB4), but only the
+    branch of a valid request writes the PNIOStatus.
 
 ### pnio-rs (IO-Device)
 

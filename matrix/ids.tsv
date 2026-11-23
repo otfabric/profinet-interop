@@ -136,6 +136,20 @@ TestPnetAlarms	Process alarm received and acknowledged	pnetalarms.process-alarm-
 TestPnetAlarms	Diagnosis alarm received and acknowledged	pnetalarms.diagnosis-alarm-received-and-acknowledged
 TestPnetAlarms	p-net confirms the AlarmAck	pnetalarms.p-net-confirms-the-alarmack
 TestPnetAlarms	AR survives the alarms	pnetalarms.ar-survives-the-alarms
+TestPnetAPI	Connect with a submodule in API 0x4E01 (two APIs in the expected configuration and the IOCRs), PrmEnd, ApplicationReady	pnetapi.connect-with-a-submodule-in-api-0x4e01-prmend-applicationready
+TestPnetAPI	Parameter write before PrmEnd in API 0x4E01, read back in API 0x4E01	pnetapi.parameter-write-before-prmend-in-api-0x4e01-read-back
+TestPnetAPI	Write record in Data in API 0x4E01, read back	pnetapi.write-record-in-data-in-api-0x4e01-read-back
+TestPnetAPI	APIData (0xF821) by ReadImplicit decoded: APIs 0 and 0x4E01	pnetapi.apidata-0xf821-by-readimplicit-decoded-apis-0-and-0x4e01
+TestPnetAPI	APIData (0xF821) in the AR decoded: APIs 0 and 0x4E01	pnetapi.apidata-0xf821-in-the-ar-decoded-apis-0-and-0x4e01
+TestPnetAPI	RealIdentificationData for the AR (0xE001) decoded: the IO module in API 0x4E01, the DAP and the echo module in API 0	pnetapi.realidentificationdata-for-the-ar-0xe001-decoded
+TestPnetAPI	RealIdentificationData for API 0x4E01 (0xF000) decoded: the IO module alone	pnetapi.realidentificationdata-for-api-0x4e01-0xf000-decoded
+TestPnetAPI	Cyclic data with submodules of two APIs	pnetapi.cyclic-data-with-submodules-of-two-apis
+TestPnetAPI	Echo module (API 0) returns our outputs next to a submodule of API 0x4E01	pnetapi.echo-module-api-0-returns-our-outputs
+TestPnetAPI	Release ends the AR at p-net	pnetapi.release-ends-the-ar-at-p-net
+TestPnetAPI	scapy decode pnet-api.pcap	pnetapi.scapy-decode-pnet-api-pcap
+TestPnetAPI	tshark check pnet-api.pcap	pnetapi.tshark-check-pnet-api-pcap
+TestPnetAPI	Read in an API the device does not have (0x4E02)	pnetapi.read-in-an-api-the-device-does-not-have-0x4e02
+TestPnetAPI	Read in an API the device does not have (0x4E02): refused	pnetapi.read-in-an-api-the-device-does-not-have-0x4e02-refused
 TestPnetConfigurationMismatch	Unexpected module in slot 2: p-net plugs it (no ModuleDiff), the AR runs	pnetconfigurationmismatch.unexpected-module-in-slot-2-p-net-plugs-it-no-modulediff-the-ar
 TestPnetConfigurationMismatch	Model of another DeviceID: the controller refuses the device	pnetconfigurationmismatch.model-of-another-deviceid-the-controller-refuses-the-device
 TestPnetController	DCP Identify by name, Connect, PrmEnd, ApplicationReady (RT_CLASS_1 legacy)	pnetcontroller.dcp-identify-by-name-connect-prmend-applicationready-rt-class-1
