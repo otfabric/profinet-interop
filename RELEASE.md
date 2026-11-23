@@ -37,6 +37,74 @@ Tags are immutable. A fix is a new version.
 
 ---
 
+## v0.11.1
+
+**Date:** 2026-11-23
+**Previous release:** v0.11.0
+
+## Summary
+
+The matrix is regenerated from go-profinet v0.22.0's interop run against
+profinet-interop v0.11.0. It replaces the v0.8.1 results of 2026-11-12.
+The run has 252 pass, 0 fail, 6 n/a and 14 peer deviations. Nothing else
+changed: no image, adapter, stable ID or contract change (contract 1.4).
+
+## Changes
+
+### Changed
+
+- **Matrix** (docs/MATRIX.md, matrix/results.json,
+  matrix/interop-result-v1.json): regenerated from the Interop and Kernel
+  MRP workflows of go-profinet run 45200308175 (2026-11-23).
+  - **Revision.** The run tested PR #109 at
+    417e5130dcd18ee109f8089d50326964946f9e1f. That commit's tree (033544e)
+    is the tree of the v0.22.0 release commit e7313fc. The matrix records
+    `sut` v0.22.0 at 417e513.
+  - **Harness.** `interopVersion` 0.11.0 and `gitSha` 55504fc name the
+    profinet-interop that produced the results. This release changes only
+    the matrix, so its images are those of v0.11.0.
+  - **Implementations.** scapy is 2.8.0, the version pinned since v0.10.0.
+    The old matrix recorded 2.6.1. Every other peer revision is unchanged.
+  - **Merging the two workflows.** The Interop job has no MRP-capable
+    kernel, so the MRP scenarios of the kernel-only peer `mrp` come only
+    from the Kernel MRP job. Those scenarios are TestMRPAuto/mrp (both
+    variants), TestMRPOtfClient/mrp, TestMRPOtfManager/mrp and
+    TestMRPRingFaults/mrp. The Interop job's n/a placeholders for them
+    ("the Docker host's kernel does not accept an MRP instance") were
+    dropped. The previous matrix was built the same way.
+- **Comparison with the previous matrix (268 rows, now 272).** Rows were
+  compared by test, peer and feature, and by stable ID.
+  - **Duplicates:** none.
+  - **Removed rows or stable IDs:** none. Every historical scenario is still
+    present, including all 31 pass and 1 n/a of `mrp`.
+  - **Outcome changes:** none. The same 6 rows are n/a and the same 14 rows
+    are peer deviations.
+  - **Added (4, all pass)**, from features of go-profinet v0.21.0 and
+    v0.22.0 whose stable IDs came with profinet-interop v0.10.0 and
+    v0.11.0:
+    - `pnetcontroller.apidata-0xf821-in-the-ar-decoded`
+    - `pnetcontroller.apidata-0xf821-by-readimplicit-decoded`
+    - `codecdecoders.tshark-fields-codecs-pcap-apidata-apis`
+    - `codecdecoders.tshark-fields-codecs-pcap-profile-record-write`
+  - **Detail changes in classified rows:** only the measured count in the
+    two `umrp-mra-takes-manager-back` peer deviations. TestMRPAuto/umrp has
+    two variants: go-profinet-best went from 20 to 12 role changes in 3 s,
+    and peer-best from 12 to 14. These are counts of a timing-dependent
+    behaviour. The deviation and its evidence are unchanged.
+  - **Waiver evidence:** the scapy links point at the pinned 2.8.0 source
+    (e2e35c0). They no longer point at 2.6.1.
+
+### Added
+
+Nothing.
+
+### Breaking
+
+None. The result files keep schema 1.0 and contract 1.4. Consumers that
+read the matrix see four more pass rows and the new `sut`.
+
+---
+
 ## v0.11.0
 
 **Date:** 2026-11-23

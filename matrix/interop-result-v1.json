@@ -1,7 +1,7 @@
 {
- "contractVersion": "1.3",
- "finishedAt": "2026-11-12T22:06:02+00:00",
- "gitSha": "cf5182200b180d695166baf8304e111170ada627",
+ "contractVersion": "1.4",
+ "finishedAt": "2026-11-23T16:58:57+00:00",
+ "gitSha": "55504fc32d3f460486a341b30cba419dfc3e4be4",
  "host": {
   "arch": "unrecorded",
   "os": "unrecorded"
@@ -10,8 +10,8 @@
   {
    "independent": false,
    "name": "go-profinet",
-   "revision": "8822e05cae1e11513e6cf42bde9f4d4ef49f73f8",
-   "version": "v0.8.1"
+   "revision": "417e5130dcd18ee109f8089d50326964946f9e1f",
+   "version": "v0.22.0"
   },
   {
    "independent": true,
@@ -57,7 +57,7 @@
    "independent": true,
    "license": "GPL-2.0-only",
    "name": "scapy",
-   "version": "2.6.1"
+   "version": "2.8.0"
   },
   {
    "independent": true,
@@ -73,7 +73,7 @@
    "version": "v4.0"
   }
  ],
- "interopVersion": "0.8.0",
+ "interopVersion": "0.11.0",
  "repository": "otfabric/profinet-interop",
  "reproduce": "PROFINET_INTEROP_RESULTS=dir make -C ../go-profinet interop && make matrix RESULTS=dir SUT_VERSION=<version>",
  "results": [
@@ -120,6 +120,30 @@
    "outcome": "pass",
    "roles": {
     "peer": "tshark",
+    "sut": "go-profinet"
+   },
+   "suite": "codecdecoders"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark fields codecs.pcap: APIData (0xF821) NumberOfAPIs 2, APIs 0x00000000 and 0x00004e01",
+   "id": "codecdecoders.tshark-fields-codecs-pcap-apidata-apis",
+   "outcome": "pass",
+   "roles": {
+    "peer-1": "tshark",
+    "peer-2": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "codecdecoders"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark fields codecs.pcap: Write of profile record 0xB600 in API 0x00004e01, slot 1, subslot 2, RecordDataLength 16, its 16 octets as profile user data",
+   "id": "codecdecoders.tshark-fields-codecs-pcap-profile-record-write",
+   "outcome": "pass",
+   "roles": {
+    "peer-1": "tshark",
+    "peer-2": "scapy",
     "sut": "go-profinet"
    },
    "suite": "codecdecoders"
@@ -430,7 +454,7 @@
    "feature": "MRA: umrp MRA as a client keeps taking the manager role back",
    "id": "mrpauto.umrp.go-profinet-best.mra-umrp-mra-as-a-client-keeps-taking-the-manager-role-back",
    "outcome": "known-difference",
-   "reason": "20 role changes on n2 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_test) and reclaims the role after TSTNRmax intervals; seen with a umrp manager too",
+   "reason": "12 role changes on n2 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_test) and reclaims the role after TSTNRmax intervals; seen with a umrp manager too",
    "roles": {
     "peer": "umrp",
     "sut": "go-profinet",
@@ -527,7 +551,7 @@
    "feature": "MRA: umrp MRA as a client keeps taking the manager role back",
    "id": "mrpauto.umrp.peer-best.mra-umrp-mra-as-a-client-keeps-taking-the-manager-role-back",
    "outcome": "known-difference",
-   "reason": "12 role changes on n3 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_test) and reclaims the role after TSTNRmax intervals; seen with a umrp manager too",
+   "reason": "14 role changes on n3 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_test) and reclaims the role after TSTNRmax intervals; seen with a umrp manager too",
    "roles": {
     "peer": "umrp",
     "sut": "go-profinet",
@@ -1793,6 +1817,30 @@
    "durationMs": 0,
    "feature": "ReadImplicit of I&M0 (no AR)",
    "id": "pnetcontroller.readimplicit-of-i-m0-no-ar",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetcontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "APIData (0xF821) by ReadImplicit (no AR) decoded: API 0",
+   "id": "pnetcontroller.apidata-0xf821-by-readimplicit-decoded",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetcontroller"
+  },
+  {
+   "durationMs": 0,
+   "feature": "APIData (0xF821) in the AR decoded: API 0",
+   "id": "pnetcontroller.apidata-0xf821-in-the-ar-decoded",
    "outcome": "pass",
    "roles": {
     "peer": "pnet",
@@ -3283,24 +3331,24 @@
   }
  ],
  "schemaVersion": "1.0",
- "startedAt": "2026-11-12T22:06:02+00:00",
+ "startedAt": "2026-11-23T16:58:57+00:00",
  "summary": {
   "fail": 0,
   "infra-error": 0,
   "known-difference": 14,
   "not-tested": 0,
-  "pass": 248,
+  "pass": 252,
   "unsupported": 6
  },
  "waivers": [
   {
-   "evidence": "https://github.com/secdev/scapy/blob/8e08cbf759de6709a5b4af6bea3655d293129bb4/scapy/contrib/pnio.py#L117-L118",
+   "evidence": "https://github.com/secdev/scapy/blob/e2e35c07bce2f40e7513e1b29a6d300d5329dbc3/scapy/contrib/pnio.py#L117-L118",
    "id": "scapy-no-mrp-dissector",
    "reproduced": true,
    "scope": "decoder@scapy"
   },
   {
-   "evidence": "https://github.com/secdev/scapy/blob/8e08cbf759de6709a5b4af6bea3655d293129bb4/scapy/contrib/pnio_dcp.py#L486-L528",
+   "evidence": "https://github.com/secdev/scapy/blob/e2e35c07bce2f40e7513e1b29a6d300d5329dbc3/scapy/contrib/pnio_dcp.py#L485-L527",
    "id": "scapy-no-dcp-dhcp-block",
    "reproduced": true,
    "scope": "decoder@scapy"
