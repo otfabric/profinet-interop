@@ -1,7 +1,7 @@
 {
- "contractVersion": "1.4",
- "finishedAt": "2026-11-23T22:35:33+00:00",
- "gitSha": "5df5a278fa6cd2065183f061627ae02b7a169735",
+ "contractVersion": "1.5",
+ "finishedAt": "2026-11-23T23:13:52+00:00",
+ "gitSha": "e5b6dcce1f5aa6e40cbe482384cf740fe4b1f0c7",
  "host": {
   "arch": "unrecorded",
   "os": "unrecorded"
@@ -10,8 +10,8 @@
   {
    "independent": false,
    "name": "go-profinet",
-   "revision": "97f3d34e7ee1a17fd1b281da1dc815577644c758",
-   "version": "v0.22.1-4-g97f3d34"
+   "revision": "a1d1b9b16333aae0966868745783f48a2ec7200b",
+   "version": "v0.22.1-2-ga1d1b9b"
   },
   {
    "independent": true,
@@ -73,7 +73,7 @@
    "version": "v4.0"
   }
  ],
- "interopVersion": "0.12.0",
+ "interopVersion": "0.13.0",
  "repository": "otfabric/profinet-interop",
  "reproduce": "PROFINET_INTEROP_RESULTS=dir make -C ../go-profinet interop && make matrix RESULTS=dir SUT_VERSION=<version>",
  "results": [
@@ -454,7 +454,7 @@
    "feature": "MRA: umrp MRA as a client keeps taking the manager role back",
    "id": "mrpauto.umrp.go-profinet-best.mra-umrp-mra-as-a-client-keeps-taking-the-manager-role-back",
    "outcome": "known-difference",
-   "reason": "18 role changes on n2 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_test) and reclaims the role after TSTNRmax intervals; seen with a umrp manager too",
+   "reason": "10 role changes on n2 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_test) and reclaims the role after TSTNRmax intervals; seen with a umrp manager too",
    "roles": {
     "peer": "umrp",
     "sut": "go-profinet",
@@ -551,7 +551,7 @@
    "feature": "MRA: umrp MRA as a client keeps taking the manager role back",
    "id": "mrpauto.umrp.peer-best.mra-umrp-mra-as-a-client-keeps-taking-the-manager-role-back",
    "outcome": "known-difference",
-   "reason": "16 role changes on n3 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_test) and reclaims the role after TSTNRmax intervals; seen with a umrp manager too",
+   "reason": "15 role changes on n3 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_test) and reclaims the role after TSTNRmax intervals; seen with a umrp manager too",
    "roles": {
     "peer": "umrp",
     "sut": "go-profinet",
@@ -2937,6 +2937,198 @@
   },
   {
    "durationMs": 0,
+   "feature": "Read a record of a submodule in API 0x4E01: its default",
+   "id": "profinetpyapi.read-a-record-of-a-submodule-in-api-0x4e01-its-default",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Write a record of a submodule in API 0x4E01, read back",
+   "id": "profinetpyapi.write-a-record-of-a-submodule-in-api-0x4e01-read-back",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Read of that record in API 0 refused: invalid area/API (0xB4)",
+   "id": "profinetpyapi.read-of-that-record-in-api-0-refused-invalid-area-api",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Read in an API the device does not have (0x4E02) refused: invalid area/API (0xB4)",
+   "id": "profinetpyapi.read-in-an-api-the-device-does-not-have-0x4e02-refused",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "APIData (0xF821) read by profinet-py: APIs 0 and 0x4E01",
+   "id": "profinetpyapi.apidata-0xf821-read-by-profinet-py-apis-0-and-0x4e01",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "RealIdentificationData for API 0x4E01 (0xF000) read by profinet-py: slot 3 alone",
+   "id": "profinetpyapi.realidentificationdata-for-api-0x4e01-0xf000-slot-3-alone",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Slot discovery by profinet-py (0xF000 in API 0): API 0's slots, not slot 3",
+   "id": "profinetpyapi.slot-discovery-0xf000-in-api-0-api-0-slots-only",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "GSDML with a submodule in API 0x4E01, written by go-profinet, parsed by profinet-py; cyclic AR (IOCARSingle) established",
+   "id": "profinetpyapi.gsdml-with-a-submodule-in-api-0x4e01-parsed-cyclic-ar",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Cyclic inputs of the submodule in API 0x4E01 at profinet-py",
+   "id": "profinetpyapi.cyclic-inputs-of-the-submodule-in-api-0x4e01-at-profinet-py",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Cyclic outputs from profinet-py at the device, in API 0x4E01 (slot 3) and API 0 (slot 2)",
+   "id": "profinetpyapi.cyclic-outputs-from-profinet-py-at-the-device-api-0x4e01-and-0",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "The device received the write in API 0x4E01",
+   "id": "profinetpyapi.the-device-received-the-write-in-api-0x4e01",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode profinet-py-api.pcap",
+   "id": "profinetpyapi.scapy-decode-profinet-py-api-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark: PNIO-CM \"Trailing stray characters\"",
+   "id": "profinetpyapi.tshark-pnio-cm-trailing-stray-characters",
+   "outcome": "known-difference",
+   "reason": "profinet-py writes I&M1 with BlockLength 58 and two padding octets; the standard block is 56 octets (tshark flags the extra octets of its Write request)",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyapi",
+   "waiver": "profinet-py-im1-block-length"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark check profinet-py-api.pcap",
+   "id": "profinetpyapi.tshark-check-profinet-py-api-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "tshark",
+    "sut": "go-profinet"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark fields: profinet-py's Connect request names APIs 0x00000000 and 0x00004e01",
+   "id": "profinetpyapi.tshark-fields-connect-request-names-apis-0-and-0x4e01",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark fields: record 0x0011 read and written in API 0x00004e01, slot 3, subslot 1; the refused reads in APIs 0 and 0x00004e02",
+   "id": "profinetpyapi.tshark-fields-record-0x0011-in-api-0x4e01-refused-in-0-and-0x4e02",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
    "feature": "DCP discovery by profinet-py",
    "id": "profinetpycontroller.dcp-discovery-by-profinet-py",
    "outcome": "pass",
@@ -3523,13 +3715,13 @@
   }
  ],
  "schemaVersion": "1.0",
- "startedAt": "2026-11-23T22:35:33+00:00",
+ "startedAt": "2026-11-23T23:13:52+00:00",
  "summary": {
   "fail": 0,
   "infra-error": 0,
-  "known-difference": 15,
+  "known-difference": 16,
   "not-tested": 0,
-  "pass": 267,
+  "pass": 282,
   "unsupported": 6
  },
  "waivers": [
