@@ -37,6 +37,46 @@ Tags are immutable. A fix is a new version.
 
 ---
 
+## v0.13.0
+
+**Date:** 2026-11-23
+**Previous release:** v0.12.1
+
+## Summary
+
+The profinet-py adapter reads and writes records of any API, so
+go-profinet's IO-Device can be tested against an independent controller
+with a submodule in API 0x4E01. Contract 1.5 adds the two options. The
+matrix is unchanged; it is regenerated from go-profinet's run with
+`TestProfinetPyAPI` before the release (see below).
+
+## Changes
+
+### Added
+
+- **profinet-py adapter** (adapters/profinet-py/adapter.py): `controller
+  --write [API@]SLOT:SUBSLOT:INDEX:HEX` and `--read
+  [API@]SLOT:SUBSLOT:INDEX`, run in the order given after slot discovery
+  and before the cyclic AR, through profinet-py's own `read` and `write`
+  with their `api` argument. profinet-py is unchanged.
+- **Contract 1.5** (docs/CONTAINER_CONTRACT.md): the two options; steps
+  `write SPEC` and `read SPEC`.
+- **Stable IDs** (matrix/ids.tsv): 16 for go-profinet's `TestProfinetPyAPI`
+  (suite `profinetpyapi`).
+
+### Changed
+
+- **Waiver** `profinet-py-im1-block-length` covers `TestProfinetPyAPI`
+  too: its capture carries the same I&M1 write.
+- docs/INTEROPERABILITY.md: profinet-py's support of non-zero APIs, and
+  its slot discovery that reads API 0 only.
+
+### Breaking
+
+None. Contract 1.5 adds options; a 1.4 consumer sees no change.
+
+---
+
 ## v0.12.1
 
 **Date:** 2026-11-23
