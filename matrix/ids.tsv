@@ -7,6 +7,7 @@ TestCodecDecoders	scapy decode codecs.pcap	codecdecoders.scapy-decode-codecs-pca
 TestCodecDecoders	scapy decode codecs.pcap: MRP frames not dissected	codecdecoders.scapy-decode-codecs-pcap-mrp-frames-not-dissected
 TestCodecDecoders	tshark check codecs.pcap	codecdecoders.tshark-check-codecs-pcap
 TestCodecDecoders	tshark fields codecs.pcap: APIData (0xF821) NumberOfAPIs 2, APIs 0x00000000 and 0x00004e01	codecdecoders.tshark-fields-codecs-pcap-apidata-apis
+TestCodecDecoders	tshark fields codecs.pcap: Write of profile record 0xB600 in API 0x00004e01, slot 1, subslot 2, RecordDataLength 16, its 16 octets as profile user data	codecdecoders.tshark-fields-codecs-pcap-profile-record-write
 TestDCPDHCPDecoders	DCP DHCP blocks (client ID from MAC, arbitrary client ID, control) and IP set by DHCP in Identify/Get responses, Get and Set requests encoded (go-profinet)	dcpdhcpdecoders.dcp-dhcp-blocks-client-id-from-mac-arbitrary-client-id-control
 TestDCPDHCPDecoders	DHCP options and IP BlockInfo parsed back (go-profinet)	dcpdhcpdecoders.dhcp-options-and-ip-blockinfo-parsed-back-go-profinet
 TestDCPDHCPDecoders	scapy: DCP option 3 (DHCP) blocks	dcpdhcpdecoders.scapy-dcp-option-3-dhcp-blocks

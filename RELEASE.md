@@ -37,6 +37,39 @@ Tags are immutable. A fix is a new version.
 
 ---
 
+## v0.11.0
+
+**Date:** 2026-11-23
+**Previous release:** v0.10.0
+
+## Summary
+
+A stable ID for go-profinet's check of a Write of a record in the profile
+index range 0xB000-0xBFFF, as tshark decodes it. No image, adapter or
+contract change (contract 1.4).
+
+## Changes
+
+### Added
+
+- **Stable ID** (matrix/ids.tsv)
+  `codecdecoders.tshark-fields-codecs-pcap-profile-record-write`: the
+  values tshark's `fields` decodes from go-profinet's Write of record
+  0xB600 in API 0x4E01 (API, slot, subslot, index, RecordDataLength 16),
+  with a display filter that matches the frame only when its last 16
+  octets are the record's data, which Wireshark's dissector shows as user
+  data of the profile range. It is wire-format evidence only: no image
+  here accepts such a record (p-net hands the application only indexes
+  up to 0x7FFF).
+
+### Not changed
+
+- The images, the adapters and the contract (1.4).
+- The committed matrix (docs/MATRIX.md, matrix/results.json) is still the
+  one from go-profinet v0.8.1; it does not hold the new check.
+
+---
+
 ## v0.10.0
 
 **Date:** 2026-11-23
