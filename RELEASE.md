@@ -71,8 +71,11 @@ the matrix. The contract is unchanged (1.4).
   The stack is unchanged. The build fails if the sample's code no longer
   matches the patch. The API-0 scenarios are unaffected: go-profinet's
   `TestPnetController` passes against the new image.
-- **Matrix**: regenerated from go-profinet's run with `TestPnetAPI` (see
-  below).
+- **Matrix**: regenerated from go-profinet PR #115 at 1d2b17d (v0.22.1
+  with `TestPnetAPI`) against this release's images, Interop and Kernel
+  MRP run 45270931304. 285 rows: 264 pass, 0 fail, 6 n/a, 15 peer
+  deviations (v0.11.1: 272 rows, 252 pass, 14 peer deviations). The 13
+  new rows are p-net's: 12 pass and the deviation above.
 
 ### Breaking
 
