@@ -6,6 +6,7 @@ TestCodecDecoders	MRP Test, TopologyChange, LinkDown, LinkUp; PTCP DelayReq, Del
 TestCodecDecoders	scapy decode codecs.pcap	codecdecoders.scapy-decode-codecs-pcap
 TestCodecDecoders	scapy decode codecs.pcap: MRP frames not dissected	codecdecoders.scapy-decode-codecs-pcap-mrp-frames-not-dissected
 TestCodecDecoders	tshark check codecs.pcap	codecdecoders.tshark-check-codecs-pcap
+TestCodecDecoders	tshark fields codecs.pcap: APIData (0xF821) NumberOfAPIs 2, APIs 0x00000000 and 0x00004e01	codecdecoders.tshark-fields-codecs-pcap-apidata-apis
 TestDCPDHCPDecoders	DCP DHCP blocks (client ID from MAC, arbitrary client ID, control) and IP set by DHCP in Identify/Get responses, Get and Set requests encoded (go-profinet)	dcpdhcpdecoders.dcp-dhcp-blocks-client-id-from-mac-arbitrary-client-id-control
 TestDCPDHCPDecoders	DHCP options and IP BlockInfo parsed back (go-profinet)	dcpdhcpdecoders.dhcp-options-and-ip-blockinfo-parsed-back-go-profinet
 TestDCPDHCPDecoders	scapy: DCP option 3 (DHCP) blocks	dcpdhcpdecoders.scapy-dcp-option-3-dhcp-blocks
@@ -160,6 +161,8 @@ TestPnetController	p-net reports read	pnetcontroller.p-net-reports-read
 TestPnetController	Release ends the AR at p-net	pnetcontroller.release-ends-the-ar-at-p-net
 TestPnetController	scapy decode pnet-controller.pcap	pnetcontroller.scapy-decode-pnet-controller-pcap
 TestPnetController	tshark check pnet-controller.pcap	pnetcontroller.tshark-check-pnet-controller-pcap
+TestPnetController	APIData (0xF821) by ReadImplicit (no AR) decoded: API 0	pnetcontroller.apidata-0xf821-by-readimplicit-decoded
+TestPnetController	APIData (0xF821) in the AR decoded: API 0	pnetcontroller.apidata-0xf821-in-the-ar-decoded
 TestPnetDCP	DCP Identify all	pnetdcp.dcp-identify-all
 TestPnetDCP	DCP Get (all blocks)	pnetdcp.dcp-get-all-blocks
 TestPnetDCP	DCP Set NameOfStation (temporary)	pnetdcp.dcp-set-nameofstation-temporary

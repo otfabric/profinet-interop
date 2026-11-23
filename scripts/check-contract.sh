@@ -5,8 +5,8 @@
 # one line, print-capabilities a capability document with the adapter's
 # name that is valid against schemas/capabilities.schema.json
 # (scripts/check-capabilities.py: schema version, roles, features, and since
-# contract 1.3 its upstream with independentEngine), and an unknown command
-# exits 2. Needs Python's jsonschema package (pip install jsonschema==4.26.0).
+# contract 1.3 its upstream with independentEngine), an unknown command
+# exits 2, and (contract 1.4) tshark's fields without arguments exits 2. Needs Python's jsonschema package (pip install jsonschema==4.26.0).
 #
 # Usage: scripts/check-contract.sh [TAG] [adapter...]   (default: every adapter)
 # Images: scripts/lib.sh's image_of (ADAPTER_IMAGE_<adapter> or profinet-interop-<adapter>:TAG).
@@ -32,6 +32,14 @@ for a in "${adapters[@]}"; do
 	code=$?
 	set -e
 	[ "$code" -eq 2 ] || { echo "$img: unknown command exits $code, not 2"; fail=1; }
+	if [ "$a" = tshark ]; then
+		# Contract 1.4: fields needs a file, a filter and a field.
+		set +e
+		docker run --rm "$img" fields >/dev/null 2>&1
+		code=$?
+		set -e
+		[ "$code" -eq 2 ] || { echo "$img: fields without arguments exits $code, not 2"; fail=1; }
+	fi
 	echo "$img: $v"
 done
 exit $fail
