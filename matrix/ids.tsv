@@ -260,6 +260,22 @@ TestProfinetPyController	Diagnosis alarm sent to profinet-py and acknowledged	pr
 TestProfinetPyController	scapy decode profinet-py-controller.pcap	profinetpycontroller.scapy-decode-profinet-py-controller-pcap
 TestProfinetPyController	tshark: PNIO-CM "Trailing stray characters"	profinetpycontroller.tshark-pnio-cm-trailing-stray-characters
 TestProfinetPyController	tshark check profinet-py-controller.pcap	profinetpycontroller.tshark-check-profinet-py-controller-pcap
+TestProfinetPyAPI	Read a record of a submodule in API 0x4E01: its default	profinetpyapi.read-a-record-of-a-submodule-in-api-0x4e01-its-default
+TestProfinetPyAPI	Write a record of a submodule in API 0x4E01, read back	profinetpyapi.write-a-record-of-a-submodule-in-api-0x4e01-read-back
+TestProfinetPyAPI	Read of that record in API 0 refused: invalid area/API (0xB4)	profinetpyapi.read-of-that-record-in-api-0-refused-invalid-area-api
+TestProfinetPyAPI	Read in an API the device does not have (0x4E02) refused: invalid area/API (0xB4)	profinetpyapi.read-in-an-api-the-device-does-not-have-0x4e02-refused
+TestProfinetPyAPI	APIData (0xF821) read by profinet-py: APIs 0 and 0x4E01	profinetpyapi.apidata-0xf821-read-by-profinet-py-apis-0-and-0x4e01
+TestProfinetPyAPI	RealIdentificationData for API 0x4E01 (0xF000) read by profinet-py: slot 3 alone	profinetpyapi.realidentificationdata-for-api-0x4e01-0xf000-slot-3-alone
+TestProfinetPyAPI	Slot discovery by profinet-py (0xF000 in API 0): API 0's slots, not slot 3	profinetpyapi.slot-discovery-0xf000-in-api-0-api-0-slots-only
+TestProfinetPyAPI	GSDML with a submodule in API 0x4E01, written by go-profinet, parsed by profinet-py; cyclic AR (IOCARSingle) established	profinetpyapi.gsdml-with-a-submodule-in-api-0x4e01-parsed-cyclic-ar
+TestProfinetPyAPI	Cyclic inputs of the submodule in API 0x4E01 at profinet-py	profinetpyapi.cyclic-inputs-of-the-submodule-in-api-0x4e01-at-profinet-py
+TestProfinetPyAPI	Cyclic outputs from profinet-py at the device, in API 0x4E01 (slot 3) and API 0 (slot 2)	profinetpyapi.cyclic-outputs-from-profinet-py-at-the-device-api-0x4e01-and-0
+TestProfinetPyAPI	The device received the write in API 0x4E01	profinetpyapi.the-device-received-the-write-in-api-0x4e01
+TestProfinetPyAPI	scapy decode profinet-py-api.pcap	profinetpyapi.scapy-decode-profinet-py-api-pcap
+TestProfinetPyAPI	tshark: PNIO-CM "Trailing stray characters"	profinetpyapi.tshark-pnio-cm-trailing-stray-characters
+TestProfinetPyAPI	tshark check profinet-py-api.pcap	profinetpyapi.tshark-check-profinet-py-api-pcap
+TestProfinetPyAPI	tshark fields: profinet-py's Connect request names APIs 0x00000000 and 0x00004e01	profinetpyapi.tshark-fields-connect-request-names-apis-0-and-0x4e01
+TestProfinetPyAPI	tshark fields: record 0x0011 read and written in API 0x00004e01, slot 3, subslot 1; the refused reads in APIs 0 and 0x00004e02	profinetpyapi.tshark-fields-record-0x0011-in-api-0x4e01-refused-in-0-and-0x4e02
 TestProfinetPyDCP	DCP Identify all	profinetpydcp.dcp-identify-all
 TestProfinetPyDCP	DCP Get name	profinetpydcp.dcp-get-name
 TestProfinetPyDCP	DCP Set NameOfStation	profinetpydcp.dcp-set-nameofstation

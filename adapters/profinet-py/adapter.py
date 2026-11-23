@@ -8,6 +8,7 @@ from one the implementation does not support.
   profinet-interop controller --station NAME [--iface eth0] [--gsdml FILE] [--reparam S:SS:IDX:HEX]...
                   [--rr N] [--duration S] [--timeout S] [--output SLOT:SUBSLOT:HEX]...
                   [--read-input SLOT:SUBSLOT]...
+                  [--write [API@]SLOT:SUBSLOT:INDEX:HEX]... [--read [API@]SLOT:SUBSLOT:INDEX]...
   profinet-interop dcp identify|get|set-name|set-ip|signal|reset
                   [--iface eth0] [--mac MAC] [--station NAME] [VALUE...]
   profinet-interop print-capabilities
@@ -50,6 +51,19 @@ def hexb(b):
     return b.hex() if isinstance(b, (bytes, bytearray)) else b
 
 
+def record_address(spec):
+    """[API@]SLOT:SUBSLOT:INDEX[:HEX] -> (api, slot, subslot, index, data)."""
+    api = 0
+    if "@" in spec:
+        a, spec = spec.split("@", 1)
+        api = int(a, 0)
+    parts = spec.split(":")
+    if len(parts) not in (3, 4):
+        raise ValueError(f"record address {spec!r}: want [API@]SLOT:SUBSLOT:INDEX[:HEX]")
+    data = bytes.fromhex(parts[3]) if len(parts) == 4 else None
+    return api, int(parts[0], 0), int(parts[1], 0), int(parts[2], 0), data
+
+
 def controller(args):
     from profinet import ProfinetDevice
     from profinet.gsdml import load_gsdml
@@ -86,6 +100,18 @@ def controller(args):
     step(report, "module-diff", lambda: str(dev.read_module_diff()))
     step(report, "diagnosis", lambda: str(dev.read_all_diagnosis()))
     step(report, "discover-slots", lambda: [str(s) for s in dev.discover_slots()])
+    # --write and --read (since contract 1.5), in the order given: records
+    # of any API, through profinet-py's read and write with its api argument.
+    for op, spec in args.records:
+        def rec(op=op, spec=spec):
+            api, slot, sub, idx, data = record_address(spec)
+            if op == "write":
+                if data is None:
+                    raise ValueError(f"--write {spec!r} has no data")
+                return dev.write(slot=slot, subslot=sub, index=idx, data=data, api=api)
+            return hexb(dev.read(slot=slot, subslot=sub, index=idx, api=api))
+
+        step(report, f"{op} {spec}", rec)
     if args.gsdml:
         alarms = []
         dev.on_alarm(lambda a: alarms.append(str(a)))
@@ -192,6 +218,10 @@ def main():
     c.add_argument("--timeout", type=float, default=10.0)
     c.add_argument("--output", action="append", default=[])
     c.add_argument("--read-input", action="append", default=[])
+    c.add_argument("--write", action="append", dest="records", default=[], type=lambda s: ("write", s),
+                   help="[API@]SLOT:SUBSLOT:INDEX:HEX written before the cyclic AR (since contract 1.5)")
+    c.add_argument("--read", action="append", dest="records", type=lambda s: ("read", s),
+                   help="[API@]SLOT:SUBSLOT:INDEX read before the cyclic AR (since contract 1.5)")
     c.add_argument("--reparam", action="append", default=[], help="SLOT:SUBSLOT:INDEX:HEX written between PrmBegin and PrmEnd once cyclic IO runs")
     d = sub.add_parser("dcp")
     d.add_argument("op")

@@ -110,6 +110,15 @@ and a cyclic IOCAR configured from the GSDML go-profinet generates.
 - `read_all_diagnosis` reads index 0xF000 (RealIdentificationData) and
   decodes it as diagnosis data; the entries it reports are artefacts.
 - Cyclic exchange in Python is reliable at 32 ms and above (its own note).
+- **Submodules of an API other than 0** (contract 1.5, `--write` and
+  `--read` with `API@`): its `read` and `write` take an API, its GSDML
+  loader reads `VirtualSubmoduleItem` `API`, and its Connect lists each
+  slot under its submodule's API in the expected configuration and the
+  IOCRs. Unmodified; go-profinet's `TestProfinetPyAPI` uses it against a
+  device with a submodule in API 0x4E01.
+- Its slot discovery (`discover_slots`) reads 0xF000 in API 0, which
+  Wireshark's index table names RealIdentificationData for one API, so it
+  lists API 0's slots only.
 
 ### pnio-dcp (DCP tool)
 

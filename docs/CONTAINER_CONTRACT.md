@@ -1,6 +1,10 @@
 # Container contract
 
-Version: **1.4** (`contract_version` in [versions.yaml](../versions.yaml))
+Version: **1.5** (`contract_version` in [versions.yaml](../versions.yaml))
+
+Version 1.5 adds the profinet-py controller's `--write` and `--read`:
+records of any API, slot, subslot and index, written and read in the
+order given.
 
 Version 1.4 adds the tshark command `fields`: the values tshark decodes
 for named fields, so that a consumer can check what a frame means, not
@@ -96,12 +100,15 @@ Adapter-specific commands of the device role:
 profinet-interop controller --station NAME [--iface eth0] [--gsdml FILE]
         [--rr N] [--duration S] [--timeout S] [--output SLOT:SUBSLOT:HEX]... [--read-input SLOT:SUBSLOT]...
         [--reparam SLOT:SUBSLOT:INDEX:HEX]...
+        [--write [API@]SLOT:SUBSLOT:INDEX:HEX]... [--read [API@]SLOT:SUBSLOT:INDEX]...
 ```
 
 Runs the scenario: DCP discovery, I&M0 to I&M4, an I&M1 write, a user record
 write and read (slot 2, subslot 1, index 0x0010), ReadImplicit of I&M0, a
-read of an unknown index, the ModuleDiffBlock, diagnosis, slot discovery and,
-with `--gsdml`, a cyclic AR built from the GSDML file, setting the outputs
+read of an unknown index, the ModuleDiffBlock, diagnosis, slot discovery,
+the records of `--write` and `--read` (since 1.5; steps `write SPEC` and
+`read SPEC`, in the order given, in API 0 when SPEC names none; a read's
+value is the record data in hex) and, with `--gsdml`, a cyclic AR built from the GSDML file, setting the outputs
 and reading the inputs; with `--reparam` (since 1.1), a re-parameterization
 of that AR after `--duration`: steps `prm-begin`, `reparam-write …`,
 `prm-end` and `reparam-application-ready` (the device's ApplicationReady,
