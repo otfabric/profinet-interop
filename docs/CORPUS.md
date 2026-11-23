@@ -34,6 +34,13 @@ that have a URL: 132 artifacts in 32 GitHub repositories pinned to commits
 zip archives). Candidates behind a
 login, an email form, JavaScript only or an unreachable host are left out.
 
+The first fetch (2026-11-23) fetched 189 of the 191 entries and recorded
+the SHA-256 of 190 and the 119 GSDML members of 59 archives: 249 GSDML
+files (130 plain files, 119 members), 244 distinct by content. It failed
+for two: `vendor-43e8ff6206bb` (Universal Robots) answered 403 and has no
+recorded hash, and `vendor-247472bd8c70` (Beckhoff) is a GSDX package
+without a `GSDML-*.xml` member.
+
 ## Fetching
 
 Downloading the corpus is the user's decision (licence and network
