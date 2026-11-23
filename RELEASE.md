@@ -45,9 +45,12 @@ Tags are immutable. A fix is a new version.
 ## Summary
 
 A GSDML corpus: a manifest of 191 public GSDML files and archives and a
-tool that downloads them into a local cache (docs/CORPUS.md). No vendor
-file is committed or published. Contract 1.3 and the images are
-unchanged.
+tool that downloads them into a local cache (docs/CORPUS.md); no vendor
+file is committed or published. Contract 1.4: tshark's `fields` command
+reports the values it decodes, so that a consumer can check what a frame
+says, not only that it is well formed. Stable IDs for go-profinet's
+APIData (index 0xF821) checks. The tshark image changes (the adapter
+script); the other images are unchanged.
 
 ## Changes
 
@@ -56,7 +59,8 @@ unchanged.
 - **`corpus/manifest.jsonl`**: 132 artifacts in 32 GitHub repositories
   (130 GSDML files, 2 zip archives), each pinned to a commit and verified
   by its git blob ID, and 59 open vendor downloads (58 zip archives),
-  verified by a SHA-256 recorded on the first fetch.
+  verified by a SHA-256 recorded on the first fetch: 58 have one, the
+  Universal Robots file (`vendor-43e8ff6206bb`) none, its URL answered 403.
 - **`corpus-fetch`** (`make corpus-fetch`, Go standard library only):
   downloads into `$XDG_CACHE_HOME/otfabric/gsdml-corpus`, verifies every
   artifact, extracts the GSDML members of archives with path and size
@@ -64,6 +68,22 @@ unchanged.
   that have none. Nothing runs it implicitly.
 - CI: the tool's tests (offline) and a check that no GSDML file is
   committed outside `adapters/`.
+- **Contract 1.4, `profinet-interop fields FILE.pcap FILTER FIELD...`**
+  (tshark): per frame that matches the display filter, every occurrence
+  of each field as tshark decodes it (docs/CONTAINER_CONTRACT.md). A
+  filter or field tshark does not know exits 2; `make contract` checks
+  that `fields` without arguments exits 2. A compatible addition.
+- **Stable IDs** (matrix/ids.tsv) for go-profinet's checks of APIData
+  (0xF821): p-net's answer outside and inside an AR
+  (`pnetcontroller.apidata-0xf821-by-readimplicit-decoded`,
+  `pnetcontroller.apidata-0xf821-in-the-ar-decoded`), and the APIs tshark
+  decodes from a two-API APIData block
+  (`codecdecoders.tshark-fields-codecs-pcap-apidata-apis`).
+
+### Not changed
+
+- The committed matrix (docs/MATRIX.md, matrix/results.json) is still the
+  one from go-profinet v0.8.1; it does not hold the new checks.
 
 ---
 

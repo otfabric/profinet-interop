@@ -1,6 +1,10 @@
 # Container contract
 
-Version: **1.3** (`contract_version` in [versions.yaml](../versions.yaml))
+Version: **1.4** (`contract_version` in [versions.yaml](../versions.yaml))
+
+Version 1.4 adds the tshark command `fields`: the values tshark decodes
+for named fields, so that a consumer can check what a frame means, not
+only that it is well formed.
 
 Version 1.3 adds the `upstream` object of the capability document: the
 stack behind the adapter and whether its protocol engine is independent
@@ -42,6 +46,7 @@ profinet-interop controller [flags]           # IO-Controller roles: one scenari
 profinet-interop dcp <operation> [flags]      # DCP tool roles: one operation, one report
 profinet-interop decode FILE.pcap             # decoder roles (scapy)
 profinet-interop check FILE.pcap              # decoder roles (tshark)
+profinet-interop fields FILE.pcap FILTER FIELD... # decoder roles (tshark, 1.4): decoded field values
 profinet-interop button2                      # pnet: press the sample application's button 2
 profinet-interop print-gsdml                  # pnio-rs: the device's GSDML
 profinet-interop node --role mrm|mrc|mra [flags]  # MRP ring node roles (umrp, mrp): run until SIGTERM
@@ -193,6 +198,25 @@ for, MRP and PTCP, read but not decoded (`notDissected`,
 `notDissectedCount`): those are a limit of the decoder, not evidence.
 `check` (tshark) reports the frames per protocol, the malformed frames and
 the expert infos of severity warning or error.
+
+`fields` (tshark, since 1.4) reports, for every frame that matches the
+display filter `FILTER`, every occurrence of each field `FIELD` (a tshark
+field name such as `pn_io.api`) in frame order, as tshark prints it
+(`0x00004e01` for a hexadecimal field). A field that occurs several times
+in a frame, the API of a read header and of the block that follows,
+lists every occurrence:
+
+```json
+{"schemaVersion":"1.0","adapter":"tshark","version":"4.0.17","filter":"pn_io.index == 0xf821",
+ "frames":[{"frame":17,"fields":{"pn_io.number_of_apis":["2"],"pn_io.api":["0x00000000","0x00000000","0x00004e01"]}}]}
+```
+
+A field without a value in a frame has an empty list; no matching frame
+gives an empty `frames`. A filter or field tshark does not know, a field
+name with a character other than letters, digits, `_`, `.` and `-`, a file
+it cannot read, or fewer than three arguments exit 2. Values are separated
+by commas inside tshark, so a field whose value contains one (a text
+field) is split: `fields` is for numeric fields.
 
 ## `print-capabilities`
 
