@@ -127,6 +127,14 @@ obtains the implementation from its source under its licence. The p-net
 tree used is the last complete public GPLv3 snapshot, older than the
 v1.0.2 security fixes: run it only on isolated test networks.
 
+## GSDML corpus
+
+`corpus/manifest.jsonl` lists 191 public GSDML files and archives (132 in 32
+GitHub repositories, pinned to commits, and 59 vendor downloads), with
+what verifies them; `make corpus-fetch` downloads them into a local cache,
+never into the repository, and a consumer tests its GSDML handling against
+that cache. See [docs/CORPUS.md](docs/CORPUS.md).
+
 ## Releases
 
 Tags `vX.Y.Z` are released by `.github/workflows/release.yml` from the
@@ -144,6 +152,7 @@ docs/                 container contract, interoperability notes, matrix
 matrix/results.json   the machine-readable matrix
 matrix/interop-result-v1.json  the matrix as the organisation's interop-result-v1 (stable IDs: matrix/ids.tsv, waivers: tests/known-differences.tsv)
 schemas/              interop-result-v1, and the capability document (capabilities.schema.json)
+corpus/               the GSDML corpus manifest and its fetch tool (docs/CORPUS.md; no vendor file)
 own/go-profinet/      OT Fabric's own stack behind the contract (published by hand, not released)
 scripts/              version check, latest upstream, matrix generation, release notes, smoke and cross-stack self-test
 tests/                cases of the self-test, known differences
