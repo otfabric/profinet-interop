@@ -53,7 +53,7 @@ the matrix. The contract is unchanged (1.4).
 
 ### Added
 
-- **Stable IDs** (matrix/ids.tsv): 14 for go-profinet's `TestPnetAPI`
+- **Stable IDs** (matrix/ids.tsv): 17 for go-profinet's `TestPnetAPI`
   (suite `pnetapi`).
 - **Waiver** (tests/known-differences.tsv):
   `pnet-read-unknown-api-no-status`. p-net answers a Read in an API it
