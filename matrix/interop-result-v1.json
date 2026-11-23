@@ -1,7 +1,7 @@
 {
  "contractVersion": "1.4",
- "finishedAt": "2026-11-23T16:58:57+00:00",
- "gitSha": "55504fc32d3f460486a341b30cba419dfc3e4be4",
+ "finishedAt": "2026-11-23T21:48:31+00:00",
+ "gitSha": "d8182c029172ae9c81ec32c709b1e83fe5e43d83",
  "host": {
   "arch": "unrecorded",
   "os": "unrecorded"
@@ -10,8 +10,8 @@
   {
    "independent": false,
    "name": "go-profinet",
-   "revision": "417e5130dcd18ee109f8089d50326964946f9e1f",
-   "version": "v0.22.0"
+   "revision": "1d2b17de8df144d650e6b90cb565c5f0a9c0e40f",
+   "version": "v0.22.2-0.20261123213324-1d2b17de8df1"
   },
   {
    "independent": true,
@@ -73,7 +73,7 @@
    "version": "v4.0"
   }
  ],
- "interopVersion": "0.11.0",
+ "interopVersion": "0.12.0",
  "repository": "otfabric/profinet-interop",
  "reproduce": "PROFINET_INTEROP_RESULTS=dir make -C ../go-profinet interop && make matrix RESULTS=dir SUT_VERSION=<version>",
  "results": [
@@ -454,7 +454,7 @@
    "feature": "MRA: umrp MRA as a client keeps taking the manager role back",
    "id": "mrpauto.umrp.go-profinet-best.mra-umrp-mra-as-a-client-keeps-taking-the-manager-role-back",
    "outcome": "known-difference",
-   "reason": "12 role changes on n2 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_test) and reclaims the role after TSTNRmax intervals; seen with a umrp manager too",
+   "reason": "20 role changes on n2 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_test) and reclaims the role after TSTNRmax intervals; seen with a umrp manager too",
    "roles": {
     "peer": "umrp",
     "sut": "go-profinet",
@@ -1632,6 +1632,162 @@
     "sut": "go-profinet"
    },
    "suite": "otfhellodecoders"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Connect with a submodule in API 0x4E01 (two APIs in the expected configuration and the IOCRs), PrmEnd, ApplicationReady",
+   "id": "pnetapi.connect-with-a-submodule-in-api-0x4e01-prmend-applicationready",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Parameter write before PrmEnd in API 0x4E01, read back in API 0x4E01",
+   "id": "pnetapi.parameter-write-before-prmend-in-api-0x4e01-read-back",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Write record in Data in API 0x4E01, read back",
+   "id": "pnetapi.write-record-in-data-in-api-0x4e01-read-back",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "APIData (0xF821) by ReadImplicit decoded: APIs 0 and 0x4E01",
+   "id": "pnetapi.apidata-0xf821-by-readimplicit-decoded-apis-0-and-0x4e01",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "APIData (0xF821) in the AR decoded: APIs 0 and 0x4E01",
+   "id": "pnetapi.apidata-0xf821-in-the-ar-decoded-apis-0-and-0x4e01",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "RealIdentificationData for the AR (0xE001) decoded: the IO module in API 0x4E01, the DAP and the echo module in API 0",
+   "id": "pnetapi.realidentificationdata-for-the-ar-0xe001-decoded",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "RealIdentificationData for API 0x4E01 (0xF000) decoded: the IO module alone",
+   "id": "pnetapi.realidentificationdata-for-api-0x4e01-0xf000-decoded",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Cyclic data with submodules of two APIs",
+   "id": "pnetapi.cyclic-data-with-submodules-of-two-apis",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Echo module (API 0) returns our outputs next to a submodule of API 0x4E01",
+   "id": "pnetapi.echo-module-api-0-returns-our-outputs",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Release ends the AR at p-net",
+   "id": "pnetapi.release-ends-the-ar-at-p-net",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode pnet-api.pcap",
+   "id": "pnetapi.scapy-decode-pnet-api-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "pnetapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark check pnet-api.pcap",
+   "id": "pnetapi.tshark-check-pnet-api-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "tshark",
+    "sut": "go-profinet"
+   },
+   "suite": "pnetapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Read in an API the device does not have (0x4E02)",
+   "id": "pnetapi.read-in-an-api-the-device-does-not-have-0x4e02",
+   "outcome": "known-difference",
+   "reason": "p-net answers with an RPC response without NDR data, no PNIOStatus (pf_cmrpc.c, pf_cmrpc_rm_read_ind: the invalid area/API branch, 0xB4, writes no response); go-profinet reports it as malformed: controller: read 19970/1/0x0001 index 0x007B: pnio: profinet: malformed: NDR response of 0 octets",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetapi",
+   "waiver": "pnet-read-unknown-api-no-status"
   },
   {
    "durationMs": 0,
@@ -3331,13 +3487,13 @@
   }
  ],
  "schemaVersion": "1.0",
- "startedAt": "2026-11-23T16:58:57+00:00",
+ "startedAt": "2026-11-23T21:48:31+00:00",
  "summary": {
   "fail": 0,
   "infra-error": 0,
-  "known-difference": 14,
+  "known-difference": 15,
   "not-tested": 0,
-  "pass": 252,
+  "pass": 264,
   "unsupported": 6
  },
  "waivers": [
@@ -3370,6 +3526,12 @@
    "id": "profinet-py-im1-block-length",
    "reproduced": true,
    "scope": "controller@profinet-py"
+  },
+  {
+   "evidence": "https://github.com/rtlabs-com/p-net/blob/ea5e5540b2be55c4dfadffda39b948632c104daa/src/device/pf_cmrpc.c#L2939-L2965",
+   "id": "pnet-read-unknown-api-no-status",
+   "reproduced": true,
+   "scope": "device@p-net"
   }
  ]
 }

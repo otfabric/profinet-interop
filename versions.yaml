@@ -5,7 +5,7 @@
 # builds them, make images); publishable: whether the licences would allow
 # it (not for GPL code).
 
-interop_version: "0.11.1"
+interop_version: "0.12.0"
 contract_version: "1.4"        # docs/CONTAINER_CONTRACT.md
 
 # Multi-arch index digests; scripts/check-versions.sh fails when an adapter
@@ -57,6 +57,7 @@ implementations:
       - "Connect skips the Ethernet speed check (veth reports 10 Gbit/s, which p-net cannot map to a MAU type)"
       - "-Werror removed (newer GCC)"
       - "optional build arg ACCEPT_IOSAR=1: accept ARType 0x0006 (image variant, not the default)"
+      - "built with PNET_MAX_API=2; the sample application's I/O calls pass the API each slot was plugged in, not API 0"
     published: false
     publishable: false
     note: >-
