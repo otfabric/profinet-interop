@@ -4,6 +4,7 @@
 
 .DEFAULT_GOAL := help
 
+.PHONY: corpus-test corpus-fetch
 .PHONY: help images image-% capabilities check-versions lint unittests contract matrix smoke interop print-adapters versions release-notes latest-upstream clean FORCE
 
 ADAPTERS := pnet pnio-rs profinet-py pnio-dcp scapy tshark umrp mrp netsnmp
@@ -100,6 +101,18 @@ candidate-%: FORCE ## Build one adapter on CANDIDATE_VERSION / CANDIDATE_SHA [/ 
 	@case " $(INTEROP_ADAPTERS) " in *" $* "*) echo "Cross-stack self-test:"; TAG=candidate scripts/interop.sh $(INTEROP_ADAPTERS) ;; esac
 
 FORCE:
+
+# ── GSDML corpus (docs/CORPUS.md) ─────────────────────────────────────────────
+# Fetching is never implicit: corpus-fetch downloads the files of
+# corpus/manifest.jsonl into CORPUS_CACHE (default: $XDG_CACHE_HOME/otfabric/gsdml-corpus).
+CORPUS_FLAGS ?=
+CORPUS_CACHE ?=
+
+corpus-test: ## Vet and test the corpus fetch tool (no network)
+	@cd corpus && go vet ./... && go test -race -count=1 ./...
+
+corpus-fetch: ## Download the GSDML corpus into the local cache (CORPUS_CACHE=dir, CORPUS_FLAGS="-record -only IDS")
+	@cd corpus && go run ./cmd/corpus-fetch -manifest manifest.jsonl $(if $(CORPUS_CACHE),-cache "$(abspath $(CORPUS_CACHE))") $(CORPUS_FLAGS)
 
 release-notes: ## Print the notes of VERSION=vX.Y.Z (default: the version versions.yaml names) from RELEASE.md
 	@scripts/release-notes.sh $(VERSION)

@@ -37,6 +37,36 @@ Tags are immutable. A fix is a new version.
 
 ---
 
+## v0.10.0
+
+**Date:** 2026-11-23
+**Previous release:** v0.9.2
+
+## Summary
+
+A GSDML corpus: a manifest of 191 public GSDML files and archives and a
+tool that downloads them into a local cache (docs/CORPUS.md). No vendor
+file is committed or published. Contract 1.3 and the images are
+unchanged.
+
+## Changes
+
+### Added
+
+- **`corpus/manifest.jsonl`**: 132 artifacts in 32 GitHub repositories
+  (130 GSDML files, 2 zip archives), each pinned to a commit and verified
+  by its git blob ID, and 59 open vendor downloads (58 zip archives),
+  verified by a SHA-256 recorded on the first fetch.
+- **`corpus-fetch`** (`make corpus-fetch`, Go standard library only):
+  downloads into `$XDG_CACHE_HOME/otfabric/gsdml-corpus`, verifies every
+  artifact, extracts the GSDML members of archives with path and size
+  limits, and writes `index.jsonl`; `-record` records the hashes of entries
+  that have none. Nothing runs it implicitly.
+- CI: the tool's tests (offline) and a check that no GSDML file is
+  committed outside `adapters/`.
+
+---
+
 ## v0.9.2
 
 **Date:** 2026-11-22

@@ -54,6 +54,25 @@ jobs:
             echo "::error::a target pushes an image"; exit 1
           fi
 
+  corpus:
+    name: Corpus fetch tool
+    runs-on: ubuntu-latest
+    needs: validate
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: corpus/go.mod
+      # Offline: the tests serve made-up files; nothing is downloaded.
+      - name: Vet and test
+        run: make corpus-test
+      - name: No vendor file is committed
+        run: |
+          if git ls-files | grep -iE '(^|/)gsdml-.*\.(xml|zip)$' | grep -v '^adapters/'; then
+            echo "::error::a GSDML file is committed (docs/CORPUS.md)"; exit 1
+          fi
+
   images:
     name: Build and contract (${{ matrix.arch }})
     runs-on: ${{ matrix.runner }}
