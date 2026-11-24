@@ -1,7 +1,7 @@
 {
  "contractVersion": "1.5",
- "finishedAt": "2026-11-23T23:13:52+00:00",
- "gitSha": "e5b6dcce1f5aa6e40cbe482384cf740fe4b1f0c7",
+ "finishedAt": "2026-11-24T00:35:44+00:00",
+ "gitSha": "2cbeb2d5248730cc64ea2a602e1c377b4ba92dc6",
  "host": {
   "arch": "unrecorded",
   "os": "unrecorded"
@@ -10,8 +10,8 @@
   {
    "independent": false,
    "name": "go-profinet",
-   "revision": "a1d1b9b16333aae0966868745783f48a2ec7200b",
-   "version": "v0.22.1-2-ga1d1b9b"
+   "revision": "18d3fdbeff72f0ed9fdd6e6b2687f8692db23eca",
+   "version": "v0.22.1-4-g18d3fdb"
   },
   {
    "independent": true,
@@ -73,7 +73,7 @@
    "version": "v4.0"
   }
  ],
- "interopVersion": "0.13.0",
+ "interopVersion": "0.14.0",
  "repository": "otfabric/profinet-interop",
  "reproduce": "PROFINET_INTEROP_RESULTS=dir make -C ../go-profinet interop && make matrix RESULTS=dir SUT_VERSION=<version>",
  "results": [
@@ -454,7 +454,7 @@
    "feature": "MRA: umrp MRA as a client keeps taking the manager role back",
    "id": "mrpauto.umrp.go-profinet-best.mra-umrp-mra-as-a-client-keeps-taking-the-manager-role-back",
    "outcome": "known-difference",
-   "reason": "10 role changes on n2 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_test) and reclaims the role after TSTNRmax intervals; seen with a umrp manager too",
+   "reason": "16 role changes on n2 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_test) and reclaims the role after TSTNRmax intervals; seen with a umrp manager too",
    "roles": {
     "peer": "umrp",
     "sut": "go-profinet",
@@ -551,7 +551,7 @@
    "feature": "MRA: umrp MRA as a client keeps taking the manager role back",
    "id": "mrpauto.umrp.peer-best.mra-umrp-mra-as-a-client-keeps-taking-the-manager-role-back",
    "outcome": "known-difference",
-   "reason": "15 role changes on n3 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_test) and reclaims the role after TSTNRmax intervals; seen with a umrp manager too",
+   "reason": "18 role changes on n3 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_test) and reclaims the role after TSTNRmax intervals; seen with a umrp manager too",
    "roles": {
     "peer": "umrp",
     "sut": "go-profinet",
@@ -1719,6 +1719,54 @@
   },
   {
    "durationMs": 0,
+   "feature": "RealIdentificationData for slot 1 in API 0x4E01 (0xC001) decoded: the IO module alone",
+   "id": "pnetapi.realidentificationdata-for-slot-1-in-api-0x4e01-0xc001-decoded",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "RealIdentificationData for subslot 1/1 in API 0x4E01 (0x8001) decoded: the IO module alone",
+   "id": "pnetapi.realidentificationdata-for-subslot-1-1-in-api-0x4e01-0x8001-decoded",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "RealIdentificationData in API 0 for slot 1 (0xC001), where API 0 has no submodule: answered with no record data",
+   "id": "pnetapi.realidentificationdata-in-api-0-for-slot-1-0xc001-no-record-data",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "RealIdentificationData in API 0 for subslot 1/1 (0x8001), where API 0 has no submodule: answered with no record data",
+   "id": "pnetapi.realidentificationdata-in-api-0-for-subslot-1-1-0x8001-no-record-data",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetapi"
+  },
+  {
+   "durationMs": 0,
    "feature": "Cyclic data with submodules of two APIs",
    "id": "pnetapi.cyclic-data-with-submodules-of-two-apis",
    "outcome": "pass",
@@ -1791,6 +1839,18 @@
    "durationMs": 0,
    "feature": "tshark fields: records 123 and 124 written and read in API 0x00004e01, slot 1, subslot 1",
    "id": "pnetapi.tshark-fields-records-123-and-124-in-api-0x4e01-slot-1-subslot-1",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark fields: the 0xC001 and 0x8001 requests in APIs 0x00004e01 and 0",
+   "id": "pnetapi.tshark-fields-0xc001-and-0x8001-requests-in-apis-0x4e01-and-0",
    "outcome": "pass",
    "roles": {
     "peer": "pnet",
@@ -3009,6 +3069,138 @@
   },
   {
    "durationMs": 0,
+   "feature": "RealIdentificationData for slot 3 in API 0x4E01 (0xC001) read by profinet-py: that slot's one submodule",
+   "id": "profinetpyapi.realidentificationdata-for-slot-3-in-api-0x4e01-0xc001",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "RealIdentificationData for subslot 3/1 in API 0x4E01 (0x8001) read by profinet-py: that submodule",
+   "id": "profinetpyapi.realidentificationdata-for-subslot-3-1-in-api-0x4e01-0x8001",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "RealIdentificationData for slot 3 in API 0 (0xC001): API 0 without a slot",
+   "id": "profinetpyapi.realidentificationdata-for-slot-3-in-api-0-0xc001-no-slot",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "RealIdentificationData for subslot 3/1 in API 0 (0x8001) refused: invalid area/API (0xB4)",
+   "id": "profinetpyapi.realidentificationdata-for-subslot-3-1-in-api-0-0x8001-refused",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Read profile record 0xB600 in API 0x4E01: its default",
+   "id": "profinetpyapi.read-profile-record-0xb600-in-api-0x4e01-its-default",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Write profile record 0xB600 in API 0x4E01, read back",
+   "id": "profinetpyapi.write-profile-record-0xb600-in-api-0x4e01-read-back",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Read of 0xB600 in API 0 refused: invalid area/API (0xB4)",
+   "id": "profinetpyapi.read-of-0xb600-in-api-0-refused-invalid-area-api-0xb4",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Read of 0xB600 in API 0x4E02 refused: invalid area/API (0xB4)",
+   "id": "profinetpyapi.read-of-0xb600-in-api-0x4e02-refused-invalid-area-api-0xb4",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Write of read-only profile record 0xB900 refused: access denied (0xB6)",
+   "id": "profinetpyapi.write-of-read-only-profile-record-0xb900-refused-access-denied-0xb6",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Write of 2 octets to 0xB600 (length 16) refused: write length (0xB1)",
+   "id": "profinetpyapi.write-of-2-octets-to-0xb600-length-16-refused-write-length-0xb1",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "After the refused requests: 0xB900 keeps its default, 0xB600 the value written",
+   "id": "profinetpyapi.after-the-refused-requests-0xb900-and-0xb600-unchanged",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
    "feature": "Slot discovery by profinet-py (0xF000 in API 0): API 0's slots, not slot 3",
    "id": "profinetpyapi.slot-discovery-0xf000-in-api-0-api-0-slots-only",
    "outcome": "pass",
@@ -3069,6 +3261,18 @@
   },
   {
    "durationMs": 0,
+   "feature": "The device received the write of 0xB600 and neither refused write",
+   "id": "profinetpyapi.the-device-received-the-write-of-0xb600-and-neither-refused-write",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
    "feature": "scapy decode profinet-py-api.pcap",
    "id": "profinetpyapi.scapy-decode-profinet-py-api-pcap",
    "outcome": "pass",
@@ -3119,6 +3323,30 @@
    "durationMs": 0,
    "feature": "tshark fields: record 0x0011 read and written in API 0x00004e01, slot 3, subslot 1; the refused reads in APIs 0 and 0x00004e02",
    "id": "profinetpyapi.tshark-fields-record-0x0011-in-api-0x4e01-refused-in-0-and-0x4e02",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark fields: profinet-py's Write of 0xB600 in API 0x00004e01, slot 3, subslot 1, RecordDataLength 16, its 16 octets as profile user data",
+   "id": "profinetpyapi.tshark-fields-write-of-0xb600-in-api-0x4e01-slot-3-subslot-1",
+   "outcome": "pass",
+   "roles": {
+    "peer": "profinet-py",
+    "sut": "go-profinet",
+    "sut-role": "IO-Device"
+   },
+   "suite": "profinetpyapi"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark fields: the 0xC001 and 0x8001 requests in APIs 0x00004e01 and 0",
+   "id": "profinetpyapi.tshark-fields-0xc001-and-0x8001-requests-in-apis-0x4e01-and-0",
    "outcome": "pass",
    "roles": {
     "peer": "profinet-py",
@@ -3715,13 +3943,13 @@
   }
  ],
  "schemaVersion": "1.0",
- "startedAt": "2026-11-23T23:13:52+00:00",
+ "startedAt": "2026-11-24T00:35:44+00:00",
  "summary": {
   "fail": 0,
   "infra-error": 0,
   "known-difference": 16,
   "not-tested": 0,
-  "pass": 282,
+  "pass": 301,
   "unsupported": 6
  },
  "waivers": [

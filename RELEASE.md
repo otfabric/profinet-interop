@@ -49,7 +49,8 @@ identification of a slot (0xC001) and a subslot (0x8001) in API 0x4E01
 and in API 0, and profile records (0xB600, 0xB900) of a submodule in API
 0x4E01 on go-profinet's device, read and written by profinet-py. No image,
 adapter or contract change (contract 1.5). The matrix is regenerated from
-go-profinet's run with the new scenarios before the release (see below).
+go-profinet's run with the new scenarios: 323 rows, 301 pass, 0 fail,
+6 n/a, 16 peer deviations.
 
 ## Changes
 
@@ -68,7 +69,13 @@ go-profinet's run with the new scenarios before the release (see below).
 - docs/INTEROPERABILITY.md: p-net answers an identification read that
   matches no submodule with a record of no data (`pf_put_real_ident_data`);
   profinet-py carries profile records as generic records.
-- **Matrix**: regenerated (see below).
+- **Matrix** (docs/MATRIX.md, matrix/results.json,
+  matrix/interop-result-v1.json): regenerated from the Interop and Kernel
+  MRP workflows of go-profinet run 45295645172 (2026-11-24), on PR #118 at
+  18d3fdb, against this release's images (2cbeb2d; the images are those
+  of v0.13.0). `sut` is v0.22.1-4-g18d3fdb.
+  - **Compared with v0.13.0's matrix** by stable ID (304 rows, now 323):
+    none removed, no outcome changed, 19 added, all pass.
 
 ### Breaking
 
