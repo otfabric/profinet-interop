@@ -37,6 +37,59 @@ Tags are immutable. A fix is a new version.
 
 ---
 
+## v0.15.0
+
+**Date:** unreleased
+**Previous release:** v0.14.0
+
+## Summary
+
+A separately identified p-net variant for controller-side profile
+records: `make image-pnet-profile` builds `profinet-interop-pnet-profile`,
+p-net extended by OT Fabric so that its stack gives the subslot profile
+indexes 0xB000-0xBFFF to the application and its sample keeps a 16-octet
+record 0xB600. Unmodified p-net refuses them, so the variant is not the
+reference and is not counted as independent: results against it show that
+a controller exchanges profile records with this extended stack, not how
+p-net handles them. The default p-net image and `make images` are
+unchanged.
+
+## Changes
+
+### Added
+
+- **Image variant** `profinet-interop-pnet-profile` (`make
+  image-pnet-profile`, adapters/pnet with `--build-arg
+  PROFILE_RECORDS=1`): `adapters/pnet/profile-records.sh` changes five
+  lines of the stack (`pf_cmrpc.c`, `pf_cmwrr.c`, `pf_fspm.c` twice,
+  `pf_cmrdr.c`; a Read Implicit, which has no AR, is not changed) and 19
+  of the sample; every substitution must match once or the build fails.
+  `PF_IDX_USER_MAX` and the other index classes are unchanged. Every p-net
+  image records `/licenses/p-net/VARIANT` and `CHANGES.diff` (the full
+  local diff of the tree).
+- **versions.yaml**: implementation `pnet-profile` (same tree as `pnet`).
+  `scripts/matrix-to-results.py` maps the peer "p-net, profile-records
+  variant" to it and marks it `independent: false`.
+- **Stable IDs** (matrix/ids.tsv): 18, for go-profinet's `TestPnetProfile`
+  (suite `pnetprofile`): 0xB600 written before PrmEnd and in Data in API
+  0x4E01 and read back; undeclared profile indexes 0xB000 and 0xBFFF and
+  a write of the wrong length refused by the application; 0x7FFF and
+  0xAFFF answered as unmodified p-net answers them; a Read Implicit of
+  0xB600 refused; tshark's addressing fields and payloads of every 0xB600
+  request and answer.
+
+### Changed
+
+- docs/INTEROPERABILITY.md: the variant and its evidence; the pinned tree
+  crashes on a Read Implicit of a user record (fixed upstream after it:
+  rtlabs-com/p-net #594, c752521) and of 0xC000.
+
+### Breaking
+
+None.
+
+---
+
 ## v0.14.0
 
 **Date:** 2026-11-24

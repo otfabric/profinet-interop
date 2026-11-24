@@ -66,6 +66,27 @@ implementations:
       image is not published. The tree predates the v1.0.2 fixes of
       CVE-2025-32396..32405: a lab oracle only.
 
+  pnet-profile:
+    status: implemented
+    upstream: "rt-labs p-net, locally extended by OT Fabric"
+    repository: "https://github.com/rtlabs-com/p-net"
+    revision: "ea5e5540b2be55c4dfadffda39b948632c104daa"   # the tree of pnet
+    license: "GPL-3.0-only (or commercial)"
+    language: "C"
+    roles: [device]
+    patches:
+      - "the patches of pnet"
+      - "adapters/pnet/profile-records.sh: the stack gives subslot profile indexes 0xB000-0xBFFF to the application, in an AR, as it does 0x0000-0x7FFF; the sample's Digital Input/Output submodule has a 16-octet record 0xB600"
+    published: false
+    publishable: false
+    note: >-
+      Built locally with make image-pnet-profile (profinet-interop-pnet-profile,
+      adapters/pnet with PROFILE_RECORDS=1). Not the reference p-net and not
+      counted as independent: its profile record handling is OT Fabric's.
+      Results against it show that a controller exchanges profile records
+      with this extended stack, not how p-net handles them (unmodified p-net
+      refuses them).
+
   pnio-rs:
     status: implemented
     upstream: "pnio-rs"

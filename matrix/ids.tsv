@@ -158,6 +158,24 @@ TestPnetAPI	RealIdentificationData for subslot 1/1 in API 0x4E01 (0x8001) decode
 TestPnetAPI	RealIdentificationData in API 0 for slot 1 (0xC001), where API 0 has no submodule: answered with no record data	pnetapi.realidentificationdata-in-api-0-for-slot-1-0xc001-no-record-data
 TestPnetAPI	RealIdentificationData in API 0 for subslot 1/1 (0x8001), where API 0 has no submodule: answered with no record data	pnetapi.realidentificationdata-in-api-0-for-subslot-1-1-0x8001-no-record-data
 TestPnetAPI	tshark fields: the 0xC001 and 0x8001 requests in APIs 0x00004e01 and 0	pnetapi.tshark-fields-0xc001-and-0x8001-requests-in-apis-0x4e01-and-0
+TestPnetProfile	Connect with profile record 0xB600 written before PrmEnd in API 0x4E01, PrmEnd, ApplicationReady	pnetprofile.connect-with-profile-record-0xb600-before-prmend-in-api-0x4e01
+TestPnetProfile	Profile record 0xB600 written at Connect, read back in API 0x4E01: the 16 octets written	pnetprofile.0xb600-written-at-connect-read-back-in-api-0x4e01
+TestPnetProfile	Profile index 0xB000 the submodule does not have: application read error (DE 80 A0 00)	pnetprofile.profile-index-0xb000-not-on-the-submodule-read-application-error
+TestPnetProfile	Profile index 0xBFFF the submodule does not have: application read error (DE 80 A0 00)	pnetprofile.profile-index-0xbfff-not-on-the-submodule-read-application-error
+TestPnetProfile	User index 0x7FFF the submodule does not have: application read error (DE 80 A0 00), as unmodified p-net answers	pnetprofile.user-index-0x7fff-not-on-the-submodule-read-application-error
+TestPnetProfile	Index 0xAFFF (I&M15): invalid index (DE 80 B0 0A), as unmodified p-net answers	pnetprofile.index-0xafff-im15-read-invalid-index
+TestPnetProfile	ReadImplicit of 0xB600 (no AR): invalid index (DE 80 B0 0A), not given to the application	pnetprofile.readimplicit-of-0xb600-invalid-index
+TestPnetProfile	Release ends the first AR at p-net	pnetprofile.release-ends-the-first-ar
+TestPnetProfile	Second Connect with 0xB600 before PrmEnd	pnetprofile.second-connect-with-0xb600-before-prmend
+TestPnetProfile	Profile record 0xB600 written in Data in API 0x4E01, read back: the 16 octets written	pnetprofile.0xb600-written-in-data-in-api-0x4e01-read-back
+TestPnetProfile	Profile record 0xB600 of the wrong length (2 octets): application write error (DF 80 A1 00)	pnetprofile.0xb600-of-the-wrong-length-write-application-error
+TestPnetProfile	Profile index 0xB000 the submodule does not have: application write error (DF 80 A1 00)	pnetprofile.profile-index-0xb000-not-on-the-submodule-write-application-error
+TestPnetProfile	Release ends the second AR at p-net	pnetprofile.release-ends-the-second-ar
+TestPnetProfile	scapy decode pnet-profile.pcap	pnetprofile.scapy-decode-pnet-profile-pcap
+TestPnetProfile	tshark check pnet-profile.pcap	pnetprofile.tshark-check-pnet-profile-pcap
+TestPnetProfile	tshark fields: every 0xB600 request and answer in API 0x00004e01, slot 1, subslot 1	pnetprofile.tshark-fields-0xb600-requests-and-answers-in-api-0x4e01-slot-1-subslot-1
+TestPnetProfile	tshark: 0xB600 Write requests of 16 octets: the first value at both Connects, the second in Data	pnetprofile.tshark-0xb600-write-requests-payloads
+TestPnetProfile	tshark: 0xB600 Read responses of 16 octets: the first value, then the second	pnetprofile.tshark-0xb600-read-responses-payloads
 TestPnetConfigurationMismatch	Unexpected module in slot 2: p-net plugs it (no ModuleDiff), the AR runs	pnetconfigurationmismatch.unexpected-module-in-slot-2-p-net-plugs-it-no-modulediff-the-ar
 TestPnetConfigurationMismatch	Model of another DeviceID: the controller refuses the device	pnetconfigurationmismatch.model-of-another-deviceid-the-controller-refuses-the-device
 TestPnetController	DCP Identify by name, Connect, PrmEnd, ApplicationReady (RT_CLASS_1 legacy)	pnetcontroller.dcp-identify-by-name-connect-prmend-applicationready-rt-class-1
