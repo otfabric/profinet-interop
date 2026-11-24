@@ -18,6 +18,16 @@
 # built with --build-arg ACCEPT_IOSAR=1 also accepts the device access AR
 # (ARType 0x0006), which profinet-py uses for acyclic access.
 #
+# The image variant built with --build-arg PROFILE_RECORDS=1 ("make
+# image-pnet-profile", profinet-interop-pnet-profile) is a locally extended
+# p-net, not the reference: profile-records.sh changes the stack so that the
+# subslot profile indexes 0xB000-0xBFFF are application records, as the
+# indexes 0x0000-0x7FFF are, and gives the sample's Digital Input/Output
+# submodule a 16-octet record 0xB600. Unmodified p-net refuses a Write of
+# 0xB600 (DF 80 B4 02). PF_IDX_USER_MAX and every other index stay as they
+# are; a Read Implicit of a profile index is not given to the application
+# (p-net has no AR for it there).
+#
 # UPSTREAM_SHA is the p-net commit. A candidate build ("make candidate-pnet
 # CANDIDATE_SHA=<commit>") overrides it: the build says so on stderr. Later
 # p-net trees are not GPL-complete (no ports), so a candidate may not build.
@@ -27,6 +37,7 @@ ARG DEBIAN=bookworm-20251020-slim@sha256:78d2f66e0fec9e5a39fb2c72ea5e052b548df75
 FROM debian:${DEBIAN} AS build
 ARG UPSTREAM_SHA=ea5e5540b2be55c4dfadffda39b948632c104daa
 ARG ACCEPT_IOSAR=0
+ARG PROFILE_RECORDS=0
 ARG LOG_LEVEL=INFO
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential cmake git ca-certificates && rm -rf /var/lib/apt/lists/*
@@ -63,13 +74,17 @@ RUN grep -q 'return (pf_pdport_is_a_fast_port_in_use (net)) ? 0 : -1;' src/devic
 RUN f=samples/pn_dev/sampleapp_common.c \
     && perl -0pi -e 's/(APP_GSDML_API|app->main_api\.api_id),(\s*)(p_)?subslot->slot_nbr,/app_slot_api[$3subslot->slot_nbr],$2$3subslot->slot_nbr,/g; s/(   ret = pnet_plug_module \(net, api, slot, module_ident\);\n)/$1   if (ret == 0)\n   {\n      app_slot_api[slot] = api; \/* profinet-interop: the API of the slot *\/\n   }\n/; s/(#include "sampleapp_common.h"\n)/$1\n\/* profinet-interop: the API each slot was plugged in. *\/\nstatic uint32_t app_slot_api[PNET_MAX_SLOTS];\n/' "$f" \
     && test "$(grep -c 'app_slot_api\[' "$f")" = 7
+COPY profile-records.sh /tmp/profile-records.sh
+RUN if [ "${PROFILE_RECORDS}" = 1 ]; then sh /tmp/profile-records.sh && echo "profile records: patched" > /tmp/variant; else echo "unmodified record classes" > /tmp/variant; fi
 RUN cmake -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF \
         -DPNET_MAX_AR=2 -DPNET_MAX_API=2 -DPNET_MAX_SLOTS=8 -DPNET_MAX_SUBSLOTS=4 -DPNET_MAX_PHYSICAL_PORTS=1 \
         -DLOG_LEVEL=${LOG_LEVEL} -DPNET_LOG=ON -DPF_CPM_LOG=ON -DPF_PPM_LOG=ON -DPF_DCP_LOG=ON -DPF_RPC_LOG=ON -DPF_ALARM_LOG=ON -DPF_LLDP_LOG=ON \
     && cmake --build build --target pn_dev -j"$(nproc)" \
     && install -D build/pn_dev /out/pn_dev \
     && install -D LICENSE.md /out/licenses/p-net/LICENSE.md \
-    && git log -1 --format='%H' > /out/licenses/p-net/COMMIT
+    && git log -1 --format='%H' > /out/licenses/p-net/COMMIT \
+    && cp /tmp/variant /out/licenses/p-net/VARIANT \
+    && git diff > /out/licenses/p-net/CHANGES.diff
 
 FROM debian:${DEBIAN}
 RUN apt-get update && apt-get install -y --no-install-recommends iproute2 ca-certificates \

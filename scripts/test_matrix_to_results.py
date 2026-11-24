@@ -74,6 +74,13 @@ class Convert(unittest.TestCase):
         doc = convert(row("pass", peer="tshark/scapy"))
         self.assertEqual(doc["results"][0]["roles"]["peer-2"], "scapy")
 
+    def test_the_profile_records_variant_is_not_independent(self):
+        doc = convert(row("pass", peer="p-net, profile-records variant"))
+        self.assertEqual(doc["results"][0]["roles"]["peer"], "pnet-profile")
+        impl = {i["name"]: i for i in doc["implementations"]}
+        self.assertFalse(impl["pnet-profile"]["independent"])
+        self.assertTrue(convert(row("pass"))["implementations"][1]["independent"])
+
     def test_the_document_names_the_sut_version_given(self):
         doc = convert(row("pass"))
         self.assertEqual(doc["implementations"][0], {"name": "go-profinet", "version": "v1.2.3",

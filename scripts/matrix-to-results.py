@@ -25,9 +25,13 @@ import interop_result
 ROOT = Path(__file__).resolve().parent.parent
 OUTCOME = {"pass": "pass", "fail": "fail", "n/a": "unsupported", "peer-deviation": "known-difference"}
 # The peer of a matrix row -> the implementations of versions.yaml it names.
-PEERS = {"p-net": ["pnet"], "Net-SNMP": ["netsnmp"], "tshark/scapy": ["tshark", "scapy"]}
+PEERS = {"p-net": ["pnet"], "p-net, profile-records variant": ["pnet-profile"], "Net-SNMP": ["netsnmp"],
+         "tshark/scapy": ["tshark", "scapy"]}
 SUT = "go-profinet"
 OWN = {"otfabric"}
+# p-net extended by OT Fabric (make image-pnet-profile): its profile record
+# handling is OT Fabric's code, so it is not counted as independent.
+EXTENDED = {"pnet-profile"}
 
 
 def table(path):
@@ -64,7 +68,8 @@ def pins(path=ROOT / "versions.yaml"):
 def implementation(name, versions):
     pin = versions.get(name, {})
     # OT Fabric's own image (own/, versions.yaml own_implementations) is not independent.
-    i = {"name": name, "version": pin.get("version") or pin.get("revision", "unrecorded")[:12], "independent": name not in OWN}
+    i = {"name": name, "version": pin.get("version") or pin.get("revision", "unrecorded")[:12],
+         "independent": name not in OWN and name not in EXTENDED}
     for key in ("revision", "license"):
         if key in pin:
             i[key] = pin[key]
