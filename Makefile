@@ -5,7 +5,7 @@
 .DEFAULT_GOAL := help
 
 .PHONY: corpus-test corpus-fetch
-.PHONY: help images image-% capabilities check-versions lint unittests contract matrix smoke interop print-adapters versions release-notes latest-upstream clean FORCE
+.PHONY: help images image-pnet-profile image-% capabilities check-versions lint unittests contract matrix smoke interop print-adapters versions release-notes latest-upstream clean FORCE
 
 ADAPTERS := pnet pnio-rs profinet-py pnio-dcp scapy tshark umrp mrp netsnmp
 # The adapters of the cross-stack self-test (scripts/interop.py has a driver
@@ -21,6 +21,9 @@ help: ## This help
 
 images: $(addprefix image-,$(ADAPTERS)) ## Build every adapter image as profinet-interop-<adapter>:$(TAG)
 
+image-pnet-profile: ## Build the locally extended p-net with profile records 0xB000-0xBFFF (not in make images)
+	docker build --build-arg PROFILE_RECORDS=1 -t profinet-interop-pnet-profile:$(TAG) adapters/pnet
+
 image-%: ## Build one adapter image, e.g. make image-pnet
 	docker build -t profinet-interop-$*:$(TAG) adapters/$*
 
@@ -31,7 +34,7 @@ check-versions: ## Fail when versions.yaml disagrees with the Dockerfiles
 	@scripts/check-versions.sh
 
 lint: ## Shellcheck the entrypoints and scripts; compile the Python adapters
-	@shellcheck adapters/*/entrypoint.sh adapters/tshark/check.sh adapters/pnet/set_network_parameters adapters/pnet/set_profinet_leds scripts/*.sh
+	@shellcheck adapters/*/entrypoint.sh adapters/tshark/check.sh adapters/pnet/set_network_parameters adapters/pnet/set_profinet_leds adapters/pnet/profile-records.sh scripts/*.sh
 	@python3 -m py_compile adapters/*/*.py scripts/*.py
 
 unittests: ## Unit tests of the result scripts, and the verdict of the committed matrix

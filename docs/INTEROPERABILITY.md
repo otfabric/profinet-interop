@@ -89,6 +89,46 @@ records, process and diagnosis alarms (its button 2), Release.
     (`pf_block_writer.c`) reports "a NULL record" when it inserted
     nothing. In API 0x4E01 the same reads list the IO module alone
     (`TestPnetAPI`, since v0.14.0).
+- **Read Implicit without an AR crashes the pinned tree.** A Read Implicit
+  of a user record (0x0000-0x7FFF) ends pn_dev with a segmentation fault,
+  in any API, with or without an AR: `pf_cmrpc.c` gives the read no AR
+  ("Assume the implicit AR") and `pf_fspm_cm_read_ind` dereferences it for
+  the user record callback (found by profinetctl's smoke test). Fixed
+  upstream after this tree: rtlabs-com/p-net issue #594, commit c752521.
+  A Read Implicit of 0xC000 (ExpectedIdentificationData of a slot) ends it
+  the same way (observed; not traced). The image keeps the tree as it is;
+  tests do not send these reads.
+- **Profile records: a locally extended variant, not p-net's behaviour.**
+  Unmodified p-net gives only the indexes 0x0000-0x7FFF to the application:
+  a Write of a subslot profile record (0xB000-0xBFFF) is refused with
+  `DF 80 B4 02`, a Read with `DE 80 B0 0A`, so a Connect that writes one
+  fails. `make image-pnet-profile` builds `profinet-interop-pnet-profile`
+  with `profile-records.sh`: five one-line changes of the stack give
+  0xB000-0xBFFF to the application like the user records (Read Implicit
+  excepted: it has no AR), and the sample's Digital Input/Output submodule
+  gets a 16-octet record 0xB600 (19 lines). `PF_IDX_USER_MAX` and every
+  other index class stay as they are; the image's
+  `/licenses/p-net/VARIANT` and `CHANGES.diff` record the build. Evidence
+  against it shows that a controller exchanges profile records with a
+  separately implemented stack that OT Fabric extended; it does not
+  validate the extension's semantics. Prototype results (go-profinet's
+  controller):
+  - 0xB600 written at Connect before PrmEnd, read back, written and read
+    back again, in API 0 and in API 0x4E01; tshark decodes API, slot,
+    subslot, index and the 16 octets of each request and answer;
+  - a write of the wrong length or to a submodule without the record:
+    `DF 80 A1 00`; an undeclared profile index (0xB000, 0xBFFF):
+    `DE 80 A0 00` / `DF 80 A1 00`; a Read Implicit of 0xB600: `DE 80 B0 0A`;
+  - 0x7FFF, 0xAFFF, 0xC000, 123/124, 0x8001 and I&M0 answer as the
+    unmodified image does;
+  - as with user records, a Read in API 0 of the subslot plugged in API
+    0x4E01 returns its record (records keyed by slot and subslot).
+  - go-profinet's p-net suite (the 11 `TestPnet*` tests, go-profinet
+    85a23a2) gives the same 86 checks with the same outcomes against both
+    images: 83 pass, 2 not applicable, 1 peer deviation.
+
+  Not yet a scenario of the matrix: no go-profinet test runs against the
+  variant.
 
 ### pnio-rs (IO-Device)
 
