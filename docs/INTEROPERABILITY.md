@@ -82,6 +82,13 @@ records, process and diagnosis alarms (its button 2), Release.
     without NDR data and no PNIOStatus, which tshark reports as malformed.
     `pf_cmrpc_rm_read_ind` sets invalid area/API (0xB4), but only the
     branch of a valid request writes the PNIOStatus.
+  - **No record data for identification that matches nothing.** A
+    RealIdentificationData read of a slot (0xC001) or a subslot (0x8001)
+    in API 0, where p-net has no submodule there, is answered with a
+    record of no data, not a refusal: `pf_put_real_ident_data`
+    (`pf_block_writer.c`) reports "a NULL record" when it inserted
+    nothing. In API 0x4E01 the same reads list the IO module alone
+    (`TestPnetAPI`, since v0.14.0).
 
 ### pnio-rs (IO-Device)
 
@@ -119,6 +126,11 @@ and a cyclic IOCAR configured from the GSDML go-profinet generates.
 - Its slot discovery (`discover_slots`) reads 0xF000 in API 0, which
   Wireshark's index table names RealIdentificationData for one API, so it
   lists API 0's slots only.
+- **Profile records** (0xB000–0xBFFF) are records like any other to it:
+  `TestProfinetPyAPI` (since v0.14.0) reads, writes and reads back 0xB600
+  of a submodule in API 0x4E01 on go-profinet's device, and checks the
+  device's refusals (another API, a read-only record, a wrong length).
+  This is the records' transport, not a profile's meaning.
 
 ### pnio-dcp (DCP tool)
 
