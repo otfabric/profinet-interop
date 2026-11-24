@@ -37,6 +37,52 @@ Tags are immutable. A fix is a new version.
 
 ---
 
+## v0.14.0
+
+**Date:** 2026-11-24
+**Previous release:** v0.13.0
+
+## Summary
+
+New scenarios with non-zero APIs, against both independent peers:
+identification of a slot (0xC001) and a subslot (0x8001) in API 0x4E01
+and in API 0, and profile records (0xB600, 0xB900) of a submodule in API
+0x4E01 on go-profinet's device, read and written by profinet-py. No image,
+adapter or contract change (contract 1.5). The matrix is regenerated from
+go-profinet's run with the new scenarios: 323 rows, 301 pass, 0 fail,
+6 n/a, 16 peer deviations.
+
+## Changes
+
+### Added
+
+- **Stable IDs** (matrix/ids.tsv): 19, for go-profinet's `TestPnetAPI`
+  (5: 0xC001 and 0x8001 in APIs 0x4E01 and 0, and tshark's fields of
+  those requests) and `TestProfinetPyAPI` (14: the same identification
+  reads against go-profinet's device; 0xB600 read, written and read back;
+  reads of it in APIs 0 and 0x4E02, a write of read-only 0xB900 and a
+  write of the wrong length refused; both records unchanged afterwards;
+  tshark's fields of the write and of the identification requests).
+
+### Changed
+
+- docs/INTEROPERABILITY.md: p-net answers an identification read that
+  matches no submodule with a record of no data (`pf_put_real_ident_data`);
+  profinet-py carries profile records as generic records.
+- **Matrix** (docs/MATRIX.md, matrix/results.json,
+  matrix/interop-result-v1.json): regenerated from the Interop and Kernel
+  MRP workflows of go-profinet run 45295645172 (2026-11-24), on PR #118 at
+  18d3fdb, against this release's images (2cbeb2d; the images are those
+  of v0.13.0). `sut` is v0.22.1-4-g18d3fdb.
+  - **Compared with v0.13.0's matrix** by stable ID (304 rows, now 323):
+    none removed, no outcome changed, 19 added, all pass.
+
+### Breaking
+
+None.
+
+---
+
 ## v0.13.0
 
 **Date:** 2026-11-23

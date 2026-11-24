@@ -153,6 +153,11 @@ TestPnetAPI	tshark fields: records 123 and 124 written and read in API 0x00004e0
 TestPnetAPI	tshark fields: the Connect request names APIs 0x00000000 and 0x00004e01	pnetapi.tshark-fields-connect-request-names-apis-0-and-0x4e01
 TestPnetAPI	Read in an API the device does not have (0x4E02)	pnetapi.read-in-an-api-the-device-does-not-have-0x4e02
 TestPnetAPI	Read in an API the device does not have (0x4E02): refused	pnetapi.read-in-an-api-the-device-does-not-have-0x4e02-refused
+TestPnetAPI	RealIdentificationData for slot 1 in API 0x4E01 (0xC001) decoded: the IO module alone	pnetapi.realidentificationdata-for-slot-1-in-api-0x4e01-0xc001-decoded
+TestPnetAPI	RealIdentificationData for subslot 1/1 in API 0x4E01 (0x8001) decoded: the IO module alone	pnetapi.realidentificationdata-for-subslot-1-1-in-api-0x4e01-0x8001-decoded
+TestPnetAPI	RealIdentificationData in API 0 for slot 1 (0xC001), where API 0 has no submodule: answered with no record data	pnetapi.realidentificationdata-in-api-0-for-slot-1-0xc001-no-record-data
+TestPnetAPI	RealIdentificationData in API 0 for subslot 1/1 (0x8001), where API 0 has no submodule: answered with no record data	pnetapi.realidentificationdata-in-api-0-for-subslot-1-1-0x8001-no-record-data
+TestPnetAPI	tshark fields: the 0xC001 and 0x8001 requests in APIs 0x00004e01 and 0	pnetapi.tshark-fields-0xc001-and-0x8001-requests-in-apis-0x4e01-and-0
 TestPnetConfigurationMismatch	Unexpected module in slot 2: p-net plugs it (no ModuleDiff), the AR runs	pnetconfigurationmismatch.unexpected-module-in-slot-2-p-net-plugs-it-no-modulediff-the-ar
 TestPnetConfigurationMismatch	Model of another DeviceID: the controller refuses the device	pnetconfigurationmismatch.model-of-another-deviceid-the-controller-refuses-the-device
 TestPnetController	DCP Identify by name, Connect, PrmEnd, ApplicationReady (RT_CLASS_1 legacy)	pnetcontroller.dcp-identify-by-name-connect-prmend-applicationready-rt-class-1
@@ -276,6 +281,20 @@ TestProfinetPyAPI	tshark: PNIO-CM "Trailing stray characters"	profinetpyapi.tsha
 TestProfinetPyAPI	tshark check profinet-py-api.pcap	profinetpyapi.tshark-check-profinet-py-api-pcap
 TestProfinetPyAPI	tshark fields: profinet-py's Connect request names APIs 0x00000000 and 0x00004e01	profinetpyapi.tshark-fields-connect-request-names-apis-0-and-0x4e01
 TestProfinetPyAPI	tshark fields: record 0x0011 read and written in API 0x00004e01, slot 3, subslot 1; the refused reads in APIs 0 and 0x00004e02	profinetpyapi.tshark-fields-record-0x0011-in-api-0x4e01-refused-in-0-and-0x4e02
+TestProfinetPyAPI	RealIdentificationData for slot 3 in API 0x4E01 (0xC001) read by profinet-py: that slot's one submodule	profinetpyapi.realidentificationdata-for-slot-3-in-api-0x4e01-0xc001
+TestProfinetPyAPI	RealIdentificationData for subslot 3/1 in API 0x4E01 (0x8001) read by profinet-py: that submodule	profinetpyapi.realidentificationdata-for-subslot-3-1-in-api-0x4e01-0x8001
+TestProfinetPyAPI	RealIdentificationData for slot 3 in API 0 (0xC001): API 0 without a slot	profinetpyapi.realidentificationdata-for-slot-3-in-api-0-0xc001-no-slot
+TestProfinetPyAPI	RealIdentificationData for subslot 3/1 in API 0 (0x8001) refused: invalid area/API (0xB4)	profinetpyapi.realidentificationdata-for-subslot-3-1-in-api-0-0x8001-refused
+TestProfinetPyAPI	Read profile record 0xB600 in API 0x4E01: its default	profinetpyapi.read-profile-record-0xb600-in-api-0x4e01-its-default
+TestProfinetPyAPI	Write profile record 0xB600 in API 0x4E01, read back	profinetpyapi.write-profile-record-0xb600-in-api-0x4e01-read-back
+TestProfinetPyAPI	Read of 0xB600 in API 0 refused: invalid area/API (0xB4)	profinetpyapi.read-of-0xb600-in-api-0-refused-invalid-area-api-0xb4
+TestProfinetPyAPI	Read of 0xB600 in API 0x4E02 refused: invalid area/API (0xB4)	profinetpyapi.read-of-0xb600-in-api-0x4e02-refused-invalid-area-api-0xb4
+TestProfinetPyAPI	Write of read-only profile record 0xB900 refused: access denied (0xB6)	profinetpyapi.write-of-read-only-profile-record-0xb900-refused-access-denied-0xb6
+TestProfinetPyAPI	Write of 2 octets to 0xB600 (length 16) refused: write length (0xB1)	profinetpyapi.write-of-2-octets-to-0xb600-length-16-refused-write-length-0xb1
+TestProfinetPyAPI	After the refused requests: 0xB900 keeps its default, 0xB600 the value written	profinetpyapi.after-the-refused-requests-0xb900-and-0xb600-unchanged
+TestProfinetPyAPI	The device received the write of 0xB600 and neither refused write	profinetpyapi.the-device-received-the-write-of-0xb600-and-neither-refused-write
+TestProfinetPyAPI	tshark fields: profinet-py's Write of 0xB600 in API 0x00004e01, slot 3, subslot 1, RecordDataLength 16, its 16 octets as profile user data	profinetpyapi.tshark-fields-write-of-0xb600-in-api-0x4e01-slot-3-subslot-1
+TestProfinetPyAPI	tshark fields: the 0xC001 and 0x8001 requests in APIs 0x00004e01 and 0	profinetpyapi.tshark-fields-0xc001-and-0x8001-requests-in-apis-0x4e01-and-0
 TestProfinetPyDCP	DCP Identify all	profinetpydcp.dcp-identify-all
 TestProfinetPyDCP	DCP Get name	profinetpydcp.dcp-get-name
 TestProfinetPyDCP	DCP Set NameOfStation	profinetpydcp.dcp-set-nameofstation
