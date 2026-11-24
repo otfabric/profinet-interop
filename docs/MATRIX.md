@@ -2,18 +2,19 @@
 
 # Interoperability matrix
 
-Generated 2026-11-24T00:35:44+00:00 from 41 test runs of go-profinet PR #118 at 18d3fdb (v0.22.1 with the API identification and profile-record scenarios) against profinet-interop PR #39 at 2cbeb2d: its Interop and Kernel MRP workflows, run 45295645172 of 2026-11-24. Outcomes: **pass**, **fail**, **n/a** (the peer does not implement the feature; the detail says why), **peer-deviation** (the peer deviates from the standard; the detail says how). Reproduce with `make -C ../go-profinet interop` (see [INTEROPERABILITY.md](INTEROPERABILITY.md)).
+Generated 2026-11-24T09:02:59+00:00 from 42 test runs of go-profinet PR #122 at d3fc3c9 (v0.22.1 with TestPnetProfile) against profinet-interop PR #40 at 7453c49: its Interop and Kernel MRP workflows, run 45319782558 of 2026-11-24. Outcomes: **pass**, **fail**, **n/a** (the peer does not implement the feature; the detail says why), **peer-deviation** (the peer deviates from the standard; the detail says how). Reproduce with `make -C ../go-profinet interop` (see [INTEROPERABILITY.md](INTEROPERABILITY.md)).
 
 | Peer | go-profinet role | pass | fail | n/a | peer-deviation |
 |------|------------------|------|------|-----|----------------|
 | Net-SNMP | SNMP agent of the IO-Device | 29 | 0 | 0 | 0 |
 | mrp | MRA, MRP client, MRP manager | 31 | 0 | 1 | 0 |
 | p-net | IO-Controller | 76 | 0 | 1 | 1 |
+| p-net, profile-records variant | IO-Controller | 16 | 0 | 0 | 0 |
 | pnio-dcp | DCP responder | 8 | 0 | 0 | 0 |
 | pnio-rs | IO-Controller | 13 | 0 | 3 | 0 |
 | profinet-py | IO-Device, DCP responder | 59 | 0 | 1 | 4 |
-| scapy | - | 22 | 0 | 0 | 7 |
-| tshark | - | 21 | 0 | 0 | 0 |
+| scapy | - | 23 | 0 | 0 | 7 |
+| tshark | - | 22 | 0 | 0 | 0 |
 | tshark/scapy | - | 10 | 0 | 0 | 2 |
 | umrp | MRA, MRP client, MRP manager | 32 | 0 | 0 | 2 |
 
@@ -27,16 +28,16 @@ Generated 2026-11-24T00:35:44+00:00 from 41 test runs of go-profinet PR #118 at 
 | SNMP v2c Set refused: notWritable (Net-SNMP) | SNMP agent of the IO-Device | pass | {Exit:2 VarBinds:[] ErrorStatus:notWritable FailedObject:1.3.6.1.2.1.1.5.0 Timeout:false OK:false Stderr:Created directory: /var/lib/snmp/cert_indexes Error ... | `TestNetSNMPErrors` |
 | SNMP v1 Set refused: noSuchName (RFC 3584) (Net-SNMP) | SNMP agent of the IO-Device | pass | {Exit:2 VarBinds:[] ErrorStatus:noSuchName FailedObject:1.3.6.1.2.1.1.5.0 Timeout:false OK:false Stderr:Created directory: /var/lib/snmp/cert_indexes Error i... | `TestNetSNMPErrors` |
 | SNMP Set changed nothing (Net-SNMP) | SNMP agent of the IO-Device | pass | [{OID:1.3.6.1.2.1.1.5.0 Type:Hex-STRING Value:64 75 74  Hex:647574}] | `TestNetSNMPErrors` |
-| SNMP wrong community: no answer, snmpInBadCommunityNames counts it (Net-SNMP) | SNMP agent of the IO-Device | pass | {Exit:1 VarBinds:[] ErrorStatus: FailedObject: Timeout:true OK:false Stderr:Created directory: /var/lib/snmp/cert_indexes Timeout: No Response from udp:10.11... | `TestNetSNMPErrors` |
+| SNMP wrong community: no answer, snmpInBadCommunityNames counts it (Net-SNMP) | SNMP agent of the IO-Device | pass | {Exit:1 VarBinds:[] ErrorStatus: FailedObject: Timeout:true OK:false Stderr:Created directory: /var/lib/snmp/cert_indexes Timeout: No Response from udp:10.99... | `TestNetSNMPErrors` |
 | SNMP Get of 128-sub-identifier names: noSuchInstance, noSuchObject (Net-SNMP) | SNMP agent of the IO-Device | pass | {Exit:0 VarBinds:[{OID:1.3.6.1.2.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.... | `TestNetSNMPErrors` |
 | SNMP GetBulk of 10000 repetitions: a truncated answer that fits (Net-SNMP) | SNMP agent of the IO-Device | pass | 32 bindings,  | `TestNetSNMPErrors` |
 | SNMP Get whose answer does not fit: tooBig (Net-SNMP) | SNMP agent of the IO-Device | pass | tooBig | `TestNetSNMPErrors` |
-| SNMP flood of 3000 requests: answers bounded by the rate limit | SNMP agent of the IO-Device | pass | 230 answers to 3000 requests sent in 0.031 s (limit 331) | `TestNetSNMPFlood` |
+| SNMP flood of 3000 requests: answers bounded by the rate limit | SNMP agent of the IO-Device | pass | 237 answers to 3000 requests sent in 0.037 s (limit 337) | `TestNetSNMPFlood` |
 | SNMP agent answers after the flood (Net-SNMP) | SNMP agent of the IO-Device | pass | {Exit:0 VarBinds:[{OID:1.3.6.1.2.1.1.5.0 Type:Hex-STRING Value:64 75 74  Hex:647574}] ErrorStatus: FailedObject: Timeout:false OK:true Stderr:Created directo... | `TestNetSNMPFlood` |
 | SNMP lldpRemTable empty without neighbors (Net-SNMP) | SNMP agent of the IO-Device | pass | map[] | `TestNetSNMPLLDP` |
 | SNMP lldpRemTable shows a neighbor: filter 0, port 1, index 1 (Net-SNMP) | SNMP agent of the IO-Device | pass | map[nb1:{0 1 1}] | `TestNetSNMPLLDP` |
 | SNMP lldpRemTable: a second neighbor gets index 2, the first keeps 1 (Net-SNMP) | SNMP agent of the IO-Device | pass | map[nb1:{0 1 1} nb2:{0 1 2}] | `TestNetSNMPLLDP` |
-| SNMP lldpRemTimeMark as a TimeFilter: rows changed since t (Net-SNMP) | SNMP agent of the IO-Device | pass | [{OID:1.0.8802.1.1.2.1.4.1.1.9.1.1.2 Type:Hex-STRING Value:6E 62 32  Hex:6e6232} {OID:1.0.8802.1.1.2.1.4.1.1.9.1178.1.2 Type:noSuchInstance Value: Hex:}] | `TestNetSNMPLLDP` |
+| SNMP lldpRemTimeMark as a TimeFilter: rows changed since t (Net-SNMP) | SNMP agent of the IO-Device | pass | [{OID:1.0.8802.1.1.2.1.4.1.1.9.1.1.2 Type:Hex-STRING Value:6E 62 32  Hex:6e6232} {OID:1.0.8802.1.1.2.1.4.1.1.9.1177.1.2 Type:noSuchInstance Value: Hex:}] | `TestNetSNMPLLDP` |
 | SNMP lldpRemTable: a neighbor leaves (TTL), the other keeps its index (Net-SNMP) | SNMP agent of the IO-Device | pass | map[nb2:{0 1 2}] | `TestNetSNMPLLDP` |
 | SNMP lldpRemTable: a returning neighbor gets a new index (Net-SNMP) | SNMP agent of the IO-Device | pass | map[nb1:{0 1 3} nb2:{0 1 2}] | `TestNetSNMPLLDP` |
 | SNMP malformed datagrams counted in snmpInASNParseErrs (Net-SNMP reads it) | SNMP agent of the IO-Device | pass | sent 205, counted 205 (seed 20261028) | `TestNetSNMPMalformed` |
@@ -46,7 +47,7 @@ Generated 2026-11-24T00:35:44+00:00 from 41 test runs of go-profinet PR #118 at 
 | SNMP Get v1 (Net-SNMP) | SNMP agent of the IO-Device | pass | {Exit:0 VarBinds:[{OID:1.3.6.1.2.1.1.5.0 Type:Hex-STRING Value:64 75 74  Hex:647574}] ErrorStatus: FailedObject: Timeout:false OK:true Stderr:Created directo... | `TestNetSNMPRead` |
 | SNMP GetNext (Net-SNMP) | SNMP agent of the IO-Device | pass | [{OID:1.3.6.1.2.1.1.2.0 Type:OID Value:.0.0 Hex:}] | `TestNetSNMPRead` |
 | SNMP GetBulk with non-repeaters and repetitions (Net-SNMP) | SNMP agent of the IO-Device | pass | got [1.3.6.1.2.1.1.1.0 1.3.6.1.2.1.1.2.0 1.3.6.1.2.1.2.1.0 1.3.6.1.2.1.1.3.0 1.3.6.1.2.1.2.2.1.1.1 1.3.6.1.2.1.1.4.0 1.3.6.1.2.1.2.2.1.2.1], want [1.3.6.1.2.... | `TestNetSNMPRead` |
-| SNMP ifTable: one Ethernet port with the device's MAC (Net-SNMP) | SNMP agent of the IO-Device | pass | [{OID:1.3.6.1.2.1.2.1.0 Type:INTEGER Value:1 Hex:} {OID:1.3.6.1.2.1.2.2.1.6.1 Type:Hex-STRING Value:02 42 0A 7A 0D 02  Hex:02420a7a0d02} {OID:1.3.6.1.2.1.2.2... | `TestNetSNMPRead` |
+| SNMP ifTable: one Ethernet port with the device's MAC (Net-SNMP) | SNMP agent of the IO-Device | pass | [{OID:1.3.6.1.2.1.2.1.0 Type:INTEGER Value:1 Hex:} {OID:1.3.6.1.2.1.2.2.1.6.1 Type:Hex-STRING Value:02 42 0A 7B 0D 02  Hex:02420a7b0d02} {OID:1.3.6.1.2.1.2.2... | `TestNetSNMPRead` |
 | SNMP LLDP-MIB lldpLocSysName (Net-SNMP) | SNMP agent of the IO-Device | pass | [{OID:1.0.8802.1.1.2.1.3.3.0 Type:Hex-STRING Value:64 75 74  Hex:647574}] | `TestNetSNMPRead` |
 | SNMP walks agree: GetNext and GetBulk (Net-SNMP) | SNMP agent of the IO-Device | pass | 39 instances, differences [] | `TestNetSNMPRead` |
 | SNMP walks agree: v1 and v2c (Net-SNMP) | SNMP agent of the IO-Device | pass | differences [] | `TestNetSNMPRead` |
@@ -55,36 +56,36 @@ Generated 2026-11-24T00:35:44+00:00 from 41 test runs of go-profinet PR #118 at 
 
 | Feature | go-profinet role | Outcome | Detail | Test |
 |---------|------------------|---------|--------|------|
-| MRA: go-profinet (best priority) manages, mrp MRAs give way | MRA | pass | otfnode {State:CHK_RC Acting:manager Manager: Open:false Blocked:[false true] TopologyChanges:10 LinkChanges:0 TestsReceived:724 Malformed:0}, n2 {Ring:PT_ID... | `TestMRPAuto/mrp/go-profinet-best` |
+| MRA: go-profinet (best priority) manages, mrp MRAs give way | MRA | pass | otfnode {State:CHK_RC Acting:manager Manager: Open:false Blocked:[false true] TopologyChanges:1 LinkChanges:0 TestsReceived:698 Malformed:0}, n2 {Ring:PT_IDL... | `TestMRPAuto/mrp/go-profinet-best` |
 | MRA ring closed by go-profinet: no loop, no hole (mrp MRAs) | MRA | pass | probes sent 100, received by n2 100, by n3 100 | `TestMRPAuto/mrp/go-profinet-best` |
 | MRA ring still closed by go-profinet: no loop, no hole (mrp MRAs) | MRA | pass | probes sent 100, received by n2 100, by n3 100 | `TestMRPAuto/mrp/go-profinet-best` |
 | MRA: go-profinet stays the manager | MRA | pass | acting changes 0 in 3 s of the settled ring | `TestMRPAuto/mrp/go-profinet-best` |
-| MRA: go-profinet gives way to a better mrp MRA | MRA | pass | otfnode {State:PT_IDLE Acting:client Manager:42:30:d2:66:d9:ba Open:false Blocked:[false false] TopologyChanges:1 LinkChanges:0 TestsReceived:624 Malformed:0... | `TestMRPAuto/mrp/peer-best` |
+| MRA: go-profinet gives way to a better mrp MRA | MRA | pass | otfnode {State:PT_IDLE Acting:client Manager:76:80:fd:ab:56:1e Open:false Blocked:[false false] TopologyChanges:0 LinkChanges:0 TestsReceived:658 Malformed:0... | `TestMRPAuto/mrp/peer-best` |
 | MRA ring closed by mrp: no loop, no hole (go-profinet MRA as client) | MRA | pass | probes sent 100, received by n2 100, by n3 100 | `TestMRPAuto/mrp/peer-best` |
 | MRA ring still closed by mrp: no loop, no hole (go-profinet MRA as client) | MRA | pass | probes sent 100, received by n2 100, by n3 100 | `TestMRPAuto/mrp/peer-best` |
-| MRA: go-profinet stays a client of the better mrp MRA | MRA | pass | acting changes 0 in 3 s of the settled ring, {State:PT_IDLE Acting:client Manager:42:30:d2:66:d9:ba Open:false Blocked:[false false] TopologyChanges:1 LinkCh... | `TestMRPAuto/mrp/peer-best` |
-| MRA: go-profinet (next best) manages when the mrp manager fails | MRA | pass | otfnode {State:PRM_UP Acting:manager Manager: Open:true Blocked:[false false] TopologyChanges:5 LinkChanges:5 TestsReceived:2923 Malformed:0}, n3 {Ring:DE_ID... | `TestMRPAuto/mrp/peer-best` |
+| MRA: go-profinet stays a client of the better mrp MRA | MRA | pass | acting changes 0 in 3 s of the settled ring, {State:PT_IDLE Acting:client Manager:76:80:fd:ab:56:1e Open:false Blocked:[false false] TopologyChanges:0 LinkCh... | `TestMRPAuto/mrp/peer-best` |
+| MRA: go-profinet (next best) manages when the mrp manager fails | MRA | pass | otfnode {State:PRM_UP Acting:manager Manager: Open:true Blocked:[false false] TopologyChanges:4 LinkChanges:5 TestsReceived:2932 Malformed:0}, n3 {Ring:DE_ID... | `TestMRPAuto/mrp/peer-best` |
 | MRA after the manager failed: no loop, no hole (go-profinet manages, mrp MRA as client) | MRA | pass | probes sent 100, received by n3 100 | `TestMRPAuto/mrp/peer-best` |
-| MRA: go-profinet gives way again when the better mrp MRA returns | MRA | pass | otfnode {State:PT_IDLE Acting:client Manager:42:30:d2:66:d9:ba Open:false Blocked:[false false] TopologyChanges:11 LinkChanges:5 TestsReceived:3363 Malformed... | `TestMRPAuto/mrp/peer-best` |
+| MRA: go-profinet gives way again when the better mrp MRA returns | MRA | pass | otfnode {State:PT_IDLE Acting:client Manager:76:80:fd:ab:56:1e Open:false Blocked:[false false] TopologyChanges:16 LinkChanges:5 TestsReceived:3402 Malformed... | `TestMRPAuto/mrp/peer-best` |
 | MRA ring closed again by mrp: no loop, no hole | MRA | pass | probes sent 100, received by n2 100, by n3 100 | `TestMRPAuto/mrp/peer-best` |
 | MRP ring closed: mrp MRM, go-profinet MRC | MRP client | pass | n2 {Ring:CHK_RC Role:MRM Flushes:-1 Probes:0 Ports:[{Name:ringA State:blocked Oper:up} {Name:ringB State:forwarding Oper:up}]}, otfnode {State:PT_IDLE Acting... | `TestMRPOtfClient/mrp` |
-| MRP go-profinet MRC: both ring ports forwarding, ring closed | MRP client | pass | {State:PT_IDLE Acting:client Manager: Open:false Blocked:[false false] TopologyChanges:28 LinkChanges:1 TestsReceived:3238 Malformed:0} | `TestMRPOtfClient/mrp` |
+| MRP go-profinet MRC: both ring ports forwarding, ring closed | MRP client | pass | {State:PT_IDLE Acting:client Manager: Open:false Blocked:[false false] TopologyChanges:23 LinkChanges:1 TestsReceived:2614 Malformed:0} | `TestMRPOtfClient/mrp` |
 | MRP closed ring: no loop, no hole (mrp MRM, go-profinet MRC) | MRP client | pass | probes sent 100, received by n2 100, by n3 100 | `TestMRPOtfClient/mrp` |
-| MRP ring open: mrp MRM on go-profinet's link change | MRP client | pass | n2 {Ring:CHK_RO Role:MRM Flushes:-1 Probes:6964 Ports:[{Name:ringA State:forwarding Oper:up} {Name:ringB State:forwarding Oper:up}]} | `TestMRPOtfClient/mrp` |
+| MRP ring open: mrp MRM on go-profinet's link change | MRP client | pass | n2 {Ring:CHK_RO Role:MRM Flushes:-1 Probes:7390 Ports:[{Name:ringA State:forwarding Oper:up} {Name:ringB State:forwarding Oper:up}]} | `TestMRPOtfClient/mrp` |
 | MRP link change: go-profinet MRC reports its link down | MRP client | pass | link changes 1 → 2 | `TestMRPOtfClient/mrp` |
-| MRP TopologyChange: go-profinet MRC receives mrp's and flushes | MRP client | pass | topology changes 28 → 29 | `TestMRPOtfClient/mrp` |
-| MRP measured outage, cable break (mrp MRM, go-profinet MRC, 200 ms profile) | MRP client | pass | 18 ms without traffic at the far client (8 of 6872 probes lost); a measurement, not a conformance claim | `TestMRPOtfClient/mrp` |
+| MRP TopologyChange: go-profinet MRC receives mrp's and flushes | MRP client | pass | topology changes 23 → 34 | `TestMRPOtfClient/mrp` |
+| MRP measured outage, cable break (mrp MRM, go-profinet MRC, 200 ms profile) | MRP client | pass | 12 ms without traffic at the far client (6 of 7296 probes lost); a measurement, not a conformance claim | `TestMRPOtfClient/mrp` |
 | MRP open ring: no loop, no hole (mrp MRM, go-profinet MRC) | MRP client | pass | probes sent 100, received by n2 100, by n3 100 | `TestMRPOtfClient/mrp` |
-| MRP ring closes again (mrp MRM, go-profinet MRC) | MRP client | pass | n2 {Ring:CHK_RC Role:MRM Flushes:-1 Probes:7064 Ports:[{Name:ringA State:blocked Oper:up} {Name:ringB State:forwarding Oper:up}]} | `TestMRPOtfClient/mrp` |
+| MRP ring closes again (mrp MRM, go-profinet MRC) | MRP client | pass | n2 {Ring:CHK_RC Role:MRM Flushes:-1 Probes:7490 Ports:[{Name:ringA State:blocked Oper:up} {Name:ringB State:forwarding Oper:up}]} | `TestMRPOtfClient/mrp` |
 | MRP closed again: no loop, no hole (mrp MRM, go-profinet MRC) | MRP client | pass | probes sent 100, received by n2 100, by n3 100 | `TestMRPOtfClient/mrp` |
-| MRP ring closed: go-profinet MRM, mrp MRCs | MRP manager | pass | otfnode {State:CHK_RC Acting:manager Manager: Open:false Blocked:[false true] TopologyChanges:1 LinkChanges:0 TestsReceived:2014 Malformed:0}, n2 PT_IDLE, n3... | `TestMRPOtfManager/mrp` |
-| MRP test frames: go-profinet MRM receives its tests through mrp MRCs | MRP manager | pass | {State:CHK_RC Acting:manager Manager: Open:false Blocked:[false true] TopologyChanges:1 LinkChanges:0 TestsReceived:2014 Malformed:0} | `TestMRPOtfManager/mrp` |
+| MRP ring closed: go-profinet MRM, mrp MRCs | MRP manager | pass | otfnode {State:CHK_RC Acting:manager Manager: Open:false Blocked:[false true] TopologyChanges:1 LinkChanges:1 TestsReceived:1904 Malformed:0}, n2 PT_IDLE, n3... | `TestMRPOtfManager/mrp` |
+| MRP test frames: go-profinet MRM receives its tests through mrp MRCs | MRP manager | pass | {State:CHK_RC Acting:manager Manager: Open:false Blocked:[false true] TopologyChanges:1 LinkChanges:1 TestsReceived:1904 Malformed:0} | `TestMRPOtfManager/mrp` |
 | MRP closed ring: no loop, no hole (go-profinet MRM, mrp MRCs) | MRP manager | pass | probes sent 100, received by n2 100, by n3 100 | `TestMRPOtfManager/mrp` |
-| MRP ring open: go-profinet MRM unblocks on a cable break between mrp MRCs | MRP manager | pass | {State:CHK_RO Acting:manager Manager: Open:true Blocked:[false false] TopologyChanges:2 LinkChanges:4 TestsReceived:5574 Malformed:0} | `TestMRPOtfManager/mrp` |
+| MRP ring open: go-profinet MRM unblocks on a cable break between mrp MRCs | MRP manager | pass | {State:CHK_RO Acting:manager Manager: Open:true Blocked:[false false] TopologyChanges:2 LinkChanges:4 TestsReceived:5196 Malformed:0} | `TestMRPOtfManager/mrp` |
 | MRP FDB flush: mrp MRC flushes on go-profinet's TopologyChange | MRP manager | n/a | the kernel flushes; the adapter cannot observe it | `TestMRPOtfManager/mrp` |
-| MRP measured outage, cable break (go-profinet MRM, mrp MRCs, 200 ms profile) | MRP manager | pass | 48 ms without traffic at the far client (21 of 7372 probes lost); a measurement, not a conformance claim | `TestMRPOtfManager/mrp` |
+| MRP measured outage, cable break (go-profinet MRM, mrp MRCs, 200 ms profile) | MRP manager | pass | 10 ms without traffic at the far client (5 of 7302 probes lost); a measurement, not a conformance claim | `TestMRPOtfManager/mrp` |
 | MRP open ring: no loop, no hole (go-profinet MRM, mrp MRCs) | MRP manager | pass | probes sent 100, received by n2 100, by n3 100 | `TestMRPOtfManager/mrp` |
-| MRP ring closes again (go-profinet MRM, mrp MRCs) | MRP manager | pass | {State:CHK_RC Acting:manager Manager: Open:false Blocked:[false true] TopologyChanges:3 LinkChanges:14 TestsReceived:5855 Malformed:0} | `TestMRPOtfManager/mrp` |
+| MRP ring closes again (go-profinet MRM, mrp MRCs) | MRP manager | pass | {State:CHK_RC Acting:manager Manager: Open:false Blocked:[false true] TopologyChanges:3 LinkChanges:14 TestsReceived:5440 Malformed:0} | `TestMRPOtfManager/mrp` |
 | MRP closed again: no loop, no hole (go-profinet MRM, mrp MRCs) | MRP manager | pass | probes sent 100, received by n2 100, by n3 100 | `TestMRPOtfManager/mrp` |
 | MRP seeded cable faults, go-profinet MRM with mrp MRCs: settles, no loop, no hole | MRP manager | pass | seed 1, 8 rounds | `TestMRPRingFaults/mrp` |
 
@@ -107,9 +108,9 @@ Generated 2026-11-24T00:35:44+00:00 from 41 test runs of go-profinet PR #118 at 
 | Inputs of the submodule in API 0x4E01 (slot 1, subslot 1): IOPS good, one octet, changing while the AR runs | IO-Controller | pass | map[data:28 iops:128 values:41] | `TestPnetAPI` |
 | Echo module (API 0) returns our outputs next to a submodule of API 0x4E01 | IO-Controller | pass | map[data:1d22334488000000 iops:128 values:2] | `TestPnetAPI` |
 | Release ends the AR at p-net | IO-Controller | pass |  | `TestPnetAPI` |
-| tshark fields: records 123 and 124 written and read in API 0x00004e01, slot 1, subslot 1 | IO-Controller | pass | [{Frame:16 Fields:map[pn_io.api:[0x00004e01] pn_io.slot_nr:[0x0001] pn_io.subslot_nr:[0x0001]]} {Frame:17 Fields:map[pn_io.api:[0x00004e01] pn_io.slot_nr:[0x... | `TestPnetAPI` |
-| tshark fields: the 0xC001 and 0x8001 requests in APIs 0x00004e01 and 0 | IO-Controller | pass | map[0x00000000 0x8001:true 0x00000000 0xc001:true 0x00004e01 0x8001:true 0x00004e01 0xc001:true] [{Frame:34 Fields:map[pn_io.api:[0x00004e01] pn_io.index:[0x... | `TestPnetAPI` |
-| tshark fields: the Connect request names APIs 0x00000000 and 0x00004e01 | IO-Controller | pass | [{Frame:13 Fields:map[pn_io.api:[0x00000000 0x00004e01 0x00004e01 0x00000000 0x00000000 0x00004e01 0x00000000]]}] | `TestPnetAPI` |
+| tshark fields: records 123 and 124 written and read in API 0x00004e01, slot 1, subslot 1 | IO-Controller | pass | [{Frame:14 Fields:map[pn_io.api:[0x00004e01] pn_io.slot_nr:[0x0001] pn_io.subslot_nr:[0x0001]]} {Frame:15 Fields:map[pn_io.api:[0x00004e01] pn_io.slot_nr:[0x... | `TestPnetAPI` |
+| tshark fields: the 0xC001 and 0x8001 requests in APIs 0x00004e01 and 0 | IO-Controller | pass | map[0x00000000 0x8001:true 0x00000000 0xc001:true 0x00004e01 0x8001:true 0x00004e01 0xc001:true] [{Frame:32 Fields:map[pn_io.api:[0x00004e01] pn_io.index:[0x... | `TestPnetAPI` |
+| tshark fields: the Connect request names APIs 0x00000000 and 0x00004e01 | IO-Controller | pass | [{Frame:11 Fields:map[pn_io.api:[0x00000000 0x00004e01 0x00004e01 0x00000000 0x00000000 0x00004e01 0x00000000]]}] | `TestPnetAPI` |
 | Read in an API the device does not have (0x4E02) | IO-Controller | peer-deviation | p-net answers with an RPC response without NDR data, no PNIOStatus (pf_cmrpc.c, pf_cmrpc_rm_read_ind: the invalid area/API branch, 0xB4, writes no response);... | `TestPnetAPI` |
 | Process alarm received and acknowledged | IO-Controller | pass | alarms [Process Diagnosis] | `TestPnetAlarms` |
 | Diagnosis alarm received and acknowledged | IO-Controller | pass | alarms [Process Diagnosis] | `TestPnetAlarms` |
@@ -141,22 +142,22 @@ Generated 2026-11-24T00:35:44+00:00 from 41 test runs of go-profinet PR #118 at 
 | p-net reports write | IO-Controller | pass | events 23 | `TestPnetController` |
 | p-net reports read | IO-Controller | pass | events 23 | `TestPnetController` |
 | Release ends the AR at p-net | IO-Controller | pass |  | `TestPnetController` |
-| DCP Identify all | IO-Controller | pass | [map[deviceId:2 ip:map[Addr:10.125.33.10 Gateway:10.125.33.1 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:7d:21:0a nameOfStation:pnet-dut options:[258 257 513 5... | `TestPnetDCP` |
-| DCP Get (all blocks) | IO-Controller | pass | map[event:dcp identity:map[deviceId:2 ip:map[Addr:10.125.33.10 Gateway:10.125.33.1 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:7d:21:0a nameOfStation:pnet-dut ... | `TestPnetDCP` |
+| DCP Identify all | IO-Controller | pass | [map[deviceId:2 ip:map[Addr:10.127.34.10 Gateway:10.127.34.1 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:7f:22:0a nameOfStation:pnet-dut options:[258 257 513 5... | `TestPnetDCP` |
+| DCP Get (all blocks) | IO-Controller | pass | map[event:dcp identity:map[deviceId:2 ip:map[Addr:10.127.34.10 Gateway:10.127.34.1 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:7f:22:0a nameOfStation:pnet-dut ... | `TestPnetDCP` |
 | DCP Set NameOfStation (temporary) | IO-Controller | pass | map[event:dcp op:set-name] | `TestPnetDCP` |
-| DCP Identify by the new name | IO-Controller | pass | [map[deviceId:2 ip:map[Addr:10.125.33.10 Gateway:10.125.33.1 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:7d:21:0a nameOfStation:pnet-renamed options:[258 257 5... | `TestPnetDCP` |
+| DCP Identify by the new name | IO-Controller | pass | [map[deviceId:2 ip:map[Addr:10.127.34.10 Gateway:10.127.34.1 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:7f:22:0a nameOfStation:pnet-renamed options:[258 257 5... | `TestPnetDCP` |
 | DCP Set NameOfStation back | IO-Controller | pass | map[event:dcp op:set-name] | `TestPnetDCP` |
 | DCP Signal | IO-Controller | pass | map[event:dcp op:signal] | `TestPnetDCP` |
 | p-net flashes its LED on Signal | IO-Controller | pass |  | `TestPnetDCP` |
 | DCP Set IP (temporary) | IO-Controller | pass | map[event:dcp op:set-ip] | `TestPnetDCP` |
-| DCP Get reflects the new IP | IO-Controller | pass | map[Addr:10.125.33.11 Gateway:0.0.0.0 Mask:255.255.255.0] | `TestPnetDCP` |
+| DCP Get reflects the new IP | IO-Controller | pass | map[Addr:10.127.34.11 Gateway:0.0.0.0 Mask:255.255.255.0] | `TestPnetDCP` |
 | DCP ResetToFactory (communication) | IO-Controller | pass | map[event:dcp op:reset] | `TestPnetDCP` |
-| Reset clears the station name | IO-Controller | pass | [map[deviceId:2 ip:map[Addr:0.0.0.0 Gateway:0.0.0.0 Mask:0.0.0.0] ipInfo:0 mac:02:42:0a:7d:21:0a nameOfStation: options:[258 257 513 514 515 516 517 518 1281... | `TestPnetDCP` |
+| Reset clears the station name | IO-Controller | pass | [map[deviceId:2 ip:map[Addr:0.0.0.0 Gateway:0.0.0.0 Mask:0.0.0.0] ipInfo:0 mac:02:42:0a:7f:22:0a nameOfStation: options:[258 257 513 514 515 516 517 518 1281... | `TestPnetDCP` |
 | DCP Hello sent by p-net | IO-Controller | pass | 1 Hellos | `TestPnetHello` |
 | Controller connects through the device's Hello, without waiting for its retry | IO-Controller | pass | running true, stats map[Aborts:0 Alarms:0 Connects:1 Consumer:map[Expired:0 LastCounter:64256 Malformed:0 Received:250 Stale:0 WrongSource:0] Cycle:map[Cycle... | `TestPnetHello` |
-| LLDP PNIO PortStatus TLV | IO-Controller | pass | map[alias:port-001.pnet-dut chassis:P-Net Sample Application  12345 Abcdefghijk    007                  3 V  0  2  0 chassisMac:02:42:0a:68:22:0a mac:02:42:0... | `TestPnetLLDP` |
-| LLDP PNIO ChassisMAC TLV | IO-Controller | pass | map[alias:port-001.pnet-dut chassis:P-Net Sample Application  12345 Abcdefghijk    007                  3 V  0  2  0 chassisMac:02:42:0a:68:22:0a mac:02:42:0... | `TestPnetLLDP` |
-| LLDP neighbor (p-net) | IO-Controller | pass | [map[alias:port-001.pnet-dut chassis:P-Net Sample Application  12345 Abcdefghijk    007                  3 V  0  2  0 chassisMac:02:42:0a:68:22:0a mac:02:42:... | `TestPnetLLDP` |
+| LLDP PNIO PortStatus TLV | IO-Controller | pass | map[alias:port-001.pnet-dut chassis:P-Net Sample Application  12345 Abcdefghijk    007                  3 V  0  2  0 chassisMac:02:42:0a:5e:23:0a mac:02:42:0... | `TestPnetLLDP` |
+| LLDP PNIO ChassisMAC TLV | IO-Controller | pass | map[alias:port-001.pnet-dut chassis:P-Net Sample Application  12345 Abcdefghijk    007                  3 V  0  2  0 chassisMac:02:42:0a:5e:23:0a mac:02:42:0... | `TestPnetLLDP` |
+| LLDP neighbor (p-net) | IO-Controller | pass | [map[alias:port-001.pnet-dut chassis:P-Net Sample Application  12345 Abcdefghijk    007                  3 V  0  2  0 chassisMac:02:42:0a:5e:23:0a mac:02:42:... | `TestPnetLLDP` |
 | PDPortDataCheck accepted by p-net (written before PrmEnd) | IO-Controller | pass | running true error <nil> | `TestPnetPortCheck` |
 | CheckPeers, the right neighbor: no remote mismatch (p-net) | IO-Controller | pass | [] | `TestPnetPortCheck` |
 | CheckPeers, another name of station: remote mismatch 0x8000 (p-net) | IO-Controller | pass | [map[API:0 ChannelNumber:32768 ChannelProperties:2048 Data:<nil> Items:[map[ChannelNumber:32768 ChannelProperties:2048 ErrorType:32769 ExtAddValue:0 ExtError... | `TestPnetPortCheck` |
@@ -169,18 +170,39 @@ Generated 2026-11-24T00:35:44+00:00 from 41 test runs of go-profinet PR #118 at 
 | Slot 1 taken over (PrmEnd and ApplicationReady for the plugged submodule): its input valid at the second controller (p-net) | IO-Controller | pass | map[1:1:map[data:4e iops:128 values:128] 2:1:map[data:0000000000000000 iops:128 values:1]] | `TestPnetSharedDevice` |
 | Startup legacy (RTClass 1) | IO-Controller | pass | <nil> | `TestPnetStartupModes` |
 | Startup advanced (RTClass 2) | IO-Controller | pass | <nil> | `TestPnetStartupModes` |
-| 1 ms cycle | IO-Controller | pass | true Running map[Aborts:0 Alarms:0 Connects:1 Consumer:map[Expired:0 LastCounter:30528 Malformed:0 Received:3001 Stale:0 WrongSource:0] Cycle:map[Cycles:3000... | `TestPnetStartupModes` |
+| 1 ms cycle | IO-Controller | pass | true Running map[Aborts:0 Alarms:0 Connects:1 Consumer:map[Expired:0 LastCounter:30528 Malformed:0 Received:3001 Stale:0 WrongSource:0] Cycle:map[Cycles:3001... | `TestPnetStartupModes` |
+
+## p-net, profile-records variant
+
+| Feature | go-profinet role | Outcome | Detail | Test |
+|---------|------------------|---------|--------|------|
+| Connect with profile record 0xB600 written before PrmEnd in API 0x4E01, PrmEnd, ApplicationReady | IO-Controller | pass | running=true error=<nil> | `TestPnetProfile` |
+| Profile record 0xB600 written at Connect, read back in API 0x4E01: the 16 octets written | IO-Controller | pass | map[api:19969 data:800102200102030405060708090a0007 index:46592 op:read slot:1 subslot:1] | `TestPnetProfile` |
+| Profile index 0xB000 the submodule does not have: application read error (DE 80 A0 00) | IO-Controller | pass | map[api:19969 error:pnio: read 19969/1/0x0001 index 0xB000: DE 80 A0 00 (read: application: read error) index:45056 op:read slot:1 status:DE 80 A0 00 (read: ... | `TestPnetProfile` |
+| Profile index 0xBFFF the submodule does not have: application read error (DE 80 A0 00) | IO-Controller | pass | map[api:19969 error:pnio: read 19969/1/0x0001 index 0xBFFF: DE 80 A0 00 (read: application: read error) index:49151 op:read slot:1 status:DE 80 A0 00 (read: ... | `TestPnetProfile` |
+| User index 0x7FFF the submodule does not have: application read error (DE 80 A0 00), as unmodified p-net answers | IO-Controller | pass | map[api:19969 error:pnio: read 19969/1/0x0001 index 0x7FFF: DE 80 A0 00 (read: application: read error) index:32767 op:read slot:1 status:DE 80 A0 00 (read: ... | `TestPnetProfile` |
+| Index 0xAFFF (I&M15): invalid index (DE 80 B0 0A), as unmodified p-net answers | IO-Controller | pass | map[api:19969 error:pnio: read 19969/1/0x0001 index 0xAFFF: DE 80 B0 0A (read: access: invalid index) index:45055 op:read slot:1 status:DE 80 B0 0A (read: ac... | `TestPnetProfile` |
+| ReadImplicit of 0xB600 (no AR): invalid index (DE 80 B0 0A), not given to the application | IO-Controller | pass | map[api:19969 error:pnio: read 19969/1/0x0001 index 0xB600: DE 80 B0 0A (read: access: invalid index) index:46592 slot:1 subslot:1] | `TestPnetProfile` |
+| Release ends the first AR at p-net | IO-Controller | pass |  | `TestPnetProfile` |
+| Second Connect with 0xB600 before PrmEnd | IO-Controller | pass | running=true error=<nil> | `TestPnetProfile` |
+| Profile record 0xB600 written in Data in API 0x4E01, read back: the 16 octets written | IO-Controller | pass | [map[api:19969 index:46592 op:write slot:1 subslot:1] map[api:19969 error:pnio: write 19969/1/0x0001 index 0xB600: DF 80 A1 00 (write: application: write err... | `TestPnetProfile` |
+| Profile record 0xB600 of the wrong length (2 octets): application write error (DF 80 A1 00) | IO-Controller | pass | [map[api:19969 index:46592 op:write slot:1 subslot:1] map[api:19969 error:pnio: write 19969/1/0x0001 index 0xB600: DF 80 A1 00 (write: application: write err... | `TestPnetProfile` |
+| Profile index 0xB000 the submodule does not have: application write error (DF 80 A1 00) | IO-Controller | pass | [map[api:19969 index:46592 op:write slot:1 subslot:1] map[api:19969 error:pnio: write 19969/1/0x0001 index 0xB600: DF 80 A1 00 (write: application: write err... | `TestPnetProfile` |
+| Release ends the second AR at p-net | IO-Controller | pass |  | `TestPnetProfile` |
+| tshark fields: every 0xB600 request and answer in API 0x00004e01, slot 1, subslot 1 | IO-Controller | pass | [{Frame:14 Fields:map[pn_io.api:[0x00004e01] pn_io.slot_nr:[0x0001] pn_io.subslot_nr:[0x0001]]} {Frame:15 Fields:map[pn_io.api:[0x00004e01] pn_io.slot_nr:[0x... | `TestPnetProfile` |
+| tshark: 0xB600 Write requests of 16 octets: the first value at both Connects, the second in Data | IO-Controller | pass |  | `TestPnetProfile` |
+| tshark: 0xB600 Read responses of 16 octets: the first value, then the second | IO-Controller | pass |  | `TestPnetProfile` |
 
 ## pnio-dcp
 
 | Feature | go-profinet role | Outcome | Detail | Test |
 |---------|------------------|---------|--------|------|
-| DCP Identify all | DCP responder | pass | map[adapter:pnio-dcp devices:[map[family:go-profinet interop device gateway:0.0.0.0 ip:10.124.27.20 mac:02:42:0a:7c:1b:14 mask:255.255.255.0 name:otf-dut]] o... | `TestPnioDCP` |
+| DCP Identify all | DCP responder | pass | map[adapter:pnio-dcp devices:[map[family:go-profinet interop device gateway:0.0.0.0 ip:10.125.27.20 mac:02:42:0a:7d:1b:14 mask:255.255.255.0 name:otf-dut]] o... | `TestPnioDCP` |
 | DCP Get NameOfStation | DCP responder | pass | map[adapter:pnio-dcp ok:true op:get-name schemaVersion:1.0 value:otf-dut version:1.2.0] | `TestPnioDCP` |
 | DCP Set NameOfStation (temporary) | DCP responder | pass | map[adapter:pnio-dcp code:0 message:Code 00: Set successful ok:true op:set-name schemaVersion:1.0 version:1.2.0] | `TestPnioDCP` |
 | DCP Get reflects the new name | DCP responder | pass | map[adapter:pnio-dcp ok:true op:get-name schemaVersion:1.0 value:dcp-renamed version:1.2.0] | `TestPnioDCP` |
 | DCP Set IP (temporary) | DCP responder | pass | map[adapter:pnio-dcp code:0 message:Code 00: Set successful ok:true op:set-ip schemaVersion:1.0 version:1.2.0] | `TestPnioDCP` |
-| DCP Get IP | DCP responder | pass | map[adapter:pnio-dcp ok:true op:get-ip schemaVersion:1.0 value:10.124.27.22 version:1.2.0] | `TestPnioDCP` |
+| DCP Get IP | DCP responder | pass | map[adapter:pnio-dcp ok:true op:get-ip schemaVersion:1.0 value:10.125.27.22 version:1.2.0] | `TestPnioDCP` |
 | DCP Signal (blink) | DCP responder | pass | map[adapter:pnio-dcp code:0 message:Code 00: Set successful ok:true op:blink schemaVersion:1.0 version:1.2.0] | `TestPnioDCP` |
 | DCP ResetToFactory | DCP responder | pass | map[adapter:pnio-dcp code:0 message:Code 00: Set successful ok:true op:reset schemaVersion:1.0 version:1.2.0] | `TestPnioDCP` |
 
@@ -189,18 +211,18 @@ Generated 2026-11-24T00:35:44+00:00 from 41 test runs of go-profinet PR #118 at 
 | Feature | go-profinet role | Outcome | Detail | Test |
 |---------|------------------|---------|--------|------|
 | GSDML-derived expected configuration; Connect, PrmEnd, ApplicationReady (advanced, RTClass 2) | IO-Controller | pass | <nil> | `TestPnioRsController` |
-| Read I&M0 | IO-Controller | pass | map[HardwareRevision:1 OrderID:PNIO-SAMPLE ProfileID:0 ProfileType:0 RevisionCounter:0 SerialNumber:PNIO-71121E SoftwareRevision:map[BugFix:1 FunctionalEnhan... | `TestPnioRsController` |
+| Read I&M0 | IO-Controller | pass | map[HardwareRevision:1 OrderID:PNIO-SAMPLE ProfileID:0 ProfileType:0 RevisionCounter:0 SerialNumber:PNIO-62121E SoftwareRevision:map[BugFix:1 FunctionalEnhan... | `TestPnioRsController` |
 | Write and read back I&M1 | IO-Controller | pass | map[data:002100380100616161616161616161616161616161616161616161616161616161616161616162626262626262626262626262626262626262626262 index:45041 op:read slot:0 ... | `TestPnioRsController` |
 | Diagnosis records (0x800C) | IO-Controller | n/a | pnio-rs answers every diagnosis index with invalid index (documented limitation) | `TestPnioRsController` |
 | Diagnosis record answers invalid index as pnio-rs documents | IO-Controller | pass | map[error:pnio: read 0/1/0x0001 index 0x800C: DE 80 B0 00 (read: access: invalid index) index:32780 op:read slot:1 status:DE 80 B0 00 (read: access: invalid ... | `TestPnioRsController` |
 | I&M4 answers invalid index as pnio-rs documents | IO-Controller | pass | map[error:pnio: read 0/0/0x0001 index 0xAFF4: DE 80 B0 00 (read: access: invalid index) index:45044 op:read slot:0 status:DE 80 B0 00 (read: access: invalid ... | `TestPnioRsController` |
 | Cyclic echo of 16 REAL outputs | IO-Controller | pass | map[data:3f8000003f8000003f8000003f8000003f8000003f8000003f8000003f8000003f8000003f8000003f8000003f8000003f8000003f8000003f8000003f800000 iops:128 values:1] | `TestPnioRsController` |
 | Cyclic echo of 32 BOOL outputs | IO-Controller | pass | map[data:a5a5a5a5 iops:128 values:1] | `TestPnioRsController` |
-| pnio-rs reaches Data | IO-Controller | pass | [map[adapter:pnio-rs event:start iface:eth0 ip:10.113.18.30 mac:02:42:0a:71:12:1e station:pnio-dut] map[event:ar-state state:Idle] map[event:rt-stats] map[ev... | `TestPnioRsController` |
+| pnio-rs reaches Data | IO-Controller | pass | [map[adapter:pnio-rs event:start iface:eth0 ip:10.98.18.30 mac:02:42:0a:62:12:1e station:pnio-dut] map[event:ar-state state:Idle] map[event:rt-stats] map[eve... | `TestPnioRsController` |
 | Release ends the AR at pnio-rs | IO-Controller | pass |  | `TestPnioRsController` |
 | pnio-rs rejects RT_CLASS_1 FrameIDs (0xC000..) with a Connect error, which the controller reports | IO-Controller | pass | controller: connect pnio-dut: pnio: connect: DB 81 02 06 (connect: faulty IOCRBlockReq, code 6) | `TestPnioRsController` |
-| DCP Identify by name | IO-Controller | pass | [map[deviceId:1 instance:1 ip:map[Addr:10.101.19.30 Gateway:10.101.19.30 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:65:13:1e nameOfStation:pnio-dut options:[2... | `TestPnioRsDCP` |
-| DCP Identify all | IO-Controller | pass | [map[deviceId:1 instance:1 ip:map[Addr:10.101.19.30 Gateway:10.101.19.30 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:65:13:1e nameOfStation:pnio-dut options:[2... | `TestPnioRsDCP` |
+| DCP Identify by name | IO-Controller | pass | [map[deviceId:1 instance:1 ip:map[Addr:10.116.19.30 Gateway:10.116.19.30 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:74:13:1e nameOfStation:pnio-dut options:[2... | `TestPnioRsDCP` |
+| DCP Identify all | IO-Controller | pass | [map[deviceId:1 instance:1 ip:map[Addr:10.116.19.30 Gateway:10.116.19.30 Mask:255.255.255.0] ipInfo:1 mac:02:42:0a:74:13:1e nameOfStation:pnio-dut options:[2... | `TestPnioRsDCP` |
 | DCP Get/Set NameOfStation/Signal/Reset (pnio-rs) | IO-Controller | n/a | pnio-rs v0.1.0 does not implement them | `TestPnioRsDCP` |
 | Re-parameterization in Data (pnio-rs) | IO-Controller | n/a | pnio-rs refuses PrmBegin in Data: controller: pnio-dut: re-parameterize: PrmBegin: pnio: IODControlReq(PrmBegin): DD 81 3D 03 (control: CMDEV, code 3) | `TestPnioRsReparameterize` |
 | A refused PrmBegin leaves the AR running (pnio-rs) | IO-Controller | pass | map[error:controller: pnio-dut: re-parameterize: PrmBegin: pnio: IODControlReq(PrmBegin): DD 81 3D 03 (control: CMDEV, code 3) op:reparameterize parameters:1... | `TestPnioRsReparameterize` |
@@ -233,11 +255,11 @@ Generated 2026-11-24T00:35:44+00:00 from 41 test runs of go-profinet PR #118 at 
 | The device received the write in API 0x4E01 | IO-Device | pass | [2:1:16=0005 3:1:17=0a0b 3:1:46592=800102200102030405060708090a0007] | `TestProfinetPyAPI` |
 | The device received the write of 0xB600 and neither refused write | IO-Device | pass | [2:1:16=0005 3:1:17=0a0b 3:1:46592=800102200102030405060708090a0007] | `TestProfinetPyAPI` |
 | tshark: PNIO-CM "Trailing stray characters" | IO-Device | peer-deviation | profinet-py writes I&M1 with BlockLength 58 and two padding octets; the standard block is 56 octets (tshark flags the extra octets of its Write request) | `TestProfinetPyAPI` |
-| tshark fields: profinet-py's Connect request names APIs 0x00000000 and 0x00004e01 | IO-Device | pass | [{Frame:93 Fields:map[pn_io.api:[0x00000000 0x00004e01 0x00000000 0x00004e01 0x00000000 0x00000000 0x00000000 0x00004e01]]}] | `TestProfinetPyAPI` |
-| tshark fields: record 0x0011 read and written in API 0x00004e01, slot 3, subslot 1; the refused reads in APIs 0 and 0x00004e02 | IO-Device | pass | map[0x00000000:1 0x00004e01:6 0x00004e02:1] [{Frame:50 Fields:map[pn_io.api:[0x00004e01] pn_io.slot_nr:[0x0003] pn_io.subslot_nr:[0x0001]]} {Frame:51 Fields:... | `TestProfinetPyAPI` |
-| tshark fields: profinet-py's Write of 0xB600 in API 0x00004e01, slot 3, subslot 1, RecordDataLength 16, its 16 octets as profile user data | IO-Device | pass | [{Frame:66 Fields:map[pn.user_data:[data] pn_io.api:[0x00004e01] pn_io.index:[0xb600] pn_io.record_data_length:[16] pn_io.slot_nr:[0x0003] pn_io.subslot_nr:[... | `TestProfinetPyAPI` |
-| tshark fields: the 0xC001 and 0x8001 requests in APIs 0x00004e01 and 0 | IO-Device | pass | map[0x00000000 0x8001:true 0x00000000 0xc001:true 0x00004e01 0x8001:true 0x00004e01 0xc001:true] [{Frame:82 Fields:map[pn_io.api:[0x00004e01] pn_io.index:[0x... | `TestProfinetPyAPI` |
-| DCP discovery by profinet-py | IO-Device | pass | [{discover true map[ip:10.92.20.20 mac:02:42:0a:5c:14:14 name:otf-dut] } {read-im0 true map[hardwareRevision:1 orderId:b'OTF-INTEROP-1' serial:b'0001' vendor... | `TestProfinetPyController` |
+| tshark fields: profinet-py's Connect request names APIs 0x00000000 and 0x00004e01 | IO-Device | pass | [{Frame:95 Fields:map[pn_io.api:[0x00000000 0x00004e01 0x00000000 0x00004e01 0x00000000 0x00000000 0x00000000 0x00004e01]]}] | `TestProfinetPyAPI` |
+| tshark fields: record 0x0011 read and written in API 0x00004e01, slot 3, subslot 1; the refused reads in APIs 0 and 0x00004e02 | IO-Device | pass | map[0x00000000:1 0x00004e01:6 0x00004e02:1] [{Frame:52 Fields:map[pn_io.api:[0x00004e01] pn_io.slot_nr:[0x0003] pn_io.subslot_nr:[0x0001]]} {Frame:53 Fields:... | `TestProfinetPyAPI` |
+| tshark fields: profinet-py's Write of 0xB600 in API 0x00004e01, slot 3, subslot 1, RecordDataLength 16, its 16 octets as profile user data | IO-Device | pass | [{Frame:68 Fields:map[pn.user_data:[data] pn_io.api:[0x00004e01] pn_io.index:[0xb600] pn_io.record_data_length:[16] pn_io.slot_nr:[0x0003] pn_io.subslot_nr:[... | `TestProfinetPyAPI` |
+| tshark fields: the 0xC001 and 0x8001 requests in APIs 0x00004e01 and 0 | IO-Device | pass | map[0x00000000 0x8001:true 0x00000000 0xc001:true 0x00004e01 0x8001:true 0x00004e01 0xc001:true] [{Frame:84 Fields:map[pn_io.api:[0x00004e01] pn_io.index:[0x... | `TestProfinetPyAPI` |
+| DCP discovery by profinet-py | IO-Device | pass | [{discover true map[ip:10.117.20.20 mac:02:42:0a:75:14:14 name:otf-dut] } {read-im0 true map[hardwareRevision:1 orderId:b'OTF-INTEROP-1' serial:b'0001' vendo... | `TestProfinetPyController` |
 | Read I&M0 (IOSAR device access) | IO-Device | pass | map[hardwareRevision:1 orderId:b'OTF-INTEROP-1' serial:b'0001' vendorId:61440] | `TestProfinetPyController` |
 | Read I&M2..I&M4 | IO-Device | pass |  | `TestProfinetPyController` |
 | Write and read a user record | IO-Device | pass | 0005 | `TestProfinetPyController` |
@@ -246,14 +268,14 @@ Generated 2026-11-24T00:35:44+00:00 from 41 test runs of go-profinet PR #118 at 
 | ModuleDiff read | IO-Device | pass | ModuleDiffBlock(modules=[]) | `TestProfinetPyController` |
 | Slot discovery (RealIdentificationData) | IO-Device | pass | [SlotInfo(api=0, slot=0, subslot=0x0001) SlotInfo(api=0, slot=0, subslot=0x8000) SlotInfo(api=0, slot=0, subslot=0x8001) SlotInfo(api=0, slot=1, subslot=0x00... | `TestProfinetPyController` |
 | I&M1 write by profinet-py | IO-Device | peer-deviation | profinet-py writes BlockLength 58 with 2 padding octets; p-net, pnio-rs and go-profinet use 56; go-profinet answers DF 80 B8 00 | `TestProfinetPyController` |
-| GSDML generated by go-profinet parsed by profinet-py; cyclic AR (IOCARSingle) established | IO-Device | pass | [{discover true map[ip:10.92.20.20 mac:02:42:0a:5c:14:14 name:otf-dut] } {read-im0 true map[hardwareRevision:1 orderId:b'OTF-INTEROP-1' serial:b'0001' vendor... | `TestProfinetPyController` |
+| GSDML generated by go-profinet parsed by profinet-py; cyclic AR (IOCARSingle) established | IO-Device | pass | [{discover true map[ip:10.117.20.20 mac:02:42:0a:75:14:14 name:otf-dut] } {read-im0 true map[hardwareRevision:1 orderId:b'OTF-INTEROP-1' serial:b'0001' vendo... | `TestProfinetPyController` |
 | Cyclic inputs at profinet-py | IO-Device | pass | 2d2e2f3031323334 | `TestProfinetPyController` |
-| Cyclic statistics without missed frames | IO-Device | pass | map[_cycle_count:93 _cycle_time_sum_us:2.975944e+06 consecutive_timeouts:0 frames_duplicate:0 frames_invalid:0 frames_missed:0 frames_out_of_order:0 frames_r... | `TestProfinetPyController` |
+| Cyclic statistics without missed frames | IO-Device | pass | map[_cycle_count:93 _cycle_time_sum_us:2.975947e+06 consecutive_timeouts:0 frames_duplicate:0 frames_invalid:0 frames_missed:0 frames_out_of_order:0 frames_r... | `TestProfinetPyController` |
 | Cyclic outputs from profinet-py at the device | IO-Device | pass | map[2:1=a1b2c3d4:true 3:1=beef:true] | `TestProfinetPyController` |
 | IOSAR and IOCARSingle ARs from profinet-py | IO-Device | pass | [IOSAR IOCARSingle] | `TestProfinetPyController` |
 | Diagnosis alarm sent to profinet-py and acknowledged | IO-Device | pass | map[event:diagnosis-sent] | `TestProfinetPyController` |
 | tshark: PNIO-CM "Trailing stray characters" | IO-Device | peer-deviation | profinet-py writes I&M1 with BlockLength 58 and two padding octets; the standard block is 56 octets (tshark flags the extra octets of its Write request) | `TestProfinetPyController` |
-| DCP Identify all | DCP responder | pass | [map[deviceId:257 ip:10.121.26.20 mac:02:42:0a:79:1a:14 name:otf-dut vendorId:61440]] | `TestProfinetPyDCP` |
+| DCP Identify all | DCP responder | pass | [map[deviceId:257 ip:10.122.26.20 mac:02:42:0a:7a:1a:14 name:otf-dut vendorId:61440]] | `TestProfinetPyDCP` |
 | DCP Get name | DCP responder | pass | 6f74662d647574 | `TestProfinetPyDCP` |
 | DCP Set NameOfStation | DCP responder | pass | true | `TestProfinetPyDCP` |
 | Device applies the name | DCP responder | pass |  | `TestProfinetPyDCP` |
@@ -264,7 +286,7 @@ Generated 2026-11-24T00:35:44+00:00 from 41 test runs of go-profinet PR #118 at 
 | GSDML fixture DAP_1P parsed by profinet-py; cyclic AR with a device of the same file | IO-Device | pass | ok | `TestProfinetPyFixtures/DAP_1P` |
 | Cyclic inputs from the fixture device DAP_1P | IO-Device | n/a | profinet-py builds its configuration from FixedInSlots only and ignores UsedInSlots: it connected with the DAP alone ([map[in:0 out:0 slot:0 subslot:1] map[i... | `TestProfinetPyFixtures/DAP_1P` |
 | GSDML fixture DAP_C parsed by profinet-py; cyclic AR with a device of the same file | IO-Device | pass | ok | `TestProfinetPyFixtures/DAP_C` |
-| Cyclic inputs from the fixture device DAP_C | IO-Device | pass | ok 1718191a1b | `TestProfinetPyFixtures/DAP_C` |
+| Cyclic inputs from the fixture device DAP_C | IO-Device | pass | ok 18191a1b1c | `TestProfinetPyFixtures/DAP_C` |
 | Cyclic AR (IOCARSingle) by profinet-py | IO-Device | pass | map[close:ok cyclic-stats:ok diagnosis:ok discover:ok discover-slots:ok input 1:1:ok module-diff:ok prm-begin:ok prm-end:ok read-im0:ok read-im1:ok read-im2:... | `TestProfinetPyReparameterize` |
 | PrmBegin in Data accepted (profinet-py) | IO-Device | pass | ok | `TestProfinetPyReparameterize` |
 | Record write between PrmBegin and PrmEnd (profinet-py) | IO-Device | pass | ok | `TestProfinetPyReparameterize` |
@@ -281,29 +303,30 @@ Generated 2026-11-24T00:35:44+00:00 from 41 test runs of go-profinet PR #118 at 
 | scapy decode codecs.pcap | - | pass | 18 frames map[mrp:4 ptcp:2 udp:12], 0 undecoded, 4 without a scapy dissector | `TestCodecDecoders` |
 | scapy decode codecs.pcap: MRP frames not dissected | - | peer-deviation | decoder limit: scapy has no MRP dissector; the frames are read, not decoded (tshark decodes them) | `TestCodecDecoders` |
 | scapy decode dcp-dhcp.pcap | - | pass | 7 frames map[dcp:7], 0 undecoded, 0 without a scapy dissector | `TestDCPDHCPDecoders` |
-| scapy decode mrp-auto-mrp.pcap | - | pass | 956 frames map[mrp:956], 0 undecoded, 956 without a scapy dissector | `TestMRPAuto/mrp/go-profinet-best` |
+| scapy decode mrp-auto-mrp.pcap | - | pass | 964 frames map[mrp:964], 0 undecoded, 964 without a scapy dissector | `TestMRPAuto/mrp/go-profinet-best` |
 | scapy decode mrp-auto-mrp.pcap: MRP frames not dissected | - | peer-deviation | decoder limit: scapy has no MRP dissector; the frames are read, not decoded (tshark decodes them) | `TestMRPAuto/mrp/go-profinet-best` |
-| scapy decode mrp-auto-umrp.pcap | - | pass | 165 frames map[mrp:165], 0 undecoded, 165 without a scapy dissector | `TestMRPAuto/umrp/go-profinet-best` |
+| scapy decode mrp-auto-umrp.pcap | - | pass | 145 frames map[mrp:145], 0 undecoded, 145 without a scapy dissector | `TestMRPAuto/umrp/go-profinet-best` |
 | scapy decode mrp-auto-umrp.pcap: MRP frames not dissected | - | peer-deviation | decoder limit: scapy has no MRP dissector; the frames are read, not decoded (tshark decodes them) | `TestMRPAuto/umrp/go-profinet-best` |
-| scapy decode mrp-otf-client-mrp.pcap | - | pass | 13104 frames map[mrp:13104], 0 undecoded, 13104 without a scapy dissector | `TestMRPOtfClient/mrp` |
+| scapy decode mrp-otf-client-mrp.pcap | - | pass | 10914 frames map[mrp:10914], 0 undecoded, 10914 without a scapy dissector | `TestMRPOtfClient/mrp` |
 | scapy decode mrp-otf-client-mrp.pcap: MRP frames not dissected | - | peer-deviation | decoder limit: scapy has no MRP dissector; the frames are read, not decoded (tshark decodes them) | `TestMRPOtfClient/mrp` |
 | scapy decode mrp-otf-client-umrp.pcap | - | pass | 533 frames map[mrp:533], 0 undecoded, 533 without a scapy dissector | `TestMRPOtfClient/umrp` |
 | scapy decode mrp-otf-client-umrp.pcap: MRP frames not dissected | - | peer-deviation | decoder limit: scapy has no MRP dissector; the frames are read, not decoded (tshark decodes them) | `TestMRPOtfClient/umrp` |
-| scapy decode mrp-otf-manager-mrp.pcap | - | pass | 8195 frames map[mrp:8195], 0 undecoded, 8195 without a scapy dissector | `TestMRPOtfManager/mrp` |
+| scapy decode mrp-otf-manager-mrp.pcap | - | pass | 7435 frames map[mrp:7435], 0 undecoded, 7435 without a scapy dissector | `TestMRPOtfManager/mrp` |
 | scapy decode mrp-otf-manager-mrp.pcap: MRP frames not dissected | - | peer-deviation | decoder limit: scapy has no MRP dissector; the frames are read, not decoded (tshark decodes them) | `TestMRPOtfManager/mrp` |
-| scapy decode mrp-otf-manager-umrp.pcap | - | pass | 347 frames map[mrp:347], 0 undecoded, 347 without a scapy dissector | `TestMRPOtfManager/umrp` |
+| scapy decode mrp-otf-manager-umrp.pcap | - | pass | 340 frames map[mrp:340], 0 undecoded, 340 without a scapy dissector | `TestMRPOtfManager/umrp` |
 | scapy decode mrp-otf-manager-umrp.pcap: MRP frames not dissected | - | peer-deviation | decoder limit: scapy has no MRP dissector; the frames are read, not decoded (tshark decodes them) | `TestMRPOtfManager/umrp` |
-| scapy decode netsnmp-read.pcap | - | pass | 146 frames map[ARP:32 IP:1 IPv6:7 udp:106], 0 undecoded, 0 without a scapy dissector | `TestNetSNMPRead` |
-| scapy decode otf-hello.pcap | - | pass | 13 frames map[ARP:3 IP:1 IPv6:6 dcp:3], 0 undecoded, 0 without a scapy dissector | `TestOtfHelloDecoders` |
-| scapy decode pnet-api.pcap | - | pass | 1004 frames map[ARP:7 IP:1 IPv6:8 Raw:1 dcp:3 rt:954 udp:30], 0 undecoded, 0 without a scapy dissector | `TestPnetAPI` |
-| scapy decode pnet-controller.pcap | - | pass | 1019 frames map[ARP:7 IPv6:10 Raw:1 dcp:3 rt:956 udp:42], 0 undecoded, 0 without a scapy dissector | `TestPnetController` |
-| scapy decode pnet-hello.pcap | - | pass | 19 frames map[ARP:8 IP:1 IPv6:8 dcp:2], 0 undecoded, 0 without a scapy dissector | `TestPnetHello` |
-| scapy decode pnet-reparameterize.pcap | - | pass | 485 frames map[ARP:6 IP:1 IPv6:7 Raw:1 dcp:3 rt:455 udp:12], 0 undecoded, 0 without a scapy dissector | `TestPnetReparameterize` |
-| scapy decode pnio-dcp.pcap | - | pass | 33 frames map[ARP:10 IP:1 IPv6:8 Raw:2 dcp:12], 0 undecoded, 0 without a scapy dissector | `TestPnioDCP` |
-| scapy decode pniors-controller.pcap | - | pass | 1066 frames map[ARP:14 IPv6:8 dcp:14 rt:1000 udp:30], 0 undecoded, 0 without a scapy dissector | `TestPnioRsController` |
-| scapy decode profinet-py-api.pcap | - | pass | 269 frames map[ARP:7 IP:1 IPv6:9 dcp:2 rt:164 udp:86], 0 undecoded, 0 without a scapy dissector | `TestProfinetPyAPI` |
-| scapy decode profinet-py-controller.pcap | - | pass | 232 frames map[ARP:7 IP:1 IPv6:9 alarm:4 dcp:2 rt:163 udp:46], 0 undecoded, 0 without a scapy dissector | `TestProfinetPyController` |
-| scapy decode profinet-py-reparameterize.pcap | - | pass | 238 frames map[ARP:7 IP:2 IPv6:9 dcp:2 rt:164 udp:54], 0 undecoded, 0 without a scapy dissector | `TestProfinetPyReparameterize` |
+| scapy decode netsnmp-read.pcap | - | pass | 145 frames map[ARP:32 IPv6:7 udp:106], 0 undecoded, 0 without a scapy dissector | `TestNetSNMPRead` |
+| scapy decode otf-hello.pcap | - | pass | 13 frames map[ARP:3 IPv6:7 dcp:3], 0 undecoded, 0 without a scapy dissector | `TestOtfHelloDecoders` |
+| scapy decode pnet-api.pcap | - | pass | 1004 frames map[ARP:7 IPv6:9 Raw:1 dcp:3 rt:954 udp:30], 0 undecoded, 0 without a scapy dissector | `TestPnetAPI` |
+| scapy decode pnet-controller.pcap | - | pass | 1015 frames map[ARP:7 IPv6:8 Raw:1 dcp:3 rt:954 udp:42], 0 undecoded, 0 without a scapy dissector | `TestPnetController` |
+| scapy decode pnet-hello.pcap | - | pass | 19 frames map[ARP:8 IPv6:9 dcp:2], 0 undecoded, 0 without a scapy dissector | `TestPnetHello` |
+| scapy decode pnet-profile.pcap | - | pass | 945 frames map[ARP:11 IP:1 IPv6:7 Raw:2 alarm:2 dcp:5 rt:879 udp:38], 0 undecoded, 0 without a scapy dissector | `TestPnetProfile` |
+| scapy decode pnet-reparameterize.pcap | - | pass | 484 frames map[ARP:6 IP:1 IPv6:9 Raw:1 dcp:3 rt:452 udp:12], 0 undecoded, 0 without a scapy dissector | `TestPnetReparameterize` |
+| scapy decode pnio-dcp.pcap | - | pass | 40 frames map[ARP:12 IP:1 IPv6:9 Raw:2 dcp:16], 0 undecoded, 0 without a scapy dissector | `TestPnioDCP` |
+| scapy decode pniors-controller.pcap | - | pass | 1070 frames map[ARP:14 IP:1 IPv6:10 dcp:14 rt:1001 udp:30], 0 undecoded, 0 without a scapy dissector | `TestPnioRsController` |
+| scapy decode profinet-py-api.pcap | - | pass | 269 frames map[ARP:7 IP:2 IPv6:9 dcp:2 rt:163 udp:86], 0 undecoded, 0 without a scapy dissector | `TestProfinetPyAPI` |
+| scapy decode profinet-py-controller.pcap | - | pass | 233 frames map[ARP:7 IP:2 IPv6:8 alarm:4 dcp:2 rt:164 udp:46], 0 undecoded, 0 without a scapy dissector | `TestProfinetPyController` |
+| scapy decode profinet-py-reparameterize.pcap | - | pass | 237 frames map[ARP:7 IP:2 IPv6:8 dcp:2 rt:164 udp:54], 0 undecoded, 0 without a scapy dissector | `TestProfinetPyReparameterize` |
 | scapy decode snmp.pcap | - | pass | 180 frames map[ARP:2 udp:178], 0 undecoded, 0 without a scapy dissector | `TestSNMPDecoders` |
 | scapy decodes every SNMP datagram (PDU and variable bindings) | - | pass | 178 of 178 datagrams, PDUs map[SNMPbulk:5 SNMPget:2 SNMPnext:80 SNMPresponse:89 SNMPset:2], undecoded [] | `TestSNMPDecoders` |
 | scapy decode udp-rt.pcap | - | pass | 2 frames map[udp:2], 0 undecoded, 0 without a scapy dissector | `TestUDPRTDecoders` |
@@ -314,23 +337,24 @@ Generated 2026-11-24T00:35:44+00:00 from 41 test runs of go-profinet PR #118 at 
 |---------|------------------|---------|--------|------|
 | tshark check codecs.pcap | - | pass | 18 frames map[PN-MRP:4 PN-PTCP:2 PNIO-CM:12], 0 malformed, 0 warnings | `TestCodecDecoders` |
 | tshark check dcp-dhcp.pcap | - | pass | 7 frames map[PN-DCP:7], 0 malformed, 0 warnings | `TestDCPDHCPDecoders` |
-| tshark check mrp-auto-mrp.pcap | - | pass | 956 frames map[PN-MRP:956], 0 malformed, 0 warnings | `TestMRPAuto/mrp/go-profinet-best` |
-| tshark check mrp-auto-umrp.pcap | - | pass | 165 frames map[PN-MRP:165], 0 malformed, 0 warnings | `TestMRPAuto/umrp/go-profinet-best` |
-| tshark check mrp-otf-client-mrp.pcap | - | pass | 13104 frames map[PN-MRP:13104], 0 malformed, 0 warnings | `TestMRPOtfClient/mrp` |
+| tshark check mrp-auto-mrp.pcap | - | pass | 964 frames map[PN-MRP:964], 0 malformed, 0 warnings | `TestMRPAuto/mrp/go-profinet-best` |
+| tshark check mrp-auto-umrp.pcap | - | pass | 145 frames map[PN-MRP:145], 0 malformed, 0 warnings | `TestMRPAuto/umrp/go-profinet-best` |
+| tshark check mrp-otf-client-mrp.pcap | - | pass | 10914 frames map[PN-MRP:10914], 0 malformed, 0 warnings | `TestMRPOtfClient/mrp` |
 | tshark check mrp-otf-client-umrp.pcap | - | pass | 533 frames map[PN-MRP:533], 0 malformed, 0 warnings | `TestMRPOtfClient/umrp` |
-| tshark check mrp-otf-manager-mrp.pcap | - | pass | 8195 frames map[PN-MRP:8195], 0 malformed, 0 warnings | `TestMRPOtfManager/mrp` |
-| tshark check mrp-otf-manager-umrp.pcap | - | pass | 347 frames map[PN-MRP:347], 0 malformed, 0 warnings | `TestMRPOtfManager/umrp` |
-| tshark check netsnmp-read.pcap | - | pass | 146 frames map[ARP:32 ICMPv6:7 IGMPv3:1 SNMP:106], 0 malformed, 0 warnings | `TestNetSNMPRead` |
-| tshark check otf-hello.pcap | - | pass | 13 frames map[ARP:3 ICMPv6:6 IGMPv3:1 PN-DCP:3], 0 malformed, 0 warnings | `TestOtfHelloDecoders` |
-| tshark check pnet-api.pcap | - | pass | 1004 frames map[ARP:7 ICMPv6:8 IGMPv3:1 LLDP:1 PN-DCP:3 PNIO-CM:30 PNIO_PS:954], 0 malformed, 0 warnings | `TestPnetAPI` |
-| tshark check pnet-controller.pcap | - | pass | 1019 frames map[ARP:7 ICMPv6:10 LLDP:1 PN-DCP:3 PNIO-CM:42 PNIO_PS:956], 0 malformed, 0 warnings | `TestPnetController` |
-| tshark check pnet-hello.pcap | - | pass | 19 frames map[ARP:8 ICMPv6:8 IGMPv3:1 PN-DCP:2], 0 malformed, 0 warnings | `TestPnetHello` |
-| tshark check pnet-reparameterize.pcap | - | pass | 485 frames map[ARP:6 ICMPv6:7 IGMPv3:1 LLDP:1 PN-DCP:3 PNIO-CM:12 PNIO_PS:455], 0 malformed, 0 warnings | `TestPnetReparameterize` |
-| tshark check pnio-dcp.pcap | - | pass | 33 frames map[ARP:10 ICMPv6:8 IGMPv3:1 LLDP:2 PN-DCP:12], 0 malformed, 0 warnings | `TestPnioDCP` |
-| tshark check pniors-controller.pcap | - | pass | 1066 frames map[ARP:14 ICMPv6:8 PN-DCP:14 PNIO-CM:30 PNIO_PS:1000], 0 malformed, 0 warnings | `TestPnioRsController` |
-| tshark check profinet-py-api.pcap | - | pass | 269 frames map[ARP:7 ICMP:1 ICMPv6:9 PN-DCP:2 PNIO-CM:86 PNIO_PS:164], 0 malformed, 0 warnings | `TestProfinetPyAPI` |
-| tshark check profinet-py-controller.pcap | - | pass | 232 frames map[ARP:7 ICMP:1 ICMPv6:9 PN-DCP:2 PNIO-AL:4 PNIO-CM:46 PNIO_PS:163], 0 malformed, 0 warnings | `TestProfinetPyController` |
-| tshark check profinet-py-reparameterize.pcap | - | pass | 238 frames map[ARP:7 ICMP:1 ICMPv6:9 IGMPv3:1 PN-DCP:2 PNIO-CM:54 PNIO_PS:164], 0 malformed, 0 warnings | `TestProfinetPyReparameterize` |
+| tshark check mrp-otf-manager-mrp.pcap | - | pass | 7435 frames map[PN-MRP:7435], 0 malformed, 0 warnings | `TestMRPOtfManager/mrp` |
+| tshark check mrp-otf-manager-umrp.pcap | - | pass | 340 frames map[PN-MRP:340], 0 malformed, 0 warnings | `TestMRPOtfManager/umrp` |
+| tshark check netsnmp-read.pcap | - | pass | 145 frames map[ARP:32 ICMPv6:7 SNMP:106], 0 malformed, 0 warnings | `TestNetSNMPRead` |
+| tshark check otf-hello.pcap | - | pass | 13 frames map[ARP:3 ICMPv6:7 PN-DCP:3], 0 malformed, 0 warnings | `TestOtfHelloDecoders` |
+| tshark check pnet-api.pcap | - | pass | 1004 frames map[ARP:7 ICMPv6:9 LLDP:1 PN-DCP:3 PNIO-CM:30 PNIO_PS:954], 0 malformed, 0 warnings | `TestPnetAPI` |
+| tshark check pnet-controller.pcap | - | pass | 1015 frames map[ARP:7 ICMPv6:8 LLDP:1 PN-DCP:3 PNIO-CM:42 PNIO_PS:954], 0 malformed, 0 warnings | `TestPnetController` |
+| tshark check pnet-hello.pcap | - | pass | 19 frames map[ARP:8 ICMPv6:9 PN-DCP:2], 0 malformed, 0 warnings | `TestPnetHello` |
+| tshark check pnet-profile.pcap | - | pass | 945 frames map[ARP:11 ICMPv6:7 IGMPv3:1 LLDP:2 PN-DCP:5 PNIO-AL:2 PNIO-CM:38 PNIO_PS:879], 0 malformed, 0 warnings | `TestPnetProfile` |
+| tshark check pnet-reparameterize.pcap | - | pass | 484 frames map[ARP:6 ICMPv6:9 IGMPv3:1 LLDP:1 PN-DCP:3 PNIO-CM:12 PNIO_PS:452], 0 malformed, 0 warnings | `TestPnetReparameterize` |
+| tshark check pnio-dcp.pcap | - | pass | 40 frames map[ARP:12 ICMPv6:9 IGMPv3:1 LLDP:2 PN-DCP:16], 0 malformed, 0 warnings | `TestPnioDCP` |
+| tshark check pniors-controller.pcap | - | pass | 1070 frames map[ARP:14 ICMPv6:10 IGMPv3:1 PN-DCP:14 PNIO-CM:30 PNIO_PS:1001], 0 malformed, 0 warnings | `TestPnioRsController` |
+| tshark check profinet-py-api.pcap | - | pass | 269 frames map[ARP:7 ICMP:1 ICMPv6:9 IGMPv3:1 PN-DCP:2 PNIO-CM:86 PNIO_PS:163], 0 malformed, 0 warnings | `TestProfinetPyAPI` |
+| tshark check profinet-py-controller.pcap | - | pass | 233 frames map[ARP:7 ICMP:1 ICMPv6:8 IGMPv3:1 PN-DCP:2 PNIO-AL:4 PNIO-CM:46 PNIO_PS:164], 0 malformed, 0 warnings | `TestProfinetPyController` |
+| tshark check profinet-py-reparameterize.pcap | - | pass | 237 frames map[ARP:7 ICMP:1 ICMPv6:8 IGMPv3:1 PN-DCP:2 PNIO-CM:54 PNIO_PS:164], 0 malformed, 0 warnings | `TestProfinetPyReparameterize` |
 | tshark check snmp.pcap | - | pass | 180 frames map[ARP:2 SNMP:178], 0 malformed, 0 warnings | `TestSNMPDecoders` |
 | tshark check udp-rt.pcap | - | pass | 2 frames map[PNIO:1 PNIO-CM:1], 0 malformed, 0 warnings | `TestUDPRTDecoders` |
 
@@ -355,37 +379,37 @@ Generated 2026-11-24T00:35:44+00:00 from 41 test runs of go-profinet PR #118 at 
 
 | Feature | go-profinet role | Outcome | Detail | Test |
 |---------|------------------|---------|--------|------|
-| MRA: go-profinet (best priority) manages, umrp MRAs give way | MRA | pass | otfnode {State:CHK_RC Acting:manager Manager: Open:false Blocked:[false true] TopologyChanges:1 LinkChanges:0 TestsReceived:26 Malformed:0}, n2 {Ring:CHK_RO ... | `TestMRPAuto/umrp/go-profinet-best` |
+| MRA: go-profinet (best priority) manages, umrp MRAs give way | MRA | pass | otfnode {State:CHK_RC Acting:manager Manager: Open:false Blocked:[false true] TopologyChanges:1 LinkChanges:0 TestsReceived:28 Malformed:0}, n2 {Ring:PT_IDLE... | `TestMRPAuto/umrp/go-profinet-best` |
 | MRA ring closed by go-profinet: no loop, no hole (umrp MRAs) | MRA | pass | probes sent 100, received by n2 100, by n3 100 | `TestMRPAuto/umrp/go-profinet-best` |
 | MRA ring still closed by go-profinet: no loop, no hole (umrp MRAs) | MRA | pass | probes sent 100, received by n2 100, by n3 100 | `TestMRPAuto/umrp/go-profinet-best` |
 | MRA: go-profinet stays the manager | MRA | pass | acting changes 0 in 3 s of the settled ring | `TestMRPAuto/umrp/go-profinet-best` |
-| MRA: umrp MRA as a client keeps taking the manager role back | MRA | peer-deviation | 16 role changes on n2 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_t... | `TestMRPAuto/umrp/go-profinet-best` |
-| MRA: go-profinet gives way to a better umrp MRA | MRA | pass | otfnode {State:PT_IDLE Acting:client Manager:86:eb:89:fa:74:a5 Open:false Blocked:[false false] TopologyChanges:0 LinkChanges:0 TestsReceived:5 Malformed:0},... | `TestMRPAuto/umrp/peer-best` |
+| MRA: umrp MRA as a client keeps taking the manager role back | MRA | peer-deviation | 16 role changes on n3 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_t... | `TestMRPAuto/umrp/go-profinet-best` |
+| MRA: go-profinet gives way to a better umrp MRA | MRA | pass | otfnode {State:PT_IDLE Acting:client Manager:9a:9a:9c:47:ae:c6 Open:false Blocked:[false false] TopologyChanges:0 LinkChanges:0 TestsReceived:14 Malformed:0}... | `TestMRPAuto/umrp/peer-best` |
 | MRA ring closed by umrp: no loop, no hole (go-profinet MRA as client) | MRA | pass | probes sent 100, received by n2 100, by n3 100 | `TestMRPAuto/umrp/peer-best` |
 | MRA ring still closed by umrp: no loop, no hole (go-profinet MRA as client) | MRA | pass | probes sent 100, received by n2 100, by n3 100 | `TestMRPAuto/umrp/peer-best` |
-| MRA: go-profinet stays a client of the better umrp MRA | MRA | pass | acting changes 0 in 3 s of the settled ring, {State:PT_IDLE Acting:client Manager:86:eb:89:fa:74:a5 Open:false Blocked:[false false] TopologyChanges:0 LinkCh... | `TestMRPAuto/umrp/peer-best` |
-| MRA: umrp MRA as a client keeps taking the manager role back | MRA | peer-deviation | 18 role changes on n3 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_t... | `TestMRPAuto/umrp/peer-best` |
-| MRA: go-profinet (next best) manages when the umrp manager fails | MRA | pass | otfnode {State:PRM_UP Acting:manager Manager: Open:true Blocked:[false false] TopologyChanges:0 LinkChanges:2 TestsReceived:235 Malformed:0}, n3 {Ring:DE_IDL... | `TestMRPAuto/umrp/peer-best` |
+| MRA: go-profinet stays a client of the better umrp MRA | MRA | pass | acting changes 0 in 3 s of the settled ring, {State:PT_IDLE Acting:client Manager:9a:9a:9c:47:ae:c6 Open:false Blocked:[false false] TopologyChanges:0 LinkCh... | `TestMRPAuto/umrp/peer-best` |
+| MRA: umrp MRA as a client keeps taking the manager role back | MRA | peer-deviation | 16 role changes on n3 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_t... | `TestMRPAuto/umrp/peer-best` |
+| MRA: go-profinet (next best) manages when the umrp manager fails | MRA | pass | otfnode {State:PRM_UP Acting:manager Manager: Open:true Blocked:[false false] TopologyChanges:0 LinkChanges:2 TestsReceived:241 Malformed:0}, n3 {Ring:DE_IDL... | `TestMRPAuto/umrp/peer-best` |
 | MRA after the manager failed: no loop, no hole (go-profinet manages, umrp MRA as client) | MRA | pass | probes sent 100, received by n3 100 | `TestMRPAuto/umrp/peer-best` |
-| MRA: go-profinet gives way again when the better umrp MRA returns | MRA | pass | otfnode {State:PT_IDLE Acting:client Manager:86:eb:89:fa:74:a5 Open:false Blocked:[false false] TopologyChanges:2 LinkChanges:6 TestsReceived:244 Malformed:0... | `TestMRPAuto/umrp/peer-best` |
+| MRA: go-profinet gives way again when the better umrp MRA returns | MRA | pass | otfnode {State:PT_IDLE Acting:client Manager:9a:9a:9c:47:ae:c6 Open:false Blocked:[false false] TopologyChanges:2 LinkChanges:6 TestsReceived:250 Malformed:0... | `TestMRPAuto/umrp/peer-best` |
 | MRA ring closed again by umrp: no loop, no hole | MRA | pass | probes sent 100, received by n2 100, by n3 100 | `TestMRPAuto/umrp/peer-best` |
-| MRP ring closed: umrp MRM, go-profinet MRC | MRP client | pass | n2 {Ring:CHK_RC Role:MRM Flushes:2 Probes:0 Ports:[{Name:ringA State:blocked Oper:up} {Name:ringB State:forwarding Oper:up}]}, otfnode {State:PT_IDLE Acting:... | `TestMRPOtfClient/umrp` |
-| MRP go-profinet MRC: both ring ports forwarding, ring closed | MRP client | pass | {State:PT_IDLE Acting:client Manager: Open:false Blocked:[false false] TopologyChanges:7 LinkChanges:1 TestsReceived:98 Malformed:0} | `TestMRPOtfClient/umrp` |
+| MRP ring closed: umrp MRM, go-profinet MRC | MRP client | pass | n2 {Ring:CHK_RC Role:MRM Flushes:6 Probes:0 Ports:[{Name:ringA State:blocked Oper:up} {Name:ringB State:forwarding Oper:up}]}, otfnode {State:PT_IDLE Acting:... | `TestMRPOtfClient/umrp` |
+| MRP go-profinet MRC: both ring ports forwarding, ring closed | MRP client | pass | {State:PT_IDLE Acting:client Manager: Open:false Blocked:[false false] TopologyChanges:12 LinkChanges:1 TestsReceived:101 Malformed:0} | `TestMRPOtfClient/umrp` |
 | MRP closed ring: no loop, no hole (umrp MRM, go-profinet MRC) | MRP client | pass | probes sent 100, received by n2 100, by n3 100 | `TestMRPOtfClient/umrp` |
-| MRP ring open: umrp MRM on go-profinet's link change | MRP client | pass | n2 {Ring:CHK_RO Role:MRM Flushes:3 Probes:2521 Ports:[{Name:ringA State:forwarding Oper:up} {Name:ringB State:forwarding Oper:up}]} | `TestMRPOtfClient/umrp` |
+| MRP ring open: umrp MRM on go-profinet's link change | MRP client | pass | n2 {Ring:CHK_RO Role:MRM Flushes:7 Probes:2477 Ports:[{Name:ringA State:forwarding Oper:up} {Name:ringB State:forwarding Oper:up}]} | `TestMRPOtfClient/umrp` |
 | MRP link change: go-profinet MRC reports its link down | MRP client | pass | link changes 1 → 2 | `TestMRPOtfClient/umrp` |
-| MRP TopologyChange: go-profinet MRC receives umrp's and flushes | MRP client | pass | topology changes 7 → 8 | `TestMRPOtfClient/umrp` |
-| MRP measured outage, cable break (umrp MRM, go-profinet MRC, 200 ms profile) | MRP client | pass | 13 ms without traffic at the far client (12 of 2433 probes lost); a measurement, not a conformance claim | `TestMRPOtfClient/umrp` |
+| MRP TopologyChange: go-profinet MRC receives umrp's and flushes | MRP client | pass | topology changes 12 → 13 | `TestMRPOtfClient/umrp` |
+| MRP measured outage, cable break (umrp MRM, go-profinet MRC, 200 ms profile) | MRP client | pass | 12 ms without traffic at the far client (11 of 2388 probes lost); a measurement, not a conformance claim | `TestMRPOtfClient/umrp` |
 | MRP open ring: no loop, no hole (umrp MRM, go-profinet MRC) | MRP client | pass | probes sent 100, received by n2 100, by n3 100 | `TestMRPOtfClient/umrp` |
-| MRP ring closes again (umrp MRM, go-profinet MRC) | MRP client | pass | n2 {Ring:CHK_RC Role:MRM Flushes:8 Probes:2621 Ports:[{Name:ringA State:blocked Oper:up} {Name:ringB State:forwarding Oper:up}]} | `TestMRPOtfClient/umrp` |
+| MRP ring closes again (umrp MRM, go-profinet MRC) | MRP client | pass | n2 {Ring:CHK_RC Role:MRM Flushes:12 Probes:2577 Ports:[{Name:ringA State:blocked Oper:up} {Name:ringB State:forwarding Oper:up}]} | `TestMRPOtfClient/umrp` |
 | MRP closed again: no loop, no hole (umrp MRM, go-profinet MRC) | MRP client | pass | probes sent 100, received by n2 100, by n3 100 | `TestMRPOtfClient/umrp` |
-| MRP ring closed: go-profinet MRM, umrp MRCs | MRP manager | pass | otfnode {State:CHK_RC Acting:manager Manager: Open:false Blocked:[false true] TopologyChanges:1 LinkChanges:3 TestsReceived:68 Malformed:0}, n2 PT_IDLE, n3 P... | `TestMRPOtfManager/umrp` |
-| MRP test frames: go-profinet MRM receives its tests through umrp MRCs | MRP manager | pass | {State:CHK_RC Acting:manager Manager: Open:false Blocked:[false true] TopologyChanges:1 LinkChanges:3 TestsReceived:68 Malformed:0} | `TestMRPOtfManager/umrp` |
+| MRP ring closed: go-profinet MRM, umrp MRCs | MRP manager | pass | otfnode {State:CHK_RC Acting:manager Manager: Open:false Blocked:[false true] TopologyChanges:2 LinkChanges:1 TestsReceived:60 Malformed:0}, n2 PT_IDLE, n3 P... | `TestMRPOtfManager/umrp` |
+| MRP test frames: go-profinet MRM receives its tests through umrp MRCs | MRP manager | pass | {State:CHK_RC Acting:manager Manager: Open:false Blocked:[false true] TopologyChanges:2 LinkChanges:1 TestsReceived:60 Malformed:0} | `TestMRPOtfManager/umrp` |
 | MRP closed ring: no loop, no hole (go-profinet MRM, umrp MRCs) | MRP manager | pass | probes sent 100, received by n2 100, by n3 100 | `TestMRPOtfManager/umrp` |
-| MRP ring open: go-profinet MRM unblocks on a cable break between umrp MRCs | MRP manager | pass | {State:CHK_RO Acting:manager Manager: Open:true Blocked:[false false] TopologyChanges:2 LinkChanges:5 TestsReceived:208 Malformed:0} | `TestMRPOtfManager/umrp` |
-| MRP FDB flush: umrp MRC flushes on go-profinet's TopologyChange | MRP manager | pass | flushes 2 → 5 | `TestMRPOtfManager/umrp` |
-| MRP measured outage, cable break (go-profinet MRM, umrp MRCs, 200 ms profile) | MRP manager | pass | 4 ms without traffic at the far client (4 of 2407 probes lost); a measurement, not a conformance claim | `TestMRPOtfManager/umrp` |
+| MRP ring open: go-profinet MRM unblocks on a cable break between umrp MRCs | MRP manager | pass | {State:CHK_RO Acting:manager Manager: Open:true Blocked:[false false] TopologyChanges:3 LinkChanges:3 TestsReceived:192 Malformed:0} | `TestMRPOtfManager/umrp` |
+| MRP FDB flush: umrp MRC flushes on go-profinet's TopologyChange | MRP manager | pass | flushes 8 → 11 | `TestMRPOtfManager/umrp` |
+| MRP measured outage, cable break (go-profinet MRM, umrp MRCs, 200 ms profile) | MRP manager | pass | 9 ms without traffic at the far client (8 of 2408 probes lost); a measurement, not a conformance claim | `TestMRPOtfManager/umrp` |
 | MRP open ring: no loop, no hole (go-profinet MRM, umrp MRCs) | MRP manager | pass | probes sent 100, received by n2 100, by n3 100 | `TestMRPOtfManager/umrp` |
-| MRP ring closes again (go-profinet MRM, umrp MRCs) | MRP manager | pass | {State:CHK_RC Acting:manager Manager: Open:false Blocked:[false true] TopologyChanges:3 LinkChanges:7 TestsReceived:211 Malformed:0} | `TestMRPOtfManager/umrp` |
+| MRP ring closes again (go-profinet MRM, umrp MRCs) | MRP manager | pass | {State:CHK_RC Acting:manager Manager: Open:false Blocked:[false true] TopologyChanges:4 LinkChanges:5 TestsReceived:193 Malformed:0} | `TestMRPOtfManager/umrp` |
 | MRP closed again: no loop, no hole (go-profinet MRM, umrp MRCs) | MRP manager | pass | probes sent 100, received by n2 100, by n3 100 | `TestMRPOtfManager/umrp` |
 | MRP seeded cable faults, go-profinet MRM with umrp MRCs: settles, no loop, no hole | MRP manager | pass | seed 1, 8 rounds | `TestMRPRingFaults/umrp` |
