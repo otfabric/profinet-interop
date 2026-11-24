@@ -39,7 +39,7 @@ Tags are immutable. A fix is a new version.
 
 ## v0.15.0
 
-**Date:** unreleased
+**Date:** 2026-11-24
 **Previous release:** v0.14.0
 
 ## Summary
@@ -52,7 +52,8 @@ record 0xB600. Unmodified p-net refuses them, so the variant is not the
 reference and is not counted as independent: results against it show that
 a controller exchanges profile records with this extended stack, not how
 p-net handles them. The default p-net image and `make images` are
-unchanged.
+unchanged. The matrix is regenerated from go-profinet's run with the new
+scenario: 341 rows, 319 pass, 0 fail, 6 n/a, 16 peer deviations.
 
 ## Changes
 
@@ -83,6 +84,17 @@ unchanged.
 - docs/INTEROPERABILITY.md: the variant and its evidence; the pinned tree
   crashes on a Read Implicit of a user record (fixed upstream after it:
   rtlabs-com/p-net #594, c752521) and of 0xC000.
+- **versions.yaml**: `interop_version` 0.15.0 (#40 left it at 0.14.0, and
+  the first Release run stopped at that check; nothing was tagged).
+- **Matrix** (docs/MATRIX.md, matrix/results.json,
+  matrix/interop-result-v1.json): regenerated from the Interop and Kernel
+  MRP workflows of go-profinet run 45319782558 (2026-11-24), on PR #122
+  at d3fc3c9, against this release's images (7453c49, the tree of
+  fa732df). `sut` is v0.22.1-8-gd3fc3c9.
+  - **Compared with v0.14.0's matrix** by stable ID (323 rows, now 341):
+    none removed, no outcome changed, 18 added (`pnetprofile`), all pass.
+    The peer "p-net, profile-records variant" is the implementation
+    `pnet-profile`, `independent: false`.
 
 ### Breaking
 

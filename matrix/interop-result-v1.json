@@ -1,7 +1,7 @@
 {
  "contractVersion": "1.5",
- "finishedAt": "2026-11-24T00:35:44+00:00",
- "gitSha": "2cbeb2d5248730cc64ea2a602e1c377b4ba92dc6",
+ "finishedAt": "2026-11-24T09:02:59+00:00",
+ "gitSha": "fa732dfebdeee9f7effbba19e11193799517a7b8",
  "host": {
   "arch": "unrecorded",
   "os": "unrecorded"
@@ -10,8 +10,8 @@
   {
    "independent": false,
    "name": "go-profinet",
-   "revision": "18d3fdbeff72f0ed9fdd6e6b2687f8692db23eca",
-   "version": "v0.22.1-4-g18d3fdb"
+   "revision": "d3fc3c90406bd878a9b0aa62d31648dc7623a002",
+   "version": "v0.22.1-8-gd3fc3c9"
   },
   {
    "independent": true,
@@ -30,6 +30,13 @@
    "independent": true,
    "license": "GPL-3.0-only (or commercial)",
    "name": "pnet",
+   "revision": "ea5e5540b2be55c4dfadffda39b948632c104daa",
+   "version": "ea5e5540b2be"
+  },
+  {
+   "independent": false,
+   "license": "GPL-3.0-only (or commercial)",
+   "name": "pnet-profile",
    "revision": "ea5e5540b2be55c4dfadffda39b948632c104daa",
    "version": "ea5e5540b2be"
   },
@@ -73,7 +80,7 @@
    "version": "v4.0"
   }
  ],
- "interopVersion": "0.14.0",
+ "interopVersion": "0.15.0",
  "repository": "otfabric/profinet-interop",
  "reproduce": "PROFINET_INTEROP_RESULTS=dir make -C ../go-profinet interop && make matrix RESULTS=dir SUT_VERSION=<version>",
  "results": [
@@ -454,7 +461,7 @@
    "feature": "MRA: umrp MRA as a client keeps taking the manager role back",
    "id": "mrpauto.umrp.go-profinet-best.mra-umrp-mra-as-a-client-keeps-taking-the-manager-role-back",
    "outcome": "known-difference",
-   "reason": "16 role changes on n2 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_test) and reclaims the role after TSTNRmax intervals; seen with a umrp manager too",
+   "reason": "16 role changes on n3 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_test) and reclaims the role after TSTNRmax intervals; seen with a umrp manager too",
    "roles": {
     "peer": "umrp",
     "sut": "go-profinet",
@@ -551,7 +558,7 @@
    "feature": "MRA: umrp MRA as a client keeps taking the manager role back",
    "id": "mrpauto.umrp.peer-best.mra-umrp-mra-as-a-client-keeps-taking-the-manager-role-back",
    "outcome": "known-difference",
-   "reason": "18 role changes on n3 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_test) and reclaims the role after TSTNRmax intervals; seen with a umrp manager too",
+   "reason": "16 role changes on n3 in 3 s of a settled ring: umrp's MRC test monitor ignores the tests of the manager it gave way to (state_machine.c, mrp_mra_recv_ring_test) and reclaims the role after TSTNRmax intervals; seen with a umrp manager too",
    "roles": {
     "peer": "umrp",
     "sut": "go-profinet",
@@ -2531,6 +2538,220 @@
   },
   {
    "durationMs": 0,
+   "feature": "Connect with profile record 0xB600 written before PrmEnd in API 0x4E01, PrmEnd, ApplicationReady",
+   "id": "pnetprofile.connect-with-profile-record-0xb600-before-prmend-in-api-0x4e01",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet-profile",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetprofile"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Profile record 0xB600 written at Connect, read back in API 0x4E01: the 16 octets written",
+   "id": "pnetprofile.0xb600-written-at-connect-read-back-in-api-0x4e01",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet-profile",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetprofile"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Profile index 0xB000 the submodule does not have: application read error (DE 80 A0 00)",
+   "id": "pnetprofile.profile-index-0xb000-not-on-the-submodule-read-application-error",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet-profile",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetprofile"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Profile index 0xBFFF the submodule does not have: application read error (DE 80 A0 00)",
+   "id": "pnetprofile.profile-index-0xbfff-not-on-the-submodule-read-application-error",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet-profile",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetprofile"
+  },
+  {
+   "durationMs": 0,
+   "feature": "User index 0x7FFF the submodule does not have: application read error (DE 80 A0 00), as unmodified p-net answers",
+   "id": "pnetprofile.user-index-0x7fff-not-on-the-submodule-read-application-error",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet-profile",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetprofile"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Index 0xAFFF (I&M15): invalid index (DE 80 B0 0A), as unmodified p-net answers",
+   "id": "pnetprofile.index-0xafff-im15-read-invalid-index",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet-profile",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetprofile"
+  },
+  {
+   "durationMs": 0,
+   "feature": "ReadImplicit of 0xB600 (no AR): invalid index (DE 80 B0 0A), not given to the application",
+   "id": "pnetprofile.readimplicit-of-0xb600-invalid-index",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet-profile",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetprofile"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Release ends the first AR at p-net",
+   "id": "pnetprofile.release-ends-the-first-ar",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet-profile",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetprofile"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Second Connect with 0xB600 before PrmEnd",
+   "id": "pnetprofile.second-connect-with-0xb600-before-prmend",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet-profile",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetprofile"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Profile record 0xB600 written in Data in API 0x4E01, read back: the 16 octets written",
+   "id": "pnetprofile.0xb600-written-in-data-in-api-0x4e01-read-back",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet-profile",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetprofile"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Profile record 0xB600 of the wrong length (2 octets): application write error (DF 80 A1 00)",
+   "id": "pnetprofile.0xb600-of-the-wrong-length-write-application-error",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet-profile",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetprofile"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Profile index 0xB000 the submodule does not have: application write error (DF 80 A1 00)",
+   "id": "pnetprofile.profile-index-0xb000-not-on-the-submodule-write-application-error",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet-profile",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetprofile"
+  },
+  {
+   "durationMs": 0,
+   "feature": "Release ends the second AR at p-net",
+   "id": "pnetprofile.release-ends-the-second-ar",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet-profile",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetprofile"
+  },
+  {
+   "durationMs": 0,
+   "feature": "scapy decode pnet-profile.pcap",
+   "id": "pnetprofile.scapy-decode-pnet-profile-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "scapy",
+    "sut": "go-profinet"
+   },
+   "suite": "pnetprofile"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark check pnet-profile.pcap",
+   "id": "pnetprofile.tshark-check-pnet-profile-pcap",
+   "outcome": "pass",
+   "roles": {
+    "peer": "tshark",
+    "sut": "go-profinet"
+   },
+   "suite": "pnetprofile"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark fields: every 0xB600 request and answer in API 0x00004e01, slot 1, subslot 1",
+   "id": "pnetprofile.tshark-fields-0xb600-requests-and-answers-in-api-0x4e01-slot-1-subslot-1",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet-profile",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetprofile"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark: 0xB600 Write requests of 16 octets: the first value at both Connects, the second in Data",
+   "id": "pnetprofile.tshark-0xb600-write-requests-payloads",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet-profile",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetprofile"
+  },
+  {
+   "durationMs": 0,
+   "feature": "tshark: 0xB600 Read responses of 16 octets: the first value, then the second",
+   "id": "pnetprofile.tshark-0xb600-read-responses-payloads",
+   "outcome": "pass",
+   "roles": {
+    "peer": "pnet-profile",
+    "sut": "go-profinet",
+    "sut-role": "IO-Controller"
+   },
+   "suite": "pnetprofile"
+  },
+  {
+   "durationMs": 0,
    "feature": "Re-parameterization in Data (p-net)",
    "id": "pnetreparameterize.re-parameterization-in-data-p-net",
    "outcome": "unsupported",
@@ -3943,13 +4164,13 @@
   }
  ],
  "schemaVersion": "1.0",
- "startedAt": "2026-11-24T00:35:44+00:00",
+ "startedAt": "2026-11-24T09:02:59+00:00",
  "summary": {
   "fail": 0,
   "infra-error": 0,
   "known-difference": 16,
   "not-tested": 0,
-  "pass": 301,
+  "pass": 319,
   "unsupported": 6
  },
  "waivers": [
